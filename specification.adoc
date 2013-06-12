@@ -1,0 +1,56 @@
+= Webapp / Openshift Cartridge for editing awestruct sites
+Jason Porter <jporter@redhat.com>
+2013-06-10
+:open: pass:normal[+[{nbsp}]+]
+:closed: pass:normal[+[&#10004;]+]
+:working: pass:normal[+[&#10140;]+]
+
+The basic specification will probably end up becoming a living document.
+Please make use of the checkboxes to indicate what has been completed.
+The following are the different types of checkboxes:
+
+----
+{open}
+{closed}
+{working}
+----
+
+and look like this:
+
+
+{open} -- open
+{closed} -- closed
+{working} -- working
+
+Adding a git treeish next to checkbox in parens as the work is done would also be a nice touch.
+
+== The UI of the editor
+
+* {open} must display the list of actual files in the site
+** {open} must allow the user to navigate to a specific file
+** {open} should be easily available at all times
+* {open} must display a preview of the site 
+** {open} may have a user interaction feature for displaying the preview on demand
+** {open} should auto update the preview after content changes
+* {open} must contain a content editing section
+** {open} must be able to display the contents of the selected file
+** {open} may be syntax aware (i.e. highlighting)
+** {open} should detect changes and ask for saving / canceling upon navigation changes
+** {open} must be able to save to a changeset
+** {open} must support Markdown at launch
+** {open} should be extensible to support other supported markup flavors
+* {open} should be able to initiate a new changeset
+** {open} detailed information about a changeset may be visible
+** {open} files changed in a changeset must be visible
+
+== Backend
+
+* {open} must support Git and Github
+** {open} must possible to fork / clone a site
+** {open} must be possible to send pull requests
+** {open} must be able to push commits
+** {open} must be able to make a git commit
+** {open} must be able to create branches
+** {open} must be able to add comments to pull requests
+** {open} must be able to view pull requests
+
