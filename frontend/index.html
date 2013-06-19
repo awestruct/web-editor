@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Awestruct GUI</title>
+  <link rel="stylesheet" href="stylesheets/app.css">
+</head>
+<body>
+  <div ng-app="aw" class="wrapper">
+    
+    <nav class="top-bar">
+      <a href="/">{:awestruct} GUI Editor</a>
+    </nav>
+
+
+
+    
+    <div ng-view></div>
+
+  </div>
+
+  <script src="javascripts/vendor/angular.js"></script>
+  <script src="javascripts/vendor/jquery.min.js"></script>
+  <script src="javascripts/vendor/ace.js"></script>
+  <script src="javascripts/vendor/ui-ace.js"></script>
+  <script src="javascripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+// @import "settings";
+// @import "normalize";
+// @import "foundation";
+// @import "compass";
+// Compiled the above into a static CSS file to save ~10 seconds every file save
+@import "start.css";
+
+@import "compass/css3";
+
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html,body {
+  height:100%;
+}
+
+$green : #5ABE8A;
+
+// Base Styles 
+
+.top-bar {
+  margin: 0;
+  background:$green;
+  border-bottom: 2px solid #54B381;
+  a {
+    color:white;
+    margin-left: 20px;
+  }
+}
+
+
+// Main Application setup
+
+.ace_editor_wrapper {
+  width:100%;
+  height:500px;
+}
+
+.ace_editor {
+  top: 0; bottom: 0; right: 0; left: 0;
+  height:100%;
+}
+
+.wrapper, [ng-view] {
+  height:100%;
+}
+
+.wrapper {
+  margin-top:-45px;
+  padding-top:45px;
+}
+
+.panels {    
+  float:left;
+  width:100%;
+  height:100%;
+  border:0;
+  .panel {
+    height:100%;  
+  }
+}
+
+
+/*
+  Files Pane
+*/ 
+
+.filespane {
+  border:0;
+  width:10%;
+  resize:horizontal;
+  padding: 0;
+}
+  .filesList {
+    color:#000;
+    list-style:none;
+    margin: 0;
+    font-size: 11px;
+    li {
+      border-top: 1px solid white;
+      border-bottom: 1px solid #ddd;
+      padding:5px;
+      @include transition(padding .2s);
+      &:hover, &.active {
+        cursor:pointer;
+        background:#646464;
+        color:white;
+        border-top-color:#646464;
+        padding-left:10px;
+      }
+    }
+  }
+
+.editor {
+  padding:0;
+  width:60%;
+  resize:horizontal;
+}
+
+.preview {
+  width:30%;
+  resize:horizontal;
+}
+
+
+

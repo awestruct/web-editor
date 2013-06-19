@@ -1,0 +1,26 @@
+<div class="panels" ng-init="init()">
+  
+  <div class="panel columns filespane">
+    <filespane></filespane>
+  </div>
+
+  <div class="panel columns editor">
+    
+    <div ng-hide="currentFile">
+      <p>Please select a file from the left</p>
+    </div>
+
+    <div ng-show="currentFile">
+      Currently editing {{currentFile}}
+    </div>
+    
+    <div ui-ace scope-instance="foo">{{currentFile}}</div>
+
+
+  </div>
+
+  <div class="panel columns preview">
+    Preview
+  </div>
+
+</div>
