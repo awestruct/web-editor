@@ -80,7 +80,9 @@ html, body {
   font-size: 11px;
 }
 /* line 78, ../sass/app.scss */
-.filesList li {
+.filesList a {
+  float: left;
+  width: 100%;
   border-top: 1px solid white;
   border-bottom: 1px solid #ddd;
   padding: 5px;
@@ -89,8 +91,8 @@ html, body {
   -o-transition: padding 0.2s;
   transition: padding 0.2s;
 }
-/* line 83, ../sass/app.scss */
-.filesList li:hover, .filesList li.active {
+/* line 85, ../sass/app.scss */
+.filesList a:hover, .filesList a.active {
   cursor: pointer;
   background: #646464;
   color: white;
@@ -98,15 +100,63 @@ html, body {
   padding-left: 10px;
 }
 
-/* line 93, ../sass/app.scss */
+/* line 95, ../sass/app.scss */
+.fileHeader {
+  padding: 20px 10px 0 10px;
+  background: #fff;
+  margin: 0;
+  max-width: 100%;
+}
+/* line 100, ../sass/app.scss */
+.fileHeader .columns {
+  padding: 0;
+}
+/* line 103, ../sass/app.scss */
+.fileHeader .close {
+  background: none;
+  border: 0;
+  color: #5abe8a;
+  padding: 0;
+}
+/* line 109, ../sass/app.scss */
+.fileHeader h3 {
+  margin: 0;
+}
+/* line 112, ../sass/app.scss */
+.fileHeader .controls {
+  text-align: right;
+}
+
+/* Buttons */
+/* line 120, ../sass/app.scss */
+.button {
+  box-shadow: none;
+}
+/* line 122, ../sass/app.scss */
+.button.success {
+  background: #5ABE8A;
+  border-color: #54B381;
+}
+/* line 125, ../sass/app.scss */
+.button.success:hover {
+  background: #54B381;
+}
+
+/* line 131, ../sass/app.scss */
 .editor {
   padding: 0;
   width: 60%;
   resize: horizontal;
 }
 
-/* line 99, ../sass/app.scss */
+/* line 137, ../sass/app.scss */
 .preview {
   width: 30%;
   resize: horizontal;
+}
+
+/* Toolbar */
+/* line 145, ../sass/app.scss */
+ul.tools li:hover ul {
+  top: auto;
 }

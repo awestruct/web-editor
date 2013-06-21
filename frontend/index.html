@@ -8,20 +8,20 @@
 <body>
   <div ng-app="aw" class="wrapper">
     
-    <nav class="top-bar">
+    <nav class="top-bar" test>
       <a href="/">{:awestruct} GUI Editor</a>
     </nav>
-
-
-
     
     <div ng-view></div>
 
   </div>
 
   <script src="javascripts/vendor/angular.js"></script>
-  <script src="javascripts/vendor/jquery.min.js"></script>
-  <script src="javascripts/vendor/ace.js"></script>
+  
+  <!-- Ace Edtior -->
+  <script src="javascripts/vendor/ace/ace.js"></script>
+  <script src="javascripts/vendor/underscore.js"></script>
+  <script src="javascripts/vendor/angular-underscore.js"></script>
   <script src="javascripts/vendor/ui-ace.js"></script>
   <script src="javascripts/app.js"></script>
 </body>
