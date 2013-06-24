@@ -6,10 +6,6 @@
 
   <div class="panel columns editor">
     
-    <div ng-hide="currentFile">
-      <p>Please select a file from the left</p>
-    </div>
-
     <div ng-show="currentFile">
       <div class="fileHeader row">
         <div class="columns large-4">
@@ -24,8 +20,9 @@
       Currently editing {{currentFile}}. You have {{openEditors | size}} files open.
     </div>
     
-    <ng-include src="'partials/tools.html'"></ng-include>
-    <div ui-ace scope-instance="editor">{{currentFile}}</div>
+    <ng-include src="'partials/tools.html'" ng-show="currentFile"></ng-include>
+    
+    <div ui-ace scope-instance="editor" ng-show="currentFile">{{currentFile}}</div>
 
 
   </div>
