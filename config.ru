@@ -1,4 +1,11 @@
-# This file is used by Rack-based servers to start the application.
+require "rubygems"
+require "bundler/setup"
+require "sinatra"
+require "slim"
+require './app'
+ 
+set :run, false
+set :raise_errors, true
+set :public_dir, 'public'
 
-require ::File.expand_path('../config/environment',  __FILE__)
-run WebEditor::Application
+run MyApp
