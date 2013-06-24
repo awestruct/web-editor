@@ -4,6 +4,8 @@ gem 'sinatra', '~> 1.4.3'
 gem 'sinatra-contrib', '~> 1.4'
 gem 'slim', '~> 2.0', :require => false
 gem 'zurb-foundation', '~> 4.2'
+gem 'rake', '~> 10'
+gem 'multi_json', '~> 1.7'
 
 # Gems related to the use of awestruct
 group :awestruct do
@@ -22,3 +24,10 @@ group :awestruct do
 
 end 
 
+group :developement do
+  gem 'rspec', '~> 2.13'
+  gem 'guard', '~> 1.8'
+  gem 'guard-rspec', '~> 3.0'
+  gem 'rack-test', '~> 0.6'
+  gem 'puma', '~> 2.1', :require => false
+end

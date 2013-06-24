@@ -8,4 +8,4 @@ set :run, false
 set :raise_errors, true
 set :public_dir, 'public'
 
-run MyApp
+run AwestructWebEditor
