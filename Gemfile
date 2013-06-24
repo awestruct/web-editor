@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra', '~> 1.4.3'
 gem 'slim', '~> 2.0', :require => false
+gem 'zurb-foundation', '~> 4.2'
 
 # Gems related to the use of awestruct
 group :awestruct do
@@ -16,16 +17,7 @@ group :awestruct do
   gem 'redcarpet', '~> 2.3.0', :require => false
 
   # CSS frameworks
-  gem 'zurb-foundation', '~> 4.2.2', :require => false
   gem 'bootstrap-sass', '~> 2.3', :require => false 
 
 end 
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# To use debugger
-# gem 'debugger'
