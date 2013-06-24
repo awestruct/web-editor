@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'sinatra', '~> 1.4.3'
+gem 'sinatra-contrib', '~> 1.4'
 gem 'slim', '~> 2.0', :require => false
 gem 'zurb-foundation', '~> 4.2'
 
