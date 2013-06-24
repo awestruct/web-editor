@@ -42,6 +42,9 @@ Adding a git treeish next to checkbox in parens as the work is done would also b
 * {open} should be able to initiate a new changeset
 ** {open} detailed information about a changeset may be visible
 ** {open} files changed in a changeset must be visible
+* {open} must allow importing from an existing repository
+** {open} must allow importing from an existing clone on github
+** {open} must support taking a url to a canonical repo, forking it, and using the fork
 
 == Backend
 
