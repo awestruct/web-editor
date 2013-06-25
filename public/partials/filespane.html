@@ -1,0 +1,9 @@
+<ul class="filesList">
+  <li ng-repeat="file in files.tree">
+
+    <a ng-click="edit(file)" class="{{(file.path === currentFile) ? 'active' : ''}}">
+      <span class="folderArrow" ng-show="{{file.type === 'tree'}}">&#9658;</span>
+      {{file.path}}
+    </a>
+  </li>
+</ul>
