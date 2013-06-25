@@ -160,3 +160,18 @@ html, body {
 ul.tools li:hover ul {
   top: auto;
 }
+
+/* line 151, ../sass/app.scss */
+div[dropzone] {
+  border: 2px dashed #bbb;
+  border-radius: 5px;
+  padding: 25px;
+  text-align: center;
+  font: 20pt bold;
+  color: #bbb;
+  margin-bottom: 20px;
+}
+/* line 159, ../sass/app.scss */
+div[dropzone].hover {
+  border-color: yellow;
+}

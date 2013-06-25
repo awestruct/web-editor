@@ -4,6 +4,32 @@ aw.factory('Editor',function() {
   return {};
 });
 
+
+aw.directive("dropzone", function() {
+  return {
+    restrict : "A",
+    link: function (scope, elem) {
+      /* Add hover class */
+      elem.bind('dragover',function(e){
+        elem.addClass('hover');
+      });
+
+      /* Remove Hover Class */
+      elem.bind('dragend',function(e){
+        elem.removeClass('hover');
+      });
+
+      /* Handle the drop */ 
+      elem.bind('drop', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        alert("DROP!");
+        var files = e.dataTransfer.files;        
+      });
+    }
+  };
+});
+
 // Mock data until we get the backend hooked up
 aw.factory('Files', function() {
   return {
@@ -113,15 +139,15 @@ function ToolsCtrl($scope, Files){
   };
 
 
-  //  Regex patterns modifed from https://github.com/gollum/gollum/blob/master/lib/gollum/public/gollum/javascript/editor/langs/markdown.js
+  //  Regex patterns adapted from https://github.com/gollum/gollum/blob/master/lib/gollum/public/gollum/javascript/editor/langs/markdown.js
   var markdownMethods = $scope.markdownMethods = {
-    'strong' : {
+    'bold' : {
       search: /([^\n]+)([\n\s]*)/g,
       replace: "**$1**$2",
       textDefault: "bolded text"
     },
 
-    'emphasis' : {
+    'italic' : {
       search: /([^\n]+)([\n\s]*)/g,
       replace: "_$1_$2",
       textDefault : "This text has emphasis"
