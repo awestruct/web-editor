@@ -1,30 +1,50 @@
 var aw = angular.module('aw',['ui.ace', 'angular-underscore']);
 
-aw.factory('Editor',function() {
-  return {};
+aw.factory('Data',function() {
+  /* We use this data service to share data between the controllers */
+  return {
+    hovering : false
+  };
 });
 
 
-aw.directive("dropzone", function() {
+aw.directive("dropzone", function($parse) {
   return {
     restrict : "A",
-    link: function (scope, elem) {
-      /* Add hover class */
-      elem.bind('dragover',function(e){
-        elem.addClass('hover');
-      });
-
-      /* Remove Hover Class */
-      elem.bind('dragend',function(e){
-        elem.removeClass('hover');
-      });
+    link: function (scope, elem, attrs) {
 
       /* Handle the drop */ 
       elem.bind('drop', function(e) {
+        // e.stopPropagation();
         e.stopPropagation();
+        e.preventDefault(); 
+        scope.handleImages(e.dataTransfer.files);
+        scope.data.hovering = false;
+        scope.$apply();
+      });
+
+      /* Remove on drag leave */
+      elem.bind('dragleave',function(e){
+        e.stopPropagation();
+        e.preventDefault(); 
+        scope.data.hovering = false;
+        scope.$apply();
+      });
+    }
+  };
+});
+
+aw.directive('dropclass',function(){
+  return {
+    restrict : "A",
+    link : function(scope,elem){
+  
+      elem.bind('dragover',function(e){
         e.preventDefault();
-        alert("DROP!");
-        var files = e.dataTransfer.files;        
+        e.stopPropagation();
+        console.log("Hovering!");
+        scope.data.hovering = true;
+        scope.$apply();
       });
     }
   };
@@ -57,8 +77,8 @@ aw.config(function($routeProvider, $locationProvider){
 
 
 
-function AwCtrl($scope, $routeParams, Files, Editor) {
-
+function AwCtrl($scope, $routeParams, Files, Data) {
+    $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
@@ -89,9 +109,33 @@ function AwCtrl($scope, $routeParams, Files, Editor) {
 
 }
 
-function ToolsCtrl($scope, Files){
-  
-  $scope.format = function(method) {
+function ToolsCtrl($scope, Files, Data){
+  $scope.data = Data;
+  /* Handle Images */
+  $scope.handleImages = function(files){
+    console.log(files);
+    for (var i = files.length - 1; i >= 0; i--) {
+      var name = files[i].name;
+      // Put the image placeholder up
+      $scope.format('upload-image', name);
+      
+      // upload the image (To come with APIS)
+      
+      // replace the paths
+      
+        $scope.editor.replace('![http://path-to-uploaded-file/'+name+']()', {
+          needle : "![uploading "+name+". . .]()"
+        });
+      
+        $scope.editor.clearSelection();
+      
+    };
+
+
+  };
+
+  /* Markdown Editing tools */
+  $scope.format = function(method, name) {
     var editor = $scope.editor,
         session = editor.getSession(),
         selection = session.getSelection(),
@@ -100,21 +144,20 @@ function ToolsCtrl($scope, Files){
         blank = !editor.session.getTextRange(range).length,
         style = markdownMethods[method],
         text = editor.session.getTextRange(range) || style.textDefault,
-        newText = text,
+        newText = name || text,
         diff; // difference between new and original text
 
 
     window.editor = editor;
+
     if(style.search) {
       newText = text.replace(style.search,style.replace);
     }
     else if (style.append) {
-     console.info("Appending...");
      newText = text + style.append;
     }
     else if (style.exec) {
-      console.info("Custom function...");
-      newText = style.exec(text,blank);
+      newText = style.exec(text,blank,name);
     }
     else {
       throw "Formatting method '"+method+"'is not defined!";
@@ -141,6 +184,7 @@ function ToolsCtrl($scope, Files){
 
   //  Regex patterns adapted from https://github.com/gollum/gollum/blob/master/lib/gollum/public/gollum/javascript/editor/langs/markdown.js
   var markdownMethods = $scope.markdownMethods = {
+
     'bold' : {
       search: /([^\n]+)([\n\s]*)/g,
       replace: "**$1**$2",
@@ -199,6 +243,15 @@ function ToolsCtrl($scope, Files){
         return repText;
       },
       textDefault : "ordered list",
+      blockLevel : true
+    },
+
+    'upload-image' : {
+      exec: function(text, blank, name) {
+        var text = text || "";
+        console.log(blank);
+        return text+"\n![uploading "+name+". . .]()\n";
+      },
       blockLevel : true
     },
 

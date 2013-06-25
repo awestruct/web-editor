@@ -1,10 +1,9 @@
 <div class="panels" ng-init="init()">
-  
   <div class="panel columns filespane">
     <ng-include src="'partials/filespane.html'"></ng-include>
   </div>
 
-  <div class="panel columns editor">
+  <div class="panel columns editor" dropclass ng-class="{hovering : data.hovering}">
     
     <div ng-show="currentFile">
       <div class="fileHeader row">
