@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+# Gems for the main application
 gem 'sinatra', '~> 1.4.3'
 gem 'sinatra-contrib', '~> 1.4'
 gem 'slim', '~> 2.0', :require => false
@@ -29,5 +30,6 @@ group :developement do
   gem 'guard', '~> 1.8'
   gem 'guard-rspec', '~> 3.0'
   gem 'rack-test', '~> 0.6'
-  gem 'puma', '~> 2.1', :require => false
+  gem 'puma', '~> 2.1', :require => false # I like puma and it runs everywhere
+  gem 'sinatra-asset-pipeline', '~> 0.2'
 end

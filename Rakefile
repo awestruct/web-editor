@@ -1,5 +1,8 @@
+require 'sinatra/asset_pipeline/task.rb'
 require 'rspec/core/rake_task'
 require 'guard'
+
+require './app'
 
 task :default => 'test:spec'
 
@@ -23,3 +26,4 @@ namespace :test do
   end
 end
 
+Sinatra::AssetPipeline::Task.define! AwestructWebEditor
