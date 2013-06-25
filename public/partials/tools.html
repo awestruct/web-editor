@@ -1,0 +1,14 @@
+<ul class="button-group radius tools" ng-controller="ToolsCtrl">
+  <li ng-repeat="(key,method) in markdownMethods">
+    <a class="button small" ng-click="format('{{key}}')">
+      <i class="icon-{{key}}"></i>
+      {{key}}
+    </a>
+  </li>
+  <li>
+    <input type="file">
+
+    <div dropzone>Drop Files Here</div>
+
+  </li>
+</ul>
