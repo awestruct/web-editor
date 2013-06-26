@@ -9,13 +9,9 @@ div.panels[ng-init="init()"]
             | {{currentFile}}
         div.columns.large-8.controls
           a.button.small.secondary href="#"
-            span 
-              | 
-                &bull;
-                Live Preview
+            i.icon-play
+            |  Live Preview
           a.close.tiny.button[href="#" ng-click="closeFile()"]
-      | Currently editing {{currentFile}}. You have {{openEditors | size}} files open.
     div[ng-include="'partials/tools.html'" ng-show="currentFile"]
     div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
-  div.panel.columns.preview
-    | Preview 
+  div.panel.columns.preview Preview

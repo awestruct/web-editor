@@ -105,6 +105,8 @@ function AwCtrl($scope, $routeParams, Files, Data) {
       $scope.editor.setSession(session);
       $scope.currentFile = file.path;
       $scope.editor.getSession().setMode("ace/mode/markdown");
+      $scope.editor.setTheme("ace/theme/github");
+      $scope.editor.setShowPrintMargin(false);
     };
 
 }
@@ -113,7 +115,6 @@ function ToolsCtrl($scope, Files, Data){
   $scope.data = Data;
   /* Handle Images */
   $scope.handleImages = function(files){
-    console.log(files);
     for (var i = files.length - 1; i >= 0; i--) {
       var name = files[i].name;
       // Put the image placeholder up
@@ -314,37 +315,7 @@ function ToolsCtrl($scope, Files, Data){
         return "["+text +"]("+url+")";
       },
       textDefault : "http://"
-    },
-
-    'image'      :   {
-      exec: function( txt, selText, $field ) {
-        var results = null;
-        $.GollumEditor.Dialog.init({
-          title: 'Insert Image',
-          fields: [
-          {
-            id: 'url',
-            name: 'Image URL',
-            type: 'text'
-          },
-          {
-            id: 'alt',
-            name: 'Alt Text',
-            type: 'text'
-          }
-          ],
-          OK: function( res ) {
-            var rep = '';
-            if ( res['url'] && res['alt'] ) {
-              rep = '![' + res['alt'] + ']' +
-              '(' + res['url'] + ')';
-            }
-            $.GollumEditor.replaceSelection( rep );
-          }
-        });
-      }
     }
-  
 
   };
 
