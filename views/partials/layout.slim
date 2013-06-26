@@ -1,7 +1,7 @@
 div.panels[ng-init="init()"]
   div.panel.columns.filespane
     div[ng-include="'partials/filespane.html'"]
-  div.panel.columns.editor
+  div.panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
     div[ng-show="currentFile"]
       div.fileHeader.row
         div.columns.large-4

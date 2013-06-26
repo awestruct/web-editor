@@ -1,35 +1,35 @@
 @import url(start.css);
-/* line 10, ../../sass/app.scss */
+/* line 10, ../sass/app.scss */
 * {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-/* line 12, ../../sass/app.scss */
+/* line 12, ../sass/app.scss */
 html, body {
   height: 100%;
 }
 
-/* line 20, ../../sass/app.scss */
+/* line 20, ../sass/app.scss */
 .top-bar {
   margin: 0;
   background: #5abe8a;
   border-bottom: 2px solid #54B381;
 }
-/* line 24, ../../sass/app.scss */
+/* line 24, ../sass/app.scss */
 .top-bar a {
   color: white;
   margin-left: 20px;
 }
 
-/* line 33, ../../sass/app.scss */
+/* line 33, ../sass/app.scss */
 .ace_editor_wrapper {
   width: 100%;
   height: 500px;
 }
 
-/* line 38, ../../sass/app.scss */
+/* line 38, ../sass/app.scss */
 .ace_editor {
   top: 0;
   bottom: 0;
@@ -38,25 +38,25 @@ html, body {
   height: 100%;
 }
 
-/* line 43, ../../sass/app.scss */
+/* line 43, ../sass/app.scss */
 .wrapper, [ng-view] {
   height: 100%;
 }
 
-/* line 47, ../../sass/app.scss */
+/* line 47, ../sass/app.scss */
 .wrapper {
   margin-top: -45px;
   padding-top: 45px;
 }
 
-/* line 52, ../../sass/app.scss */
+/* line 52, ../sass/app.scss */
 .panels {
   float: left;
   width: 100%;
   height: 100%;
   border: 0;
 }
-/* line 57, ../../sass/app.scss */
+/* line 57, ../sass/app.scss */
 .panels .panel {
   height: 100%;
 }
@@ -64,7 +64,7 @@ html, body {
 /*
   Files Pane
 */
-/* line 67, ../../sass/app.scss */
+/* line 67, ../sass/app.scss */
 .filespane {
   border: 0;
   width: 10%;
@@ -72,14 +72,14 @@ html, body {
   padding: 0;
 }
 
-/* line 73, ../../sass/app.scss */
+/* line 73, ../sass/app.scss */
 .filesList {
   color: #000;
   list-style: none;
   margin: 0;
   font-size: 11px;
 }
-/* line 78, ../../sass/app.scss */
+/* line 78, ../sass/app.scss */
 .filesList a {
   float: left;
   width: 100%;
@@ -91,7 +91,7 @@ html, body {
   -o-transition: padding 0.2s;
   transition: padding 0.2s;
 }
-/* line 85, ../../sass/app.scss */
+/* line 85, ../sass/app.scss */
 .filesList a:hover, .filesList a.active {
   cursor: pointer;
   background: #646464;
@@ -100,94 +100,78 @@ html, body {
   padding-left: 10px;
 }
 
-/* line 95, ../../sass/app.scss */
+/* line 95, ../sass/app.scss */
 .fileHeader {
   padding: 20px 10px 0 10px;
   background: #fff;
   margin: 0;
   max-width: 100%;
 }
-/* line 100, ../../sass/app.scss */
+/* line 100, ../sass/app.scss */
 .fileHeader .columns {
   padding: 0;
 }
-/* line 103, ../../sass/app.scss */
+/* line 103, ../sass/app.scss */
 .fileHeader .close {
   background: none;
   border: 0;
   color: #5abe8a;
   padding: 0;
 }
-/* line 109, ../../sass/app.scss */
+/* line 109, ../sass/app.scss */
 .fileHeader h3 {
   margin: 0;
 }
-/* line 112, ../../sass/app.scss */
+/* line 112, ../sass/app.scss */
 .fileHeader .controls {
   text-align: right;
 }
 
 /* Buttons */
-/* line 120, ../../sass/app.scss */
+/* line 120, ../sass/app.scss */
 .button {
   box-shadow: none;
 }
-/* line 122, ../../sass/app.scss */
+/* line 122, ../sass/app.scss */
 .button.success {
   background: #5ABE8A;
   border-color: #54B381;
 }
-/* line 125, ../../sass/app.scss */
+/* line 125, ../sass/app.scss */
 .button.success:hover {
   background: #54B381;
 }
 
-/* line 131, ../../sass/app.scss */
+/* line 131, ../sass/app.scss */
 .editor {
   padding: 0;
   width: 60%;
   resize: horizontal;
 }
 
-/* line 137, ../../sass/app.scss */
+/* line 137, ../sass/app.scss */
 .preview {
   width: 30%;
   resize: horizontal;
 }
 
 /* Toolbar */
-/* line 145, ../../sass/app.scss */
+/* line 145, ../sass/app.scss */
 ul.tools li:hover ul {
   top: auto;
 }
 
-/* line 151, ../../sass/app.scss */
+/* line 151, ../sass/app.scss */
 div[dropzone] {
-  border: 10px dashed #fff;
+  border: 2px dashed #bbb;
+  border-radius: 5px;
+  padding: 25px;
   text-align: center;
-  font: 20px bold;
-  color: white;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  bottom: 0;
-  z-index: 999;
-  background: #5abe8a;
-  display: none;
-  opacity: 0.7;
+  font: 20pt bold;
+  color: #bbb;
+  margin-bottom: 20px;
 }
-/* line 165, ../../sass/app.scss */
+/* line 159, ../sass/app.scss */
 div[dropzone].hover {
-  border-color: red;
-}
-/* line 168, ../../sass/app.scss */
-div[dropzone] h1 {
-  color: white;
-  padding-top: 48%;
-}
-
-/* line 174, ../../sass/app.scss */
-.hovering [dropzone] {
-  display: block;
+  border-color: yellow;
 }

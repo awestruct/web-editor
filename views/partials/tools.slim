@@ -1,12 +1,10 @@
-ul.button-group.radius.tools[ng-controller="ToolsCtrl"]
-  li[ng-repeat="(key,method) in markdownMethods"]
-    a.button.small[ng-click="format('{{key}}')"]
-      i class="icon-{{key}}"
-        | 
-          {{key}}
-  li
-    input[type="file"]
-      div[dropzone] 
-        | 
-          Files Here
+div[ng-controller="ToolsCtrl"]
+  ul.button-group.radius.tools[ng-controller="ToolsCtrl"]
+    li[ng-repeat="(key,method) in markdownMethods"]
+      a.button.small[ng-click="format('{{key}}')"]
+        i class="icon-{{key}}"
+          | 
+            {{key}}
+  div[dropzone] 
+    h1 Drop Files Here
 

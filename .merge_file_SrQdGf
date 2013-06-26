@@ -149,28 +149,14 @@ ul.tools {
 
 
 div[dropzone] {
-    border: 10px dashed #fff;
+    border: 2px dashed #bbb;
+    border-radius: 5px;
+    padding: 25px;
     text-align: center;
-    font: 20px bold;
-    color: white;
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    bottom:0;
-    z-index: 999;
-    background:$green;
-    display: none;
-    opacity:0.7;
+    font: 20pt bold;
+    color: #bbb;
+    margin-bottom: 20px;
     &.hover {
-      border-color: red;
+      border-color: yellow;
     }
-    h1 {
-      color:white;
-      padding-top:48%;
-    }
-}
-
-.hovering [dropzone] {
-  display: block;
 }

@@ -163,15 +163,31 @@ ul.tools li:hover ul {
 
 /* line 151, ../sass/app.scss */
 div[dropzone] {
-  border: 2px dashed #bbb;
-  border-radius: 5px;
-  padding: 25px;
+  border: 10px dashed #fff;
   text-align: center;
-  font: 20pt bold;
-  color: #bbb;
-  margin-bottom: 20px;
+  font: 20px bold;
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  z-index: 999;
+  background: #5abe8a;
+  display: none;
+  opacity: 0.7;
 }
-/* line 159, ../sass/app.scss */
+/* line 165, ../sass/app.scss */
 div[dropzone].hover {
-  border-color: yellow;
+  border-color: red;
+}
+/* line 168, ../sass/app.scss */
+div[dropzone] h1 {
+  color: white;
+  padding-top: 48%;
+}
+
+/* line 174, ../sass/app.scss */
+.hovering [dropzone] {
+  display: block;
 }
