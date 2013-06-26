@@ -1,6 +1,8 @@
 require 'rspec/core/rake_task'
 require 'guard'
 
+require './app'
+
 task :default => 'test:spec'
 
 namespace :test do

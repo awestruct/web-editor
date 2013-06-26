@@ -6,6 +6,13 @@ require './app'
  
 set :run, false
 set :raise_errors, true
-set :public_dir, 'public'
+
+map '/assets' do
+  run AwestructWebEditor.sprockets
+end 
+
+map '/font' do
+  run AwestructWebEditor.sprockets
+end 
 
 run AwestructWebEditor
