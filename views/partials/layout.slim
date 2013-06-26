@@ -1,6 +1,8 @@
 div.panels[ng-init="init()"]
+  
   div.panel.columns.filespane
     div[ng-include="'partials/filespane.html'"]
+  
   div.panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
     div[ng-show="currentFile"]
       div.fileHeader.row
@@ -12,6 +14,11 @@ div.panels[ng-init="init()"]
             i.icon-play
             |  Live Preview
           a.close.tiny.button[href="#" ng-click="closeFile()"]
+  
+    div[ng-include="'partials/messages.html'"]
+  
     div[ng-include="'partials/tools.html'" ng-show="currentFile"]
+  
     div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
+  
   div.panel.columns.preview Preview

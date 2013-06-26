@@ -1,11 +1,14 @@
 div[ng-controller="ToolsCtrl"]
   ul.button-group.tools[ng-controller="ToolsCtrl"]
     li
-      a.button.small[ng-click="format('blockquote')" title="Blockquote"]
-        i.icon-quote-left
-    li
       a.button.small[ng-click="format('bold')" title="Bold / Strong"]
         i.icon-bold
+    li
+      a.button.small[ng-click="format('italic')" title="Italic / Emphasis"]
+        i.icon-italic
+    li
+      a.button.small[ng-click="format('blockquote')" title="Blockquote"]
+        i.icon-quote-left
     li
       a.button.small[ng-click="format('code-block')" title="Code Block"]
         i.icon-code
@@ -15,9 +18,6 @@ div[ng-controller="ToolsCtrl"]
     li
       a.button.small[ng-click="format('hr')" title="Horizontal Ruler"]
         i —
-    li
-      a.button.small[ng-click="format('italic')" title="Italic / Emphasis"]
-        i.icon-italic
     li
       input.filePicker(type="file" onchange="angular.element(this).scope().handleImages(this.files)")
       a.button.small[title="Image"]

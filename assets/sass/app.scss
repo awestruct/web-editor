@@ -196,7 +196,7 @@ ul.tools {
   }
 }
 
-
+/* Drag and Drop */
 div[dropzone] {
     border: 10px dashed #fff;
     text-align: center;
@@ -222,4 +222,16 @@ div[dropzone] {
 
 .hovering [dropzone] {
   display: block;
+}
+
+/* Messages */
+.alert-box {
+  margin:0;
+  border-left:0;
+  border-right:0;
+  font-weight: normal;
+  strong {
+    padding: 2px 5px;
+    background: rgba(0, 0, 0, 0.2);
+  }
 }

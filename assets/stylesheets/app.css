@@ -220,6 +220,7 @@ ul.tools .filePicker {
   opacity: 0;
 }
 
+/* Drag and Drop */
 /* line 200, ../sass/app.scss */
 div[dropzone] {
   border: 10px dashed #fff;
@@ -249,4 +250,18 @@ div[dropzone] h1 {
 /* line 223, ../sass/app.scss */
 .hovering [dropzone] {
   display: block;
+}
+
+/* Messages */
+/* line 228, ../sass/app.scss */
+.alert-box {
+  margin: 0;
+  border-left: 0;
+  border-right: 0;
+  font-weight: normal;
+}
+/* line 233, ../sass/app.scss */
+.alert-box strong {
+  padding: 2px 5px;
+  background: rgba(0, 0, 0, 0.2);
 }

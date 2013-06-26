@@ -3,7 +3,8 @@ var aw = angular.module('aw',['ui.ace', 'angular-underscore']);
 aw.factory('Data',function() {
   /* We use this data service to share data between the controllers */
   return {
-    hovering : false
+    hovering : false,
+    messages : []
   };
 });
 
@@ -78,6 +79,7 @@ aw.config(function($routeProvider, $locationProvider){
 
 
 function AwCtrl($scope, $routeParams, Files, Data) {
+    window.scope = $scope;
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
@@ -89,6 +91,15 @@ function AwCtrl($scope, $routeParams, Files, Data) {
     $scope.init = function() {
       // go out and get a list of files
       $scope.files = Files;
+    };
+
+    $scope.addMessage = function(text, type) {
+      var message = {text:text, type:type};
+      $scope.data.messages.push(message);
+    };
+
+    $scope.removeMessage = function(el){
+      $scope.data.messages.splice(el.$index,1);
     };
 
     $scope.edit = function(file) {
@@ -116,7 +127,15 @@ function ToolsCtrl($scope, Files, Data){
   /* Handle Images */
   $scope.handleImages = function(files){
     for (var i = files.length - 1; i >= 0; i--) {
-      var name = files[i].name;
+      var name = files[i].name,
+          type = files[i].type,
+          isValid = type.match(/(?:jpe?g|png|gif)/gi);
+
+      if(!isValid) {
+        $scope.addMessage("Cannot upload <strong>"+name+"</strong>. Only .jpg, .png, and .gif allowed","alert");
+        continue;
+      }
+
       // Put the image placeholder up
       $scope.format('upload-image', name);
       
@@ -250,7 +269,6 @@ function ToolsCtrl($scope, Files, Data){
     'upload-image' : {
       exec: function(text, blank, name) {
         var text = text || "";
-        console.log(blank);
         return text+"\n![uploading "+name+". . .]()\n";
       },
       blockLevel : true
