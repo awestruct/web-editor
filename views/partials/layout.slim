@@ -1,15 +1,16 @@
-div.panels[ng-init="init()"]
+<ng-include src="'partials/header.html'"></ng-include>
+.panels[ng-init="init()"]
   
-  div.panel.columns.filespane
+  .panel.columns.filespane
     div[ng-include="'partials/filespane.html'"]
   
-  div.panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
+  .panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
     div[ng-show="currentFile"]
-      div.fileHeader.row
-        div.columns.large-4
+      .fileHeader.row
+        .columns.large-4
           h3 
             | {{currentFile}}
-        div.columns.large-8.controls
+        .columns.large-8.controls
           a.button.small.secondary href="#"
             i.icon-play
             |  Live Preview
@@ -21,4 +22,4 @@ div.panels[ng-init="init()"]
   
     div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   
-  div.panel.columns.preview Preview
+  .panel.columns.preview Preview

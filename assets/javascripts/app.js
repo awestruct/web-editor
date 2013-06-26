@@ -79,7 +79,6 @@ aw.config(function($routeProvider, $locationProvider){
 
 
 function AwCtrl($scope, $routeParams, Files, Data) {
-    window.scope = $scope;
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};

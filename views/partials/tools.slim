@@ -19,7 +19,7 @@ div[ng-controller="ToolsCtrl"]
       a.button.small[ng-click="format('hr')" title="Horizontal Ruler"]
         i —
     li
-      input.filePicker(type="file" onchange="angular.element(this).scope().handleImages(this.files)")
+      input.filePicker(multiple="true" type="file" onchange="angular.element(this).scope().handleImages(this.files)")
       a.button.small[title="Image"]
         i.icon-camera-retro
     li

@@ -13,10 +13,18 @@ html,body {
   height:100%;
 }
 
+/*
+ Base Styles
+*/
+
 $green : #5ABE8A;
 $orange : #CF4131;
-// Base Styles 
+$grey : #525252;
+$pink : #FF6B6B;
 
+/*
+  Navigation
+*/
 .top-bar {
   margin: 0;
   background:$green;
@@ -24,6 +32,19 @@ $orange : #CF4131;
   a {
     color:white;
     margin-left: 20px;
+  }
+}
+
+.repoActions {
+  margin-right: 10px;
+  .button {
+    top:auto;
+    background:darken($green,10%);
+    border:0;
+    font-weight: normal;
+    &:hover {
+      background:$orange;
+    }
   }
 }
 
@@ -59,6 +80,8 @@ $orange : #CF4131;
   border:0;
   .panel {
     height:100%;  
+    border:0;
+    border-right:1px solid #ddd;
   }
 }
 
@@ -78,21 +101,32 @@ $orange : #CF4131;
     list-style:none;
     margin: 0;
     font-size: 11px;
+    li {
+      clear:both;
+    }
     a {
       float: left;
       width:100%;
       border-top: 1px solid white;
       border-bottom: 1px solid #ddd;
       padding:5px;
+      color:$grey;
       @include transition(padding .2s);
       &:hover, &.active {
         cursor:pointer;
         background:#fff;
         // color:white;
         // border-top-color:#646464;
-        border-left:1px solid $orange;
+        border-left:1px solid $pink;
         padding-left:10px;
       }
+    }
+    li.bar {
+      background:$pink;
+      color:white;
+      padding:2px;
+      font-size:12px;
+      font-weight:bold;
     }
   }
 
@@ -151,6 +185,7 @@ ul.tools {
     display: inline-block;
     margin:0;
     position: relative;
+    overflow: hidden;
   }
   li:hover {
     top:auto;
@@ -166,8 +201,8 @@ ul.tools {
     font-size: 15px;
     margin:0;
     float: left;
-    color:#525252;
-    border:1px solid #ccc;
+    color:$grey;
+    border:1px solid #dd;
     border-right:0;
     border-radius:0;
     display: block;
@@ -224,7 +259,10 @@ div[dropzone] {
   display: block;
 }
 
-/* Messages */
+/*
+  Messages
+*/
+
 .alert-box {
   margin:0;
   border-left:0;
