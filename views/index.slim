@@ -2,13 +2,11 @@ doctype 5
 html lang="en"
   head
     meta charset="UTF-8"
-      title Awestruct GUI
-      link href="#{stylesheet_path 'font-awesome'}" rel="stylesheet"
-        link href="#{stylesheet_path 'app'}" rel="stylesheet"
+    title Awestruct GUI
+    link href="#{stylesheet_path 'font-awesome'}" rel="stylesheet"
+    link href="#{stylesheet_path 'app'}" rel="stylesheet"
   body
     .wrapper ng-app="aw"
-      nav.top-bar test=""
-        a href="/" \#{:awestruct}
       div ng-view=""
     script src="#{javascript_path 'vendor/angular'}"
     /! Ace Edtior

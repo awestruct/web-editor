@@ -1,6 +1,15 @@
 ul.filesList
+  li.bar 
+    i.icon-code-fork
+    |  Git Repo
   li[ng-repeat="file in files.tree"]
     a[class="{{(file.path === currentFile) ? 'active' : ''}}" ng-click="edit(file)"]
       span.folderArrow[ng-show="{{file.type ==='tree'}}"] &#9658;
       | {{file.path}}
+  li
+    a
+      i.icon-file-alt
+      | &plus; Add New File
+  li.bar
+    | &plus;/- Changeset
 

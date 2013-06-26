@@ -1,0 +1,5 @@
+.flashMessages
+  div[ng-repeat="(i,message) in data.messages" ng-model="data.messages" class="alert-box {{message.type}}"]
+    span(ng-bind-html-unsafe="message.text")
+      | {{message.text}}
+    a.close(ng-click="removeMessage(this)") &times;
