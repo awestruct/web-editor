@@ -4,7 +4,11 @@ aw.factory('Data',function() {
   /* We use this data service to share data between the controllers */
   return {
     hovering : false,
-    messages : []
+    messages : [],
+    gridHoverPoints : {
+      x : 0,
+      y : 0
+    }
   };
 });
 
@@ -45,6 +49,21 @@ aw.directive('dropclass',function(){
         e.stopPropagation();
         console.log("Hovering!");
         scope.data.hovering = true;
+        scope.$apply();
+      });
+    }
+  };
+});
+
+
+/* Table grid hover directive */
+aw.directive('gridhover',function(){
+  return {
+    restrict : "A",
+    link : function(scope,elem,attrs){
+      elem.bind('mouseenter',function(e){
+        scope.data.gridHoverPoints.x = attrs.x;
+        scope.data.gridHoverPoints.y = attrs.y;
         scope.$apply();
       });
     }
@@ -154,7 +173,7 @@ function ToolsCtrl($scope, Files, Data){
   };
 
   /* Markdown Editing tools */
-  $scope.format = function(method, name) {
+  $scope.format = function(method, name, opts) {
     var editor = $scope.editor,
         session = editor.getSession(),
         selection = session.getSelection(),
@@ -174,6 +193,9 @@ function ToolsCtrl($scope, Files, Data){
     }
     else if (style.append) {
      newText = text + style.append;
+    }
+    else if (method == 'table') {
+      newText = text + style.exec(name, opts); // rowCount, colCount
     }
     else if (style.exec) {
       newText = style.exec(text,blank,name);
@@ -332,6 +354,31 @@ function ToolsCtrl($scope, Files, Data){
         return "["+text +"]("+url+")";
       },
       textDefault : "http://"
+    },
+
+    'table' : {
+      exec : function(rowCount,colCount) {
+        // rowCount = 10; colCount = 4;
+        // start the table
+        var output = "\n|==============================================\n";
+        // append the table headings
+        for(var x=0; x<colCount;x++){
+          output+= "| Col"+parseInt(x+1)+"\t\t";
+        }
+        // append all the rows
+        var rows = new Array(rowCount);
+        for(var i=0;i<rowCount;i++) {
+          console.log("wat");
+          output+= "\n"; // new line
+          for(x=0; x<colCount;x++){
+            output+= "| \t\t\t";
+          }
+        }
+        // end the table
+        output+= "\n|==============================================\n";
+        return output;
+      },
+      textDefault : ""
     }
 
   };

@@ -93,7 +93,6 @@ $pink : #FF6B6B;
 .filespane {
   border:0;
   width:10%;
-  resize:horizontal;
   padding: 0;
 }
   .filesList {
@@ -181,7 +180,7 @@ $pink : #FF6B6B;
 /* Toolbar */
 ul.tools {
   li {
-    width: 6.25%;
+    width: (100 / 17) * 1%;
     display: inline-block;
     margin:0;
     position: relative;
@@ -202,7 +201,7 @@ ul.tools {
     margin:0;
     float: left;
     color:$grey;
-    border:1px solid #dd;
+    border:1px solid #ddd;
     border-right:0;
     border-radius:0;
     display: block;
@@ -228,6 +227,55 @@ ul.tools {
     height: 100%;
     cursor: pointer;
     opacity: 0;
+  }
+}
+
+/* Table Grid */
+
+ul.tools li.tableGrid {
+  overflow: visible;
+  &:hover ul {
+    display: block;
+  }
+  ul {
+    position: absolute;
+    width:170px;
+    display: none;
+    background:#fff;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    border:1px solid #ddd;
+    border-top: 0;
+    li {
+      width:100%;
+      clear:both;
+      display: block;
+      border-bottom: 1px solid #F7F7F7;
+      resize:none;
+      span.dot {
+        display: block;
+        border-right: 1px solid #F7F7F7;
+        width:12.5%;
+        float: left;
+        height: 20px;
+        font-size: 40px;
+        color:#ddd;
+        line-height: 20px;
+        text-align: center;
+        &:hover {
+          color:$pink;
+        }
+        &.hover {
+          background:$green;
+        }
+      }
+    }
+  }
+  li.label {
+    background:#fff;
+    color:$grey;
   }
 }
 
@@ -273,3 +321,4 @@ div[dropzone] {
     background: rgba(0, 0, 0, 0.2);
   }
 }
+
