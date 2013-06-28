@@ -5,21 +5,23 @@
     div[ng-include="'partials/filespane.html'"]
   
   .panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
-    div[ng-show="currentFile"]
+    di.flexWrapper[ng-show="currentFile"]
       .fileHeader.row
-        .columns.large-4
+        .columns.large-8
           h3 
             | {{currentFile}}
-        .columns.large-8.controls
+        .columns.large-4.controls
           a.button.small.secondary href="#"
             i.icon-play
             |  Live Preview
           a.close.tiny.button[href="#" ng-click="closeFile()"]
+    
+        ng-include[src="'partials/messages.html'"]
+      
+        div[ng-include="'partials/tools.html'" ng-show="currentFile"]
+      
+      div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   
-    div[ng-include="'partials/messages.html'"]
-  
-    div[ng-include="'partials/tools.html'" ng-show="currentFile"]
-  
-    div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
-  
-  .panel.columns.preview Preview
+  .panel.columns.preview.flexWrapper
+    .panel1 Panel 1
+    .panel2.flexItem Panel 2

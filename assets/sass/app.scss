@@ -3,8 +3,8 @@
 // @import "foundation";
 // @import "compass";
 // Compiled the above into a static CSS file to save ~10 seconds every file save
-@import "start.css";
 
+@import "start.css";
 @import "compass/css3";
 
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
@@ -42,16 +42,15 @@ $lightgrey : #ddd;
 
 .ace_editor_wrapper {
   width:100%;
-  height:100%;
-  padding-top:103px; /* accomodate for toolbar */
-  margin-top:-103px;
+  position: relative;
   * {resize:none;} /* pesky resize handles */
+  .ace_editor {
+    top: 0; bottom: 0; right: 0; left: 0;
+    height:100%;
+    position: absolute;
+  }
 }
 
-.ace_editor {
-  top: 0; bottom: 0; right: 0; left: 0;
-  height:100%;
-}
 
 .wrapper, [ng-view] {
   height:100%;
@@ -71,6 +70,9 @@ $lightgrey : #ddd;
     height:100%;  
     border:0;
     border-right:1px solid #ddd;
+    & > div {
+      width:100%;
+    }
   }
 }
 
@@ -149,10 +151,11 @@ $lightgrey : #ddd;
 }
 
 .fileHeader {
-  padding:20px 10px 0 10px;
+  padding:20px 0px 0 0px;
   background:#fff;
   margin:0;
   max-width: 100%;
+  width:100%;
   .columns {
     padding:0;
   }
@@ -164,9 +167,11 @@ $lightgrey : #ddd;
   }
   h3 {
     margin:0;
+    padding-left: 10px;
   }
   .controls {
     text-align: right;
+    padding-right: 10px;
   }
 }  
 
@@ -187,17 +192,17 @@ $lightgrey : #ddd;
 .editor {
   padding:0;
   width:60%;
-  resize:horizontal;
 }
 
 .preview {
   width:30%;
-  resize:horizontal;
 }
-
 
 /* Toolbar */
 ul.tools {
+  border-top:1px solid #ddd;
+  border-bottom:1px solid #ddd;
+  clear: both;
   li {
     width: (100 / 17) * 1%;
     display: inline-block;
@@ -220,8 +225,8 @@ ul.tools {
     margin:0;
     float: left;
     color:$grey;
-    border:1px solid #ddd;
-    border-right:0;
+    border:0;
+    border-left:1px solid #ddd;
     border-radius:0;
     display: block;
     width:100%;
@@ -335,9 +340,71 @@ div[dropzone] {
   border-left:0;
   border-right:0;
   font-weight: normal;
+  clear: both;
   strong {
     padding: 2px 5px;
     background: rgba(0, 0, 0, 0.2);
   }
 }
 
+
+
+/* 
+  Flexible panels.
+  Seriously.
+  THe compass implementation is broken
+  and covers the old flexbox spec.
+  FYI: http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=column&flex-wrap=nowrap&justify-content=flex-start&align-items=flex-start&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=1&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto 
+*/
+.flexWrapper {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: start;
+  -moz-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-align-content: stretch;
+  -ms-flex-line-pack: stretch;
+  align-content: stretch;
+  -webkit-box-align: start;
+  -moz-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.flexItem, .ace_editor_wrapper {
+  -webkit-box-ordinal-group: 1;
+  -moz-box-ordinal-group: 1;
+  -webkit-order: 0;
+  -ms-flex-order: 0;
+  order: 0;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -webkit-align-self: auto;
+  -ms-flex-item-align: auto;
+  align-self: auto;
+}
+
+/* Prevew Pane */
+.panel.preview {
+  padding:0;
+}
