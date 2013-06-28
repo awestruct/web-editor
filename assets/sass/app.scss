@@ -21,7 +21,7 @@ $green : #5ABE8A;
 $orange : #CF4131;
 $grey : #525252;
 $pink : #FF6B6B;
-
+$lightgrey : #ddd;
 /*
   Navigation
 */
@@ -35,18 +35,7 @@ $pink : #FF6B6B;
   }
 }
 
-.repoActions {
-  margin-right: 10px;
-  .button {
-    top:auto;
-    background:darken($green,10%);
-    border:0;
-    font-weight: normal;
-    &:hover {
-      background:$orange;
-    }
-  }
-}
+
 
 
 // Main Application setup
@@ -128,6 +117,36 @@ $pink : #FF6B6B;
       font-weight:bold;
     }
   }
+
+.repoActions {
+  width:100%;
+  .button {
+    top:auto;
+    // background:darken($green,10%);
+    background:#fff;
+    border:0;
+    font-weight: normal;
+    width:50%;
+    float: left;
+    border-bottom:1px solid $lightgrey;
+    padding:10px 0;
+    i {
+      font-size:20px;
+      display: block;
+      width:100%;
+      text-align: center;
+    }
+    &:hover {
+      color:$pink;
+      padding:auto;
+      border-left:0;
+      padding:10px 0;
+    }
+    &:first-child {
+      border-right:1px solid $lightgrey;
+    }
+  }
+}
 
 .fileHeader {
   padding:20px 10px 0 10px;
