@@ -23,7 +23,7 @@ module AwestructWebEditor
       @url = content[:url] || content['url'] || ''
     end
 
-    def to_json
+    def to_json(obj = nil)
       return "{\"text\":\"#{@text}\",\"url\":\"#{@url}\"}"
     end
 

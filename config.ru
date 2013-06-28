@@ -2,17 +2,17 @@ require "rubygems"
 require "bundler/setup"
 require "sinatra"
 require "slim"
-require './app'
+require File.join(File.dirname(__FILE__), 'app.rb')
  
 set :run, false
 set :raise_errors, true
 
 map '/assets' do
-  run AwestructWebEditor.sprockets
+  run AwestructWebEditor::App.sprockets
 end 
 
 map '/font' do
-  run AwestructWebEditor.sprockets
+  run AwestructWebEditor::App.sprockets
 end 
 
-run AwestructWebEditor
+run AwestructWebEditor::App

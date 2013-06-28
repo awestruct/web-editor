@@ -1,9 +1,15 @@
-require 'spec_helper'
+require 'multi_json'
+require_relative 'spec_helper'
 
-describe 'AwestructWebEditor' do
-  it do
-    get '/repo/test_repo'
-    last_response.should be_ok
-    pending "Finish the implementation"
+describe 'AwestructWebEditor::App' do
+  context 'repo awestruct.org' do
+    specify "retreiving files" do
+      get '/repo/awestruct.org'
+      expect(last_response.status).to eq 200
+
+      json_response = MultiJson.load last_response.body
+      expect(json_response["links"]).to have_at_least(100).items
+      expect(json_response["links"][0]["text"]).to eql "news"
+    end
   end
 end

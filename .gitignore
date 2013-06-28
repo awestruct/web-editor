@@ -11,3 +11,5 @@
 /tmp
 
 .sass-cache
+
+spec/.github_auth
