@@ -19,7 +19,7 @@ function ToolsCtrl($scope, Files, Data){
       
       // replace the paths
       
-        $scope.editor.replace('![http://path-to-uploaded-file/'+name+']()', {
+        $scope.editor.replace('!['+name+'](http://path-to-uploaded-file/'+name+')', {
           needle : "![uploading "+name+". . .]()"
         });
       
