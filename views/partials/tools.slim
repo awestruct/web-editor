@@ -1,12 +1,38 @@
-ul.button-group.radius.tools[ng-controller="ToolsCtrl"]
-  li[ng-repeat="(key,method) in markdownMethods"]
-    a.button.small[ng-click="format('{{key}}')"]
-      i class="icon-{{key}}"
-        | 
-          {{key}}
-  li
-    input[type="file"]
-      div[dropzone] 
-        | 
-          Files Here
+div[ng-controller="ToolsCtrl"]
+  ul.button-group.tools[ng-controller="ToolsCtrl"]
+    li
+      a.button.small[ng-click="format('bold')" title="Bold / Strong"]
+        i.icon-bold
+    li
+      a.button.small[ng-click="format('italic')" title="Italic / Emphasis"]
+        i.icon-italic
+    li
+      a.button.small[ng-click="format('blockquote')" title="Blockquote"]
+        i.icon-quote-left
+    li
+      a.button.small[ng-click="format('code-block')" title="Code Block"]
+        i.icon-code
+    li
+      a.button.inlineCode.small[ng-click="format('code-inline')" title="Inline Code"]
+        i `inline`
+    li
+      a.button.small[ng-click="format('hr')" title="Horizontal Ruler"]
+        i —
+    li
+      input.filePicker(multiple="true" type="file" onchange="angular.element(this).scope().handleImages(this.files)")
+      a.button.small[title="Image"]
+        i.icon-camera-retro
+    li
+      a.button.small[ng-click="format('link')" title="Link"]
+        i.icon-link
+    li
+      a.button.small[ng-click="format('ul')" title="Unordered bulleted list"]
+        i.icon-list
+    li
+      a.button.small[ng-click="format('ol')" title="Ordered numbered list"]
+        i.icon-list-ol
+    li[ng-repeat="i in [1,2,3,4,5,6]"]
+      a.button.small[ng-click="format('h{{i}}')" title="Heading level {{i}}"] #h{{i}}
 
+  div[dropzone] 
+    h1 Drop Images Here
