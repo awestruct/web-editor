@@ -1,3 +1,5 @@
+require 'json'
+
 module AwestructWebEditor
   module JSONable
     def to_json
