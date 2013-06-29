@@ -13,7 +13,7 @@ module AwestructWebEditor
   #   google_link.to_json
   #   # => "{\"text\":\"The Google Search Engine\",\"url\":\"http://www.google.com\"}"
   class Link
-    attr_reader :text, :url
+    attr_reader :text, :url, :method
 
     # Public: Basic constructor.
     #
@@ -21,20 +21,21 @@ module AwestructWebEditor
     def initialize(content = {})
       @text = content[:text] || content['text'] || content['url'] || ''
       @url = content[:url] || content['url'] || ''
+      @method = content[:method] || content['method'] || 'GET'
     end
 
     def to_json(obj = nil)
-      return "{\"text\":\"#{@text}\",\"url\":\"#{@url}\"}"
+      return "{\"text\":\"#{@text}\",\"url\":\"#{@url}\",\"method\":\"#{@method}\"}"
     end
 
     def self.from_json!(json_string)
       obj = JSON.load json_string
 
-      Link.new({:text => obj['text'], :url => obj['url']})
+      Link.new({:text => obj['text'], :url => obj['url'], :method => obj['method']})
     end
 
     def to_hash
-      {:text => obj['text'], :url => obj['url']}
+      {:text => @text, :url => @url, :method => @method}
     end
 
     def eql?(other)
@@ -44,7 +45,7 @@ module AwestructWebEditor
         return false
       end
 
-      return other.text == @text && other.url == @url
+      return other.text == @text && other.url == @url && other.method == @method
     end
 
 

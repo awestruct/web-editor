@@ -52,8 +52,28 @@ module AwestructWebEditor
 
     get '/repo/:reponame' do |reponame|
       files = AwestructWebEditor::Repository.new({"name" => reponame}).all_files
-      return_links = files.map { |f| AwestructWebEditor::Link.new({'url' => url("/repo/#{reponame}/#{f}"), 'text' => f}) }
-      [200, JSON.dump(:links => return_links)]
+      return_links = {}
+      files.each do |f|
+        links = []
+
+        unless f[:directory]
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'GET'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'PUT'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'POST'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'DELETE'})
+        end
+
+        if f[:path_to_root] =~ /\./
+          return_links[f[:location]] = {:links => links, :directory => f[:directory], :children => {}}
+        else
+          directory_paths = f[:path_to_root].split(File::SEPARATOR)
+          final_location = return_links[directory_paths[0]]
+          directory_paths.delete(directory_paths[0])
+          directory_paths.each {|path| final_location = final_location[:children][path]} unless directory_paths.nil?
+          final_location[:children][f[:location]] = {:links => links, :directory => f[:directory], :children => {}}
+        end
+      end
+      [200, JSON.dump(return_links)]
     end
 
     get '/repo' do
@@ -61,3 +81,4 @@ module AwestructWebEditor
     end
   end
 end
+

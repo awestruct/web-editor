@@ -1,3 +1,4 @@
+require 'find'
 require 'pathname'
 require 'git'
 require 'octokit'
@@ -20,12 +21,23 @@ module AwestructWebEditor
 
     def all_files(ignores = [])
       base_repository_path = File.join @base_repo_dir, @name
-      default_ignores = %w(.gitignore .git _site .awestruct .awestruct_ignore _config _ext .git)
+      default_ignores = %w(.gitignore .git _site .awestruct .awestruct_ignore _config _ext .git .travis.yml)
       default_ignores << ignores.join unless ignores.empty?
       regexp_ignores = Regexp.union default_ignores
-      files = Pathname.glob(File.join(base_repository_path, '**', '*'))
-      files.map! { |f| f.relative_path_from(Pathname.new base_repository_path).to_s}
-      files.reject { |f| regexp_ignores.match(f) }
+      files = []
+
+      Find.find(base_repository_path) do |path|
+        if regexp_ignores.match(path.to_s)
+          Find.prune
+        else
+          unless File.basename(path.to_s) == @name
+            files << {:location => File.basename(path), :directory => File.directory?(path),
+                      :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s}
+
+          end
+        end
+      end
+      files
     end
 
     def save_file(name, content)

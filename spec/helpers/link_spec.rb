@@ -11,6 +11,14 @@ describe AwestructWebEditor::Link do
   context 'saving to JSON' do
     subject { AwestructWebEditor::Link.new(:text => "Hello", :url => "http://www.example.com").to_json }
 
-    it { should eql "{\"text\":\"Hello\",\"url\":\"http://www.example.com\"}" }
+    it { should eql "{\"text\":\"Hello\",\"url\":\"http://www.example.com\",\"method\":\"GET\"}" }
+  end
+
+  context 'different HTTP methods' do
+    context 'loading from JSON' do
+      subject { AwestructWebEditor::Link.from_json! "{\"text\":\"Hello\",\"url\":\"http://www.example.com\",\"method\":\"POST\"}" }
+
+      it { should eql AwestructWebEditor::Link.new :text => "Hello", :url => "http://www.example.com", :method => "POST" }
+    end
   end
 end

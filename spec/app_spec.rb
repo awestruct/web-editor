@@ -8,8 +8,10 @@ describe 'AwestructWebEditor::App' do
       expect(last_response.status).to eq 200
 
       json_response = MultiJson.load last_response.body
-      expect(json_response["links"]).to have_at_least(100).items
-      expect(json_response["links"][0]["text"]).to eql "news"
+      expect(json_response).to have_at_least(24).items
+      expect(json_response['news']['children']).to have_at_least(10).items
+      expect(json_response['Gemfile']['links']).to have_exactly(4).items
+      expect(json_response['Gemfile']['links'][0]).to include 'text', 'url', 'method'
     end
   end
 end
