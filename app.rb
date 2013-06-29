@@ -57,10 +57,10 @@ module AwestructWebEditor
         links = []
 
         unless f[:directory]
-          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'GET'})
-          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'PUT'})
-          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'POST'})
-          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:location]}"), :text => f[:location], :method => 'DELETE'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST'})
+          links << AwestructWebEditor::Link.new({:url => url("/repo/#{reponame}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE'})
         end
 
         if f[:path_to_root] =~ /\./
