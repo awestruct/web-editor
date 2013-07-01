@@ -7,7 +7,6 @@ gem 'slim', '~> 2.0', :require => false
 gem 'zurb-foundation', '~> 4.2'
 gem 'compass', '~> 0.12'
 gem 'rake', '~> 10'
-gem 'multi_json', '~> 1.7'
 gem 'sprockets-helpers', '~> 1.0'
 gem 'uglifier', '~> 2.1'
 gem 'octokit', '~> 1.24'
