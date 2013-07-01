@@ -31,6 +31,21 @@ div[ng-controller="ToolsCtrl"]
     li
       a.button.small[ng-click="format('ol')" title="Ordered numbered list"]
         i.icon-list-ol
+    li.tableGrid
+      a.button.small[title="Table"]
+        i.icon-table
+      ul
+        li.label
+         | {{data.gridHoverPoints.x}} &times; {{data.gridHoverPoints.y}}
+        li[ng-repeat="x in [1,2,3,4,5,6,7,8]"]
+          span.dot[
+            gridhover
+            ng-repeat="y in [1,2,3,4,5,6,7,8]"
+            ng-class="{'hover' : data.gridHoverPoints.x >= x && data.gridHoverPoints.y >= y}"
+            data-x = "{{x}}"
+            data-y = "{{y}}"
+            ng-click="format('table',{{x}},{{y}})"] &bull;
+
     li[ng-repeat="i in [1,2,3,4,5,6]"]
       a.button.small[ng-click="format('h{{i}}')" title="Heading level {{i}}"] #h{{i}}
 
