@@ -148,7 +148,6 @@ DEPENDENCIES
   guard-rspec (~> 3.0)
   haml (~> 4.0.2)
   kramdown (~> 1.0.2)
-  multi_json (~> 1.7)
   octokit (~> 1.24)
   puma (~> 2.1)
   rack-test (~> 0.6)
