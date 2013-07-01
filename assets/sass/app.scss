@@ -81,18 +81,33 @@ $lightgrey : #ddd;
   Files Pane
 */ 
 
+
 .filespane {
   border:0;
   width:10%;
   padding: 0;
+  overflow: scroll;
 }
-  .filesList {
+  li.directory {
+    a.folder {
+      font-weight: 600;
+    }
+  }
+  .filesList { // top UL
     color:#000;
+    display: block;
     list-style:none;
     margin: 0;
     font-size: 11px;
+    i {
+      margin-right:4px;
+      color:$pink;
+    }
     li {
       clear:both;
+      &.open > ul {
+        display: block;
+      }
     }
     a {
       float: left;
@@ -101,16 +116,30 @@ $lightgrey : #ddd;
       border-bottom: 1px solid #ddd;
       padding:5px;
       color:$grey;
+      font-weight:normal;
       @include transition(padding .2s);
       &:hover, &.active {
         cursor:pointer;
         background:#fff;
         // color:white;
         // border-top-color:#646464;
-        border-left:1px solid $pink;
+        border-left:2px solid $pink;
         padding-left:10px;
       }
     }
+    li ul { // level 1
+      list-style:none;
+      // display: none;
+      // margin-left: 5%;
+      width:100%;
+      margin-left: 0;
+      border-left: 5px solid #888;
+      float: left;
+      a {
+        padding-left: 5%;
+      }
+    }
+
     li.bar {
       background:$pink;
       color:white;

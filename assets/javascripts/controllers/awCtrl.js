@@ -1,15 +1,26 @@
-function AwCtrl($scope, $routeParams, Files, Data) {
+function AwCtrl($scope, $routeParams, Data, Repo, $resource) {
+    window.Repo = Repo;
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
     $scope.ace.EditSession = require("ace/edit_session").EditSession;
 
+    $scope.data.repo = $routeParams.repo;
     
     // Initialize
     $scope.init = function() {
-      // go out and get a list of files
-      $scope.files = Files;
+
+      // to retrieve a book
+       var repo = new Repo();
+       repo.get('awestruct.org').then(function(res) {
+        $scope.files = res.data;
+       });
+    };
+
+    $scope.toggleOpen = function(child){
+      child.open = !child.open;
+      console.log(child.open);
     };
 
     $scope.addMessage = function(text, type) {
@@ -38,5 +49,9 @@ function AwCtrl($scope, $routeParams, Files, Data) {
       $scope.editor.setTheme("ace/theme/github");
       $scope.editor.setShowPrintMargin(false);
     };
+
+
+    /* Resources */
+
 
 }

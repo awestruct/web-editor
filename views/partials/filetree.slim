@@ -1,0 +1,9 @@
+li[ng-repeat="(name,child) in child.children"]
+  a[class="{{(child.path === currentchild) ? 'activex' : ''}}" ng-click="edit('{{child.links[0].url}}')" ng-hide="{{child.directory}}"]
+    | {{name}}
+  a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
+    i.icon-folder-close[ng-hide="child.open"]
+    i.icon-folder-open[ng-show="child.open"]
+    | {{name}}
+
+  ul[ng-include="'partials/filetree.html'" ng-show="child.open"]

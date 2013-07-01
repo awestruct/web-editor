@@ -2,10 +2,15 @@ ul.filesList
   li.bar 
     i.icon-code-fork
     |  Git Repo
-  li[ng-repeat="file in files.tree"]
-    a[class="{{(file.path === currentFile) ? 'active' : ''}}" ng-click="edit(file)"]
-      span.folderArrow[ng-show="{{file.type ==='tree'}}"] &#9658;
-      | {{file.path}}
+
+  li[ng-repeat="(name,child) in files" ng-class="{ true: 'directory'}[child.directory]"]
+    a[class="{{(child.path === currentchild) ? 'activex' : ''}}" ng-click="edit('{{child.links[0].url}}')" ng-hide="{{child.directory}}"]
+      | {{name}}
+    a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
+      i.icon-folder-close[ng-hide="child.open"]
+      i.icon-folder-open[ng-show="child.open"]
+      | {{name}}
+    ul[ng-include="'partials/filetree.html'" ng-show="child.open"]
   li
     a
       i.icon-file-alt
