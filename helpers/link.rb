@@ -48,6 +48,9 @@ module AwestructWebEditor
       return other.text == @text && other.url == @url && other.method == @method
     end
 
+    def to_s
+      to_hash.to_s
+    end
 
   end
 end
