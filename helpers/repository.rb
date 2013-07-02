@@ -1,5 +1,6 @@
 require 'find'
 require 'pathname'
+require 'shellwords'
 require 'git'
 require 'octokit'
 
@@ -44,17 +45,26 @@ module AwestructWebEditor
 
 
     def save_file(name, content)
-      File.open(File.join(base_repository_path, name), 'w') do |f|
+      File.open(File.join(base_repository_path, Shellwords.escape(name)), 'w') do |f|
         f.write content
       end
+    end
+
+    def remove_file(name)
+      path_to_file = File.join(base_repository_path, Shellwords.escape(name))
+      File.delete(path_to_file)
     end
 
     def commit(subject, body)
 
     end
 
-    def file_content(file)
-      File.readlines(File.join(base_repository_path, file)).join
+    def file_content(file, binary = false)
+      if binary
+        File.open(file.join(base_repository_path, Shellwords.escape(file)), 'rb').read
+      else
+        File.open(File.join(base_repository_path, Shellwords.escape(file)), 'r').read
+      end
     end
 
     def file_info(path)

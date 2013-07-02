@@ -6,6 +6,8 @@ require 'sinatra'
 require 'octokit'
 require 'git'
 require 'fileutils'
+require 'shellwords'
+require 'uri'
 
 require_relative '../app.rb'
 require_relative '../helpers/repository'
@@ -33,5 +35,10 @@ RSpec.configure do |config|
       Git.clone('git@github.com:awestruct/awestruct.org.git', 'awestruct.org',
                 :path => File.join(File.dirname(__FILE__), '..', 'tmp/repos'))
     end
+  end
+
+  config.after(:suite) do
+    git = Git.open 'tmp/repos/awestruct.org'
+    git.reset_hard 'HEAD'
   end
 end

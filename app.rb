@@ -51,6 +51,8 @@ module AwestructWebEditor
 
     # Application API
 
+    # Repo APIs
+
     get '/repo' do
       repo_base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
       return_structure = {}
@@ -64,6 +66,10 @@ module AwestructWebEditor
       end
       [200, JSON.dump(return_structure)]
     end
+
+    # TODO put /repo/setup # params up for discussion
+
+    # File related APIs
 
     get '/repo/:repo_name' do |repo_name|
       files = AwestructWebEditor::Repository.new({ 'name' => repo_name }).all_files
@@ -103,11 +109,24 @@ module AwestructWebEditor
     end
 
     # TODO delete '/repo/:repo_name/*'
+    delete '/repo/:repo_name/*' do |repo_name, path|
+      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+      result = repo.remove_file path
+      if result == 1
+        [200]
+      else
+        [500]
+      end
+    end
+
+    # Preview APIs
     # TODO get '/repo/:repo_name/preview' # comment about rethinking this one
     # TODO get '/repo/:repo_name/*/preview'
+
+    # Git related APIs
     # TODO post /repo/:reponame/commit # params[:message]
     # TODO post /repo/:reponame/push
-    # TODO put /repo/setup # params up for discussion
+
 
     helpers do
       Sinatra::JSON
