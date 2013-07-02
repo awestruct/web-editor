@@ -1,4 +1,7 @@
 aw.factory('Repo', function($http) {
+  
+  
+
   // Repo is a class which we can use for retrieving and 
   // updating data on the server
   var Repo = function(data) {
@@ -16,7 +19,13 @@ aw.factory('Repo', function($http) {
     return $http.get(path).then(function(response) {
       return response;
     });
-  }
+  };
+
+  Repo.prototype.saveFile = function(path,content) {
+    return $http.post(path,{content:content}).then(function(response) {
+      return response;
+    });
+  };
 
   // an instance method to create a new Repo
   // Repo.prototype.create = function() {

@@ -185,6 +185,7 @@ $lightgrey : #ddd;
   margin:0;
   max-width: 100%;
   width:100%;
+  border-bottom:1px solid $lightgrey;
   .columns {
     padding:0;
   }
@@ -230,7 +231,7 @@ $lightgrey : #ddd;
 /* Toolbar */
 ul.tools {
   border-top:1px solid #ddd;
-  border-bottom:1px solid #ddd;
+  // border-bottom:1px solid #ddd;
   clear: both;
   li {
     width: (100 / 17) * 1%;

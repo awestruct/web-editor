@@ -1,4 +1,5 @@
-function AwCtrl($scope, $routeParams, Data, Repo, $resource) {
+function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
+    
     window.Repo = Repo;
     $scope.data = Data;
     $scope.currentFile = false;
@@ -10,7 +11,6 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource) {
     
     // Initialize
     $scope.init = function() {
-
       // to retrieve a book
        repo = new Repo();
        repo.get('awestruct.org').then(function(res) {
@@ -41,17 +41,35 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource) {
       if(!!$scope.openEditors[path]) {
         session = $scope.openEditors[path];
         $scope.currentFile = file;
-        openSession(session);
+        openSession(session,file);
+        console.log("Opening existing session");
       }
       else {
         // goahead and grab the file
+        console.log("Creating new session");
         repo.getFile(path).then(function(response){
-          $scope.openEditors[path] = session;
           content = response.data.content;
           session = new $scope.ace.EditSession(content);
+          session.setUndoManager(new ace.UndoManager());
+          $scope.openEditors[path] = session;
           openSession(session,file);
         });
       }
+
+
+    };
+
+    $scope.save = function(currentFile) {
+      var session = $scope.editor.getSession(),
+          content = $scope.editor.getValue(),
+          path = currentFile.links[0].url;
+
+          $scope.data.saving = true;
+
+          console.log(path, content);
+          var x = repo.saveFile(path, content).then(function(response){
+            $scope.data.saving = false;
+          });
     };
 
     $scope.showTools = function(currentMode) {
