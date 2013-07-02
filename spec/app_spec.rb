@@ -5,6 +5,8 @@ require_relative 'spec_helper'
 describe 'AwestructWebEditor::App' do
   context 'using repo awestruct.org' do
     let(:base_method) { '/repo/awestruct.org' }
+    let(:repo) { AwestructWebEditor::Repository.new({ :name => 'awestruct.org' }) }
+
     specify 'when retrieving file list' do
       get "#{base_method}"
       expect(last_response).to be_successful
@@ -33,8 +35,31 @@ describe 'AwestructWebEditor::App' do
         expect(last_response).to be_successful
         expect(last_response.content_length).to be > 0
         json_return = JSON.load(last_response.body)
+        expect(json_return['content']).to be_a String
+        expect(json_return['content']).to match /\n/
         expect(json_return['content'].length).to be > 0
         expect(json_return['links']).to have(5).items
+      end
+    end
+
+    context 'when modifying a file' do
+      let(:filename) { 'extensions.md' }
+
+      around(:each) do |example|
+        original_content = repo.file_content filename
+
+        example.metadata[:original_content] = original_content
+        example.run
+        repo.save_file filename, original_content
+      end
+
+      let(:changed_content) { @example.metadata[:original_content].gsub /Extensions/, 'Plugins' }
+
+      specify do
+        post "#{base_method}/extensions.md", 'content' => changed_content
+        expect(last_response).to be_successful
+        expect(repo.file_content filename).to_not eql @example.metadata[:original_content]
+        expect(repo.file_content filename).to eql changed_content
       end
     end
   end

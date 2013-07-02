@@ -44,7 +44,9 @@ module AwestructWebEditor
 
 
     def save_file(name, content)
-
+      File.open(File.join(base_repository_path, name), 'w') do |f|
+        f.write content
+      end
     end
 
     def commit(subject, body)
@@ -52,7 +54,7 @@ module AwestructWebEditor
     end
 
     def file_content(file)
-      File.readlines(File.join(base_repository_path, file)).join "\n"
+      File.readlines(File.join(base_repository_path, file)).join
     end
 
     def file_info(path)

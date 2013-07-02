@@ -34,8 +34,9 @@ module AwestructWebEditor
       enable :logging, :dump_errors, :raise_errors
     end
 
-
     helpers Sinatra::JSON
+
+    # Views
 
     get '/' do
       slim :index
@@ -50,8 +51,14 @@ module AwestructWebEditor
       slim "partials/#{basename}".to_sym
     end
 
+    # Application API
+
+    get '/repo' do
+
+    end
+
     get '/repo/:repo_name' do |repo_name|
-      files = AwestructWebEditor::Repository.new({'name' => repo_name}).all_files
+      files = AwestructWebEditor::Repository.new({ 'name' => repo_name }).all_files
       return_links = {}
       files.each do |f|
         links = []
@@ -61,36 +68,39 @@ module AwestructWebEditor
         end
 
         if f[:path_to_root] =~ /\./
-          return_links[f[:location]] = {:links => links, :directory => f[:directory], :children => {}}
+          return_links[f[:location]] = { :links => links, :directory => f[:directory], :children => {} }
         else
           directory_paths = f[:path_to_root].split(File::SEPARATOR)
           final_location = return_links[directory_paths[0]]
           directory_paths.delete(directory_paths[0])
           directory_paths.each { |path| final_location = final_location[:children][path] } unless directory_paths.nil?
-          final_location[:children][f[:location]] = {:links => links, :directory => f[:directory], :children => {}}
+          final_location[:children][f[:location]] = { :links => links, :directory => f[:directory], :children => {} }
         end
       end
       [200, JSON.dump(return_links)]
     end
 
     get '/repo/:repo_name/*' do |repo_name, path|
-      repo = AwestructWebEditor::Repository.new({:name => repo_name})
+      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
       json_return = { :content => repo.file_content(path), :links => links_for_file(repo.file_info(path), repo_name) }
       [200, JSON.dump(json_return)]
     end
 
-    get '/repo' do
-
+    post '/repo/:repo_name/*' do |repo_name, path|
+      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+      request.body.rewind # in case someone already read it
+      repo.save_file path, params[:content]
+      [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
     end
 
     private
     def links_for_file(f, repo_name)
       links = []
-      links << AwestructWebEditor::Link.new({:url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET'})
-      links << AwestructWebEditor::Link.new({:url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT'})
-      links << AwestructWebEditor::Link.new({:url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST'})
-      links << AwestructWebEditor::Link.new({:url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE'})
-      links << AwestructWebEditor::Link.new({:url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET'})
+      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })
+      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT' })
+      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST' })
+      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE' })
+      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET' })
     end
   end
 end
