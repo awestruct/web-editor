@@ -52,7 +52,7 @@ module AwestructWebEditor
     end
 
     def file_content(file)
-      File.readlines(File.join(base_repository_path, file)).join
+      File.readlines(File.join(base_repository_path, file)).join "\n"
     end
 
     def file_info(path)
