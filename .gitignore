@@ -13,3 +13,6 @@
 .sass-cache
 
 spec/.github_auth
+
+# ignore the repo
+/repos

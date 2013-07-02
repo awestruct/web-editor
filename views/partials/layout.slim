@@ -9,7 +9,7 @@
       .fileHeader.row
         .columns.large-8
           h3 
-            | {{currentFile}}
+            | {{currentFile | filename}}
         .columns.large-4.controls
           a.button.small.secondary href="#"
             i.icon-play
@@ -18,7 +18,7 @@
     
         ng-include[src="'partials/messages.html'"]
       
-        div[ng-include="'partials/tools.html'" ng-show="currentFile"]
+        div[ng-include="'partials/tools.html'" ng-show="showTools(currentMode)"]
       
       div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   

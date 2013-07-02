@@ -1,4 +1,4 @@
-function ToolsCtrl($scope, Files, Data){
+function ToolsCtrl($scope, Data){
   $scope.data = Data;
   /* Handle Images */
   $scope.handleImages = function(files){
