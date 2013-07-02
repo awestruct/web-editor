@@ -12,6 +12,12 @@ aw.factory('Repo', function($http) {
     });
   };
 
+  Repo.prototype.getFile = function(path) {
+    return $http.get(path).then(function(response) {
+      return response;
+    });
+  }
+
   // an instance method to create a new Repo
   // Repo.prototype.create = function() {
   //   var book = this;
