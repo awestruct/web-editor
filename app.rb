@@ -34,8 +34,6 @@ module AwestructWebEditor
       enable :logging, :dump_errors, :raise_errors
     end
 
-    helpers Sinatra::JSON
-
     # Views
 
     get '/' do
@@ -54,7 +52,17 @@ module AwestructWebEditor
     # Application API
 
     get '/repo' do
-
+      repo_base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
+      return_structure = {}
+      Dir[repo_base + '/*'].each do |f|
+        if File.directory? f
+          basename = File.basename f
+          return_structure[basename] = { 'links' => [AwestructWebEditor::Link.new({ :url => url("/repo/#{basename}"),
+                                                                                    :text => f,
+                                                                                    :method => 'GET' })] }
+        end
+      end
+      [200, JSON.dump(return_structure)]
     end
 
     get '/repo/:repo_name' do |repo_name|
@@ -94,7 +102,16 @@ module AwestructWebEditor
       save_or_create(repo_name, path)
     end
 
+    # TODO delete '/repo/:repo_name/*'
+    # TODO get '/repo/:repo_name/preview' # comment about rethinking this one
+    # TODO get '/repo/:repo_name/*/preview'
+    # TODO post /repo/:reponame/commit # params[:message]
+    # TODO post /repo/:reponame/push
+    # TODO put /repo/setup # params up for discussion
+
     helpers do
+      Sinatra::JSON
+
       def links_for_file(f, repo_name)
         links = []
         links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })

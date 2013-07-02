@@ -3,6 +3,20 @@ require 'json'
 require_relative 'spec_helper'
 
 describe 'AwestructWebEditor::App' do
+  specify 'when obtaining a list of repositories' do
+    get '/repo'
+    expect(last_response).to be_successful
+
+    json_response = JSON.load last_response.body
+    expect(json_response).to include('awestruct.org')
+    expect(json_response['awestruct.org']).to have(1).items
+    expect(json_response['awestruct.org']['links']).to have(1).items
+    expect(json_response['awestruct.org']['links'][0]).to include 'text', 'url', 'method'
+    expect(json_response['awestruct.org']['links'][0]['url']).to match(/\/repo\/awestruct\.org$/)
+    expect(json_response['awestruct.org']['links'][0]['method']).to match(/GET/)
+    expect(json_response['awestruct.org']['links'][0]['text']).to match(/awestruct\.org/)
+  end
+
   context 'using repo awestruct.org' do
     let(:base_method) { '/repo/awestruct.org' }
     let(:repo) { AwestructWebEditor::Repository.new({ :name => 'awestruct.org' }) }

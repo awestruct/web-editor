@@ -16,7 +16,7 @@ module AwestructWebEditor
       @name = content['name'] || content[:name] || ''
       @uri = content['uri'] || content[:uri] || ''
       @relative_path = content['relative_path'] || content[:relative_path] || nil
-      @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] == 'test' ? 'tmp' : 'repos'
+      @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
     end
 
     def all_files(ignores = [])
