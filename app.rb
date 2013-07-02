@@ -87,21 +87,29 @@ module AwestructWebEditor
     end
 
     post '/repo/:repo_name/*' do |repo_name, path|
-      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
-      request.body.rewind # in case someone already read it
-      repo.save_file path, params[:content]
-      [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+      save_or_create(repo_name, path)
     end
 
-    private
-    def links_for_file(f, repo_name)
-      links = []
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET' })
+    put '/repo/:repo_name/*' do |repo_name, path|
+      save_or_create(repo_name, path)
+    end
+
+    helpers do
+      def links_for_file(f, repo_name)
+        links = []
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET' })
+      end
+
+      def save_or_create(repo_name, path)
+        repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+        request.body.rewind # in case someone already read it
+        repo.save_file path, params[:content]
+        [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+      end
     end
   end
 end
-
