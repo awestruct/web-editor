@@ -4,11 +4,8 @@ require 'shellwords'
 require 'git'
 require 'octokit'
 
-require_relative 'jsonable'
-
 module AwestructWebEditor
   class Repository
-    include AwestructWebEditor::JSONable
 
     attr_reader :name, :uri
     attr_accessor :relative_path
