@@ -28,9 +28,17 @@ aw.factory('Repo', function($http) {
   };
 
   Repo.prototype.saveImage = function(path,formdata) {
-    return $http.post(path,formdata).then(function(response) {
-      return response;
-    });
+    // return $http.post(path,formdata).then(function(response) {
+    //   return response;
+    // });
+    return $http({
+      method: 'POST',
+      url: path,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formdata
+  });
   };
 
   // an instance method to create a new Repo
