@@ -50,14 +50,20 @@ module AwestructWebEditor
 
 
     def save_file(name, content)
-      File.open(File.join(base_repository_path, Shellwords.escape(name)), 'w') do |f|
-        f.write content
+      if (content.is_a? Hash)
+        IO.copy_stream(content[:tempfile], File.join(base_repository_path, name))
+        content[:tempfile].unlink
+        content[:tempfile].close
+      else
+        File.open(File.join(base_repository_path, name), 'w') do |f|
+          f.write content
+        end
       end
-      @git_repo.add name
+      @git_repo.add(Shellwords.escape name)
     end
 
     def remove_file(name)
-      result = @git_repo.remove name
+      result = @git_repo.remove(Shellwords.escape name)
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
       !File.exists? path_to_file
@@ -70,7 +76,7 @@ module AwestructWebEditor
 
     def file_content(file, binary = false)
       if binary
-        File.open(file.join(base_repository_path, Shellwords.escape(file)), 'rb').read
+        File.open(File.join(base_repository_path, Shellwords.escape(file)), 'rb').read
       else
         File.open(File.join(base_repository_path, Shellwords.escape(file)), 'r').read
       end

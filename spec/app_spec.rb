@@ -91,9 +91,11 @@ describe 'AwestructWebEditor::App' do
           FileUtils.rm "tmp/repos/awestruct.org/images/#{Shellwords.escape filename}" if File.exists?("tmp/repos/awestruct.org/images/#{Shellwords.escape filename}")
         end
 
-        xspecify do
-            put "#{base_method}/images/#{URI.escape filename}"
+        specify do
+            put "#{base_method}/images/#{URI.escape filename}",
+                :content => Rack::Test::UploadedFile.new('tmp/sample_image.png', 'image/png', true)
             expect(last_response).to be_successful
+            expect(repo.file_content(File.join('images', filename), true)).to_not be_nil
         end
       end
     end
