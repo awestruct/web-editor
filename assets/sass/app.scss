@@ -105,6 +105,7 @@ $lightgrey : #ddd;
     }
     li {
       clear:both;
+      position: relative;
       &.open > ul {
         display: block;
       }
@@ -146,6 +147,13 @@ $lightgrey : #ddd;
       padding:2px;
       font-size:12px;
       font-weight:bold;
+      span {
+        color:white;
+        top:4px;
+        i {
+          color:white;
+        }
+      }
     }
   }
 
@@ -161,6 +169,7 @@ $lightgrey : #ddd;
     float: left;
     border-bottom:1px solid $lightgrey;
     padding:10px 0;
+    margin-bottom: 0;
     i {
       font-size:20px;
       display: block;
@@ -177,6 +186,15 @@ $lightgrey : #ddd;
       border-right:1px solid $lightgrey;
     }
   }
+}
+
+span.addFolder {
+  font-size: 10px;
+  float: right;
+  cursor: crosshair;
+  position: absolute;
+  top: 7px;
+  right: 5px;
 }
 
 .fileHeader {

@@ -1,6 +1,7 @@
 function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
     
     window.Repo = Repo;
+    window.scope = $scope;
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
@@ -17,6 +18,13 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
        repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
        });
+    };
+
+    $scope.syncFiles = function() {
+      repo.get($scope.data.repo).then(function(res) {
+       console.log(res);
+       $scope.files = res.data;
+      });      
     };
 
     $scope.toggleOpen = function(child){
@@ -88,6 +96,25 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
       return currentMode && !!currentMode.match(/markdown|asciidoc/gi);
     };
 
+    $scope.addFile = function(child) {
+      var fileName = prompt("Please enter the file name, including the extension"),
+          path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName;
+
+          console.log(child.path);
+
+      if(fileName) {
+        repo.saveFile(path, "").then(function(response) {
+          if(response) {
+            $scope.syncFiles();
+          }
+        });
+      }
+    };
+
+    $scope.path = function(child) {
+      console.log(child);
+    }
+
     openSession = function(session,file) {
       var mode = findMode(file.links[0].url);
       $scope.currentFile = file;
@@ -98,7 +125,7 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
       $scope.editor.setShowPrintMargin(false);
     };
 
-    window.findMode = function(filename) {
+    findMode = function(filename) {
       var extension = filename.split('.').pop(),
           mode = "text"; // default
 
