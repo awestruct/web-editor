@@ -1,6 +1,5 @@
 aw.factory('Repo', function($http) {
-  window.$http = $http;  
-
+  
   
 
   // Repo is a class which we can use for retrieving and 
@@ -28,17 +27,22 @@ aw.factory('Repo', function($http) {
     });
   };
 
-  Repo.prototype.saveImage = function(path,file, callback) {
-    // Using XHR request as angular's databinding isn't great for image uplods
-    var fd = new FormData(),
-        xhr = new XMLHttpRequest();
-    
-    fd.append("content", file);
-    fd.append("binary", true);
-
-    xhr.addEventListener("load", callback, false);
-    xhr.open("POST", path);
-    xhr.send(fd);
+  Repo.prototype.saveImage = function(path,formdata) {
+    // return $http.post(path,formdata).then(function(response) {
+    //   return response;
+    // });
+    return $http({
+<<<<<<< HEAD
+      method: 'POST', 
+=======
+      method: 'POST',
+>>>>>>> ce8561aacc57a90b8d6c1c4b4ef779e898a7488b
+      url: path,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formdata
+  });
   };
 
   // an instance method to create a new Repo

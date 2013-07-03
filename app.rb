@@ -34,8 +34,6 @@ module AwestructWebEditor
       enable :logging, :dump_errors, :raise_errors
     end
 
-    helpers Sinatra::JSON
-
     # Views
 
     get '/' do
@@ -53,9 +51,25 @@ module AwestructWebEditor
 
     # Application API
 
-    get '/repo' do
+    # Repo APIs
 
+    get '/repo' do
+      repo_base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
+      return_structure = {}
+      Dir[repo_base + '/*'].each do |f|
+        if File.directory? f
+          basename = File.basename f
+          return_structure[basename] = { 'links' => [AwestructWebEditor::Link.new({ :url => url("/repo/#{basename}"),
+                                                                                    :text => f,
+                                                                                    :method => 'GET' })] }
+        end
+      end
+      [200, JSON.dump(return_structure)]
     end
+
+    # TODO put /repo/setup # params up for discussion
+
+    # File related APIs
 
     get '/repo/:repo_name' do |repo_name|
       files = AwestructWebEditor::Repository.new({ 'name' => repo_name }).all_files
@@ -87,21 +101,45 @@ module AwestructWebEditor
     end
 
     post '/repo/:repo_name/*' do |repo_name, path|
-      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
-      request.body.rewind # in case someone already read it
-      repo.save_file path, params[:content]
-      [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+      save_or_create(repo_name, path)
     end
 
-    private
-    def links_for_file(f, repo_name)
-      links = []
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE' })
-      links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET' })
+    put '/repo/:repo_name/*' do |repo_name, path|
+      save_or_create(repo_name, path)
+    end
+
+    delete '/repo/:repo_name/*' do |repo_name, path|
+      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+      result = repo.remove_file path
+      result ? [200] : [500]
+    end
+
+    # Preview APIs
+    # TODO get '/repo/:repo_name/preview' # comment about rethinking this one
+    # TODO get '/repo/:repo_name/*/preview'
+
+    # Git related APIs
+    # TODO post /repo/:reponame/commit # params[:message]
+    # TODO post /repo/:reponame/push
+
+    helpers do
+      Sinatra::JSON
+
+      def links_for_file(f, repo_name)
+        links = []
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'GET' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'PUT' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'POST' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}"), :text => f[:location], :method => 'DELETE' })
+        links << AwestructWebEditor::Link.new({ :url => url("/repo/#{repo_name}/#{f[:path_to_root]}/#{f[:location]}/preview"), :text => "Preview #{f[:location]}", :method => 'GET' })
+      end
+
+      def save_or_create(repo_name, path)
+        repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+        request.body.rewind # in case someone already read it
+        repo.save_file path, params[:content]
+        [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+      end
     end
   end
 end
-

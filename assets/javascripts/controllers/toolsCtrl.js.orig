@@ -1,5 +1,9 @@
 function ToolsCtrl($scope, Data){
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> ce8561aacc57a90b8d6c1c4b4ef779e898a7488b
   /* Handle Images */
   $scope.handleImages = function(files){
     for (var i = files.length - 1; i >= 0; i--) {
@@ -16,23 +20,29 @@ function ToolsCtrl($scope, Data){
 
       // Put the image placeholder up
       $scope.format('upload-image', name);
+
       
       // upload the image (To come with APIS)
+
       // formdata.append('content',files[i]);
       // formdata.append('binary', true);
-      // formdata.content = files[i];
-      // formdata.binary = true;
+      formdata.content = files[i];
+      formdata.binary = true;
 
       var path = $scope.data.repoUrl + "/images/"+name;
 
-      repo.saveImage(path,files[i],function(response){
+      repo.saveImage(path,formdata).then(function(response){
         console.log(response);
       });
 
       $scope.$apply();
 
+<<<<<<< HEAD
       // TODO: replace the paths once uploaded 
-      $scope.editor.replace('!['+name+']('+encodeURI(path)+')', {
+=======
+      // TODO: replace the paths once uploaded
+>>>>>>> ce8561aacc57a90b8d6c1c4b4ef779e898a7488b
+      $scope.editor.replace('!['+name+'](http://path-to-uploaded-file/'+name+')', {
         needle : "![uploading "+name+". . .]()"
       });
       
