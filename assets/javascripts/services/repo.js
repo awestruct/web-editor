@@ -8,7 +8,7 @@ aw.factory('Repo', function($http) {
     angular.extend(this, data);
   };
 
-  // a static method to retrieve Repo by ID
+  // an instance method to retrieve Repo by ID
   Repo.prototype.get = function(repo) {
     return $http.get('/repo/' + repo).then(function(response) {
       return new Repo(response);
@@ -23,6 +23,12 @@ aw.factory('Repo', function($http) {
 
   Repo.prototype.saveFile = function(path,content) {
     return $http.post(path,{content:content}).then(function(response) {
+      return response;
+    });
+  };
+
+  Repo.prototype.saveImage = function(path,formdata) {
+    return $http.post(path,formdata).then(function(response) {
       return response;
     });
   };

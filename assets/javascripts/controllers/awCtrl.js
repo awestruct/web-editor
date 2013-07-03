@@ -8,12 +8,13 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
     $scope.ace.EditSession = require("ace/edit_session").EditSession;
 
     $scope.data.repo = $routeParams.repo;
+    $scope.data.repoUrl= window.location.origin + "/repo/" + $routeParams.repo;
     
     // Initialize
     $scope.init = function() {
       // to retrieve a book
        repo = new Repo();
-       repo.get('awestruct.org').then(function(res) {
+       repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
        });
     };
@@ -47,13 +48,27 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
       else {
         // goahead and grab the file
         console.log("Creating new session");
-        repo.getFile(path).then(function(response){
-          content = response.data.content;
-          session = new $scope.ace.EditSession(content);
-          session.setUndoManager(new ace.UndoManager());
-          $scope.openEditors[path] = session;
-          openSession(session,file);
-        });
+        repo.getFile(path)
+          .then(function(response, status, headers, config){
+            // check for errors
+            if(response.status != 200) {
+              $scope.addMessage("Error","alert");
+              return;
+            }
+            
+            // go ahead and create the session
+            content = response.data.content;
+            session = new $scope.ace.EditSession(content);
+            session.setUndoManager(new ace.UndoManager());
+            $scope.openEditors[path] = session;
+            
+            //  bind to change events
+            session.on("change",function() {
+              session.dirty = true;
+            });
+
+            openSession(session,file);
+          });
       }
 
 
@@ -63,11 +78,8 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
       var session = $scope.editor.getSession(),
           content = $scope.editor.getValue(),
           path = currentFile.links[0].url;
-
           $scope.data.saving = true;
-
-          console.log(path, content);
-          var x = repo.saveFile(path, content).then(function(response){
+          repo.saveFile(path, content).then(function(response){
             $scope.data.saving = false;
           });
     };
