@@ -6,8 +6,8 @@ html lang="en"
     link href="#{stylesheet_path 'font-awesome'}" rel="stylesheet"
     link href="#{stylesheet_path 'app'}" rel="stylesheet"
   body
-    .wrapper ng-app="aw"
-      div ng-view=""
+    .wrapper[ng-app="aw"]
+      div[ng-view=""]
 
     script src="#{javascript_path 'vendor/angular'}"
     /! Ace Edtior
@@ -24,3 +24,4 @@ html lang="en"
     script src="#{javascript_path 'filters/filters'}"
     script src="#{javascript_path 'directives/dragonDrop'}"
     script src="#{javascript_path 'directives/gridHover'}"
+    script src="#{javascript_path 'directives/save'}"

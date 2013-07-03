@@ -5,7 +5,8 @@ function ToolsCtrl($scope, Data){
     for (var i = files.length - 1; i >= 0; i--) {
       var name = files[i].name,
           type = files[i].type,
-          isValid = type.match(/(?:jpe?g|png|gif)/gi);
+          isValid = type.match(/(?:jpe?g|png|gif)/gi),
+          formdata = {};
 
       if(!isValid) {
         $scope.addMessage("Cannot upload <strong>"+name+"</strong>. Only .jpg, .png, and .gif allowed","alert");
@@ -16,7 +17,15 @@ function ToolsCtrl($scope, Data){
       $scope.format('upload-image', name);
       
       // upload the image (To come with APIS)
-      
+
+      formdata.content = files[i];
+      formdata.binary = true;
+
+      var path = $scope.data.repoUrl + "/images/"+name;
+      repo.saveImage(path,formdata).then(function(response){
+        console.log(response);
+      });
+
       // replace the paths
       
         $scope.editor.replace('!['+name+'](http://path-to-uploaded-file/'+name+')', {
