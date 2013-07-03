@@ -108,15 +108,10 @@ module AwestructWebEditor
       save_or_create(repo_name, path)
     end
 
-    # TODO delete '/repo/:repo_name/*'
     delete '/repo/:repo_name/*' do |repo_name, path|
       repo = AwestructWebEditor::Repository.new({ :name => repo_name })
       result = repo.remove_file path
-      if result == 1
-        [200]
-      else
-        [500]
-      end
+      result ? [200] : [500]
     end
 
     # Preview APIs
@@ -126,7 +121,6 @@ module AwestructWebEditor
     # Git related APIs
     # TODO post /repo/:reponame/commit # params[:message]
     # TODO post /repo/:reponame/push
-
 
     helpers do
       Sinatra::JSON

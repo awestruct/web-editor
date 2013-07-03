@@ -78,7 +78,7 @@ describe 'AwestructWebEditor::App' do
     end
 
     context 'when saving a new file' do
-      context 'when using an image' do
+      context 'using an image' do
         let(:filename) { 'sample image.png' }
 
         around(:each) do |example|

@@ -22,9 +22,31 @@ describe 'AwestructWebEditor::Repository' do
   end
 
   context "#remove_file('helpers/partial.md')" do
-    subject { AwestructWebEditor::Repository.new({ 'name' => 'awestruct.org', 'relative_path' => 'awestruct.org',
-                                                   'base_repo_dir' => 'tmp/repos' }).remove_file('news/index.html.haml') }
-    it { should eql 1 }
+    let(:repo) { AwestructWebEditor::Repository.new({ 'name' => 'awestruct.org', 'relative_path' => 'awestruct.org',
+                                                      'base_repo_dir' => 'tmp/repos' }) }
+    let(:response) { repo.remove_file('news/awestruct-0-5-1-released.adoc') }
+
+    specify 'should succeed' do
+      expect(response).to be_true
+    end
+
+  end
+
+  context "#commit('New file added')" do
+    # setup for a commit, as we can't guarantee order
+    let(:repo) { AwestructWebEditor::Repository.new({ 'name' => 'awestruct.org', 'relative_path' => 'awestruct.org',
+                                                      'base_repo_dir' => 'tmp/repos' }) }
+    before(:each) do
+      repo.save_file('new_file.txt', 'Hello World!!')
+    end
+
+    let(:result) { AwestructWebEditor::Repository.new({ 'name' => 'awestruct.org', 'relative_path' => 'awestruct.org',
+                                                        'base_repo_dir' => 'tmp/repos' }).commit('New File added') }
+
+    specify 'returns a commit object' do
+      expect(result).to be_a(Git::Object::Commit)
+      expect(result.message).to match(/New File added/)
+    end
   end
 
 end

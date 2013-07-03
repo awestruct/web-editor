@@ -39,6 +39,6 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     git = Git.open 'tmp/repos/awestruct.org'
-    git.reset_hard 'HEAD'
+    git.reset_hard 'origin/master'
   end
 end

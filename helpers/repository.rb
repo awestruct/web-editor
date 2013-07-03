@@ -18,6 +18,11 @@ module AwestructWebEditor
       @uri = content['uri'] || content[:uri] || ''
       @relative_path = content['relative_path'] || content[:relative_path] || nil
       @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
+      @git_repo = Git.open File.join @base_repo_dir, @name
+    end
+
+    def self.clone
+      raise 'Not implemented yet'
     end
 
     def all_files(ignores = [])
@@ -48,15 +53,19 @@ module AwestructWebEditor
       File.open(File.join(base_repository_path, Shellwords.escape(name)), 'w') do |f|
         f.write content
       end
+      @git_repo.add name
     end
 
     def remove_file(name)
+      result = @git_repo.remove name
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
-      File.delete(path_to_file)
+      File.delete(path_to_file) if File.exists? path_to_file
+      !File.exists? path_to_file
     end
 
-    def commit(subject, body)
-
+    def commit(message)
+      @git_repo.commit_all(message)
+      @git_repo.log(1).first # Give us back a commit object so we can actually query it
     end
 
     def file_content(file, binary = false)
@@ -70,6 +79,10 @@ module AwestructWebEditor
     def file_info(path)
       {:location => File.basename(path), :directory => File.directory?(path),
        :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s}
+    end
+
+    def log(count = 30)
+      @git_repo.log count
     end
 
   end
