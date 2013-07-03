@@ -1,4 +1,4 @@
-<ng-include src="'partials/header.html'"></ng-include>
+ng-include[src="'partials/header.html'"]
 .panels[ng-init="init()"]
   
   .panel.columns.filespane
@@ -26,5 +26,6 @@
       div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   
   .panel.columns.preview.flexWrapper
-    .panel1 Panel 1
+    .panel1 Panel 1.1
     .panel2.flexItem Panel 2
+.overlay[ng-include="'partials/overlay.html'"]
