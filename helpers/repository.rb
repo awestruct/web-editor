@@ -76,9 +76,9 @@ module AwestructWebEditor
 
     def file_content(file, binary = false)
       if binary
-        File.open(File.join(base_repository_path, Shellwords.escape(file)), 'rb').read
+        File.open(File.join(base_repository_path, file), 'rb').read
       else
-        File.open(File.join(base_repository_path, Shellwords.escape(file)), 'r').read
+        File.open(File.join(base_repository_path, file), 'r').read
       end
     end
 
