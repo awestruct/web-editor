@@ -1,5 +1,5 @@
 li[ng-repeat="(name,child) in child.children"]
-  a[class="{{(child.path === currentchild) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
+  a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
     | {{name}}
   a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
     i.icon-folder-close[ng-hide="child.open"]

@@ -11,6 +11,9 @@
           h3 
             | {{currentFile | filename}}
         .columns.large-4.controls
+          a.button.small[ng-click="save(currentFile)"]
+            i.icon-spinner.icon-spin[ng-show="data.saving"]
+            | Save
           a.button.small.secondary href="#"
             i.icon-play
             |  Live Preview
