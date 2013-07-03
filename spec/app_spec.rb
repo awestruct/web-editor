@@ -31,7 +31,9 @@ describe 'AwestructWebEditor::App' do
       # FIXME: eventually we need to check .awestruct_ignore and not do a rendered link for things awestruct ignores
       expect(json_response['Gemfile']['links']).to have_exactly(5).items
       expect(json_response['Gemfile']['links'][0]).to include 'text', 'url', 'method'
+      expect(json_response['Gemfile']['path']).to eql('./Gemfile')
       expect(json_response['extensions']['children']['atomizer']['children']['description.md']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/extensions/atomizer/description.md')
+      expect(json_response['extensions']['children']['atomizer']['children']['description.md']['path']).to eq('extensions/atomizer/description.md')
     end
 
     context 'when retrieving file content' do
@@ -88,7 +90,7 @@ describe 'AwestructWebEditor::App' do
           dest.close
           source.close
           example.run
-          FileUtils.rm "tmp/repos/awestruct.org/images/#{Shellwords.escape filename}" if File.exists?("tmp/repos/awestruct.org/images/#{Shellwords.escape filename}")
+          FileUtils.rm "tmp/repos/awestruct.org/images/#{filename}" if File.exists?("tmp/repos/awestruct.org/images/#{filename}")
         end
 
         specify do

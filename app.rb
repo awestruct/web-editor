@@ -82,13 +82,15 @@ module AwestructWebEditor
         end
 
         if f[:path_to_root] =~ /\./
-          return_links[f[:location]] = { :links => links, :directory => f[:directory], :children => {} }
+          return_links[f[:location]] = { :links => links, :directory => f[:directory], :children => {},
+                                         :path => File.join(f[:path_to_root], f[:location]) }
         else
           directory_paths = f[:path_to_root].split(File::SEPARATOR)
           final_location = return_links[directory_paths[0]]
           directory_paths.delete(directory_paths[0])
           directory_paths.each { |path| final_location = final_location[:children][path] } unless directory_paths.nil?
-          final_location[:children][f[:location]] = { :links => links, :directory => f[:directory], :children => {} }
+          final_location[:children][f[:location]] = { :links => links, :directory => f[:directory], :children => {},
+                                                      :path => File.join(f[:path_to_root], f[:location]) }
         end
       end
       [200, JSON.dump(return_links)]
