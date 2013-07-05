@@ -4,6 +4,7 @@ require 'json'
 require 'slim'
 require 'sprockets'
 require 'sinatra/sprockets-helpers'
+require 'rack'
 require_relative 'helpers/repository'
 require_relative 'helpers/link'
 
@@ -120,6 +121,47 @@ module AwestructWebEditor
     # TODO get '/repo/:repo_name/preview' # comment about rethinking this one
     # TODO get '/repo/:repo_name/*/preview'
 
+    get '/preview/:repo_name/*.*' do |repo_name, path, ext|
+      doc_root = File.join('repos', repo_name, '_site')
+      rendered_ext = ext
+      unless ext =~ /^(js|css|png|jp(e)?g|gif|svg|html)$/ # I suppose there could be others, but we'll start with this
+        rendered_ext = 'html'
+      end
+      rendered_path = "#{path}.#{rendered_ext}"
+      fs_path = File.join(doc_root, rendered_path)
+
+      if File.directory?(fs_path)
+        if !(rendered_path =~ %r(/$))
+          [301,
+           { 'location' => File.join(rendered_path, '') },
+           ["Redirecting to: #{rendered_path}"]]
+        elsif File.file?(File.join(fs_path, 'index.html'))
+          fs_path = File.join(fs_path, 'index.html')
+        end
+      end
+
+      # There must be a Content-Type, except when the Status is 1xx,
+      # 204 or 304, in which case there must be none given.
+      #
+      # The Body must respond to each and must only yield String
+      # values. The Body itself should not be an instance of String,
+      # as this will break in Ruby 1.9.
+      if File.file?(fs_path)
+        body = read_content(fs_path)
+        content_type = Rack::Mime.mime_type(File.extname(fs_path))
+        length = body.size.to_s
+        [200,
+         { "Content-Type" => content_type, "Content-Length" => length },
+         [body]]
+      else
+        body, content_type = read_error_document(rendered_path, doc_root)
+        length = body.size.to_s
+        [404,
+         { "Content-Type" => content_type || 'text/plain', "Content-Length" => length },
+         [body]]
+      end
+    end
+
     # Git related APIs
     # TODO post /repo/:reponame/commit # params[:message]
     # TODO post /repo/:reponame/push
@@ -141,6 +183,32 @@ module AwestructWebEditor
         request.body.rewind # in case someone already read it
         repo.save_file path, params[:content]
         [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+      end
+
+      def read_error_document(path, doc_root)
+        doc_path = nil
+        htaccess = File.join(doc_root, '.htaccess')
+        if File.file?(htaccess)
+          File.open(htaccess).each_line do |line|
+            if line =~ %r(^.*ErrorDocument[ \t]+404[ \t]+(.+)$)
+              doc_path = $1
+            end
+          end
+        end
+        if doc_path
+          fs_doc_path = File.join(doc_root, doc_path)
+          return [read_content(fs_doc_path), ::Rack::Mime.mime_type(File.extname(fs_doc_path))] if File.file?(fs_doc_path)
+        end
+        "404: Not Found: #{path}"
+      end
+
+
+      def read_content(path)
+        input_stream = IO.open(IO.sysopen(path, "rb"), "rb")
+        result = input_stream.read
+        return result
+      ensure
+        input_stream.close
       end
     end
   end
