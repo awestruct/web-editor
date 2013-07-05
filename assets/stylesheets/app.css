@@ -110,12 +110,13 @@ li.directory a.folder {
 /* line 106, ../sass/app.scss */
 .filesList li {
   clear: both;
+  position: relative;
 }
-/* line 108, ../sass/app.scss */
+/* line 109, ../sass/app.scss */
 .filesList li.open > ul {
   display: block;
 }
-/* line 112, ../sass/app.scss */
+/* line 113, ../sass/app.scss */
 .filesList a {
   float: left;
   width: 100%;
@@ -129,14 +130,14 @@ li.directory a.folder {
   -o-transition: padding 0.2s;
   transition: padding 0.2s;
 }
-/* line 121, ../sass/app.scss */
+/* line 122, ../sass/app.scss */
 .filesList a:hover, .filesList a.active {
   cursor: pointer;
   background: #fff;
   border-left: 2px solid #ff6b6b;
   padding-left: 10px;
 }
-/* line 130, ../sass/app.scss */
+/* line 131, ../sass/app.scss */
 .filesList li ul {
   list-style: none;
   width: 100%;
@@ -144,11 +145,11 @@ li.directory a.folder {
   border-left: 5px solid #888;
   float: left;
 }
-/* line 138, ../sass/app.scss */
+/* line 139, ../sass/app.scss */
 .filesList li ul a {
   padding-left: 5%;
 }
-/* line 143, ../sass/app.scss */
+/* line 144, ../sass/app.scss */
 .filesList li.bar {
   background: #ff6b6b;
   color: white;
@@ -156,12 +157,21 @@ li.directory a.folder {
   font-size: 12px;
   font-weight: bold;
 }
+/* line 150, ../sass/app.scss */
+.filesList li.bar span {
+  color: white;
+  top: 4px;
+}
+/* line 153, ../sass/app.scss */
+.filesList li.bar span i {
+  color: white;
+}
 
-/* line 152, ../sass/app.scss */
+/* line 160, ../sass/app.scss */
 .repoActions {
   width: 100%;
 }
-/* line 154, ../sass/app.scss */
+/* line 162, ../sass/app.scss */
 .repoActions .button {
   top: auto;
   background: #fff;
@@ -171,27 +181,38 @@ li.directory a.folder {
   float: left;
   border-bottom: 1px solid #dddddd;
   padding: 10px 0;
+  margin-bottom: 0;
 }
-/* line 164, ../sass/app.scss */
+/* line 173, ../sass/app.scss */
 .repoActions .button i {
   font-size: 20px;
   display: block;
   width: 100%;
   text-align: center;
 }
-/* line 170, ../sass/app.scss */
+/* line 179, ../sass/app.scss */
 .repoActions .button:hover {
   color: #ff6b6b;
   padding: auto;
   border-left: 0;
   padding: 10px 0;
 }
-/* line 176, ../sass/app.scss */
+/* line 185, ../sass/app.scss */
 .repoActions .button:first-child {
   border-right: 1px solid #dddddd;
 }
 
-/* line 182, ../sass/app.scss */
+/* line 191, ../sass/app.scss */
+span.addFolder {
+  font-size: 10px;
+  float: right;
+  cursor: crosshair;
+  position: absolute;
+  top: 7px;
+  right: 5px;
+}
+
+/* line 200, ../sass/app.scss */
 .fileHeader {
   padding: 20px 0px 0 0px;
   background: #fff;
@@ -200,61 +221,61 @@ li.directory a.folder {
   width: 100%;
   border-bottom: 1px solid #dddddd;
 }
-/* line 189, ../sass/app.scss */
+/* line 207, ../sass/app.scss */
 .fileHeader .columns {
   padding: 0;
 }
-/* line 192, ../sass/app.scss */
+/* line 210, ../sass/app.scss */
 .fileHeader .close {
   background: none;
   border: 0;
   color: #5abe8a;
   padding: 0;
 }
-/* line 198, ../sass/app.scss */
+/* line 216, ../sass/app.scss */
 .fileHeader h3 {
   margin: 0;
   padding-left: 10px;
 }
-/* line 202, ../sass/app.scss */
+/* line 220, ../sass/app.scss */
 .fileHeader .controls {
   text-align: right;
   padding-right: 10px;
 }
 
 /* Buttons */
-/* line 211, ../sass/app.scss */
+/* line 229, ../sass/app.scss */
 .button {
   box-shadow: none;
 }
-/* line 213, ../sass/app.scss */
+/* line 231, ../sass/app.scss */
 .button.success {
   background: #5ABE8A;
   border-color: #54B381;
 }
-/* line 216, ../sass/app.scss */
+/* line 234, ../sass/app.scss */
 .button.success:hover {
   background: #54B381;
 }
 
-/* line 222, ../sass/app.scss */
+/* line 240, ../sass/app.scss */
 .editor {
   padding: 0;
   width: 60%;
 }
 
-/* line 227, ../sass/app.scss */
+/* line 245, ../sass/app.scss */
 .preview {
   width: 30%;
 }
 
 /* Toolbar */
-/* line 232, ../sass/app.scss */
+/* line 250, ../sass/app.scss */
 ul.tools {
   border-top: 1px solid #ddd;
   clear: both;
 }
-/* line 236, ../sass/app.scss */
+/* line 254, ../sass/app.scss */
 ul.tools li {
   width: 5.88235%;
   display: inline-block;
@@ -262,15 +283,15 @@ ul.tools li {
   position: relative;
   overflow: hidden;
 }
-/* line 243, ../sass/app.scss */
+/* line 261, ../sass/app.scss */
 ul.tools li:hover {
   top: auto;
 }
-/* line 246, ../sass/app.scss */
+/* line 264, ../sass/app.scss */
 ul.tools li:hover a {
   color: #cf4131;
 }
-/* line 249, ../sass/app.scss */
+/* line 267, ../sass/app.scss */
 ul.tools .button {
   background: #fff;
   border-bottom: 0;
@@ -287,20 +308,20 @@ ul.tools .button {
   width: 100%;
   text-align: center;
 }
-/* line 264, ../sass/app.scss */
+/* line 282, ../sass/app.scss */
 ul.tools .button:hover {
   color: #cf4131;
 }
-/* line 267, ../sass/app.scss */
+/* line 285, ../sass/app.scss */
 ul.tools .button.inlineCode {
   font-size: 11px;
   padding: 12px 10px;
 }
-/* line 272, ../sass/app.scss */
+/* line 290, ../sass/app.scss */
 ul.tools li:first-child a {
   border-left: none;
 }
-/* line 275, ../sass/app.scss */
+/* line 293, ../sass/app.scss */
 ul.tools .filePicker {
   position: absolute;
   top: 0;
@@ -313,15 +334,15 @@ ul.tools .filePicker {
 }
 
 /* Table Grid */
-/* line 289, ../sass/app.scss */
+/* line 307, ../sass/app.scss */
 ul.tools li.tableGrid {
   overflow: visible;
 }
-/* line 291, ../sass/app.scss */
+/* line 309, ../sass/app.scss */
 ul.tools li.tableGrid:hover ul {
   display: block;
 }
-/* line 294, ../sass/app.scss */
+/* line 312, ../sass/app.scss */
 ul.tools li.tableGrid ul {
   position: absolute;
   width: 170px;
@@ -334,7 +355,7 @@ ul.tools li.tableGrid ul {
   border: 1px solid #ddd;
   border-top: 0;
 }
-/* line 305, ../sass/app.scss */
+/* line 323, ../sass/app.scss */
 ul.tools li.tableGrid ul li {
   width: 100%;
   clear: both;
@@ -342,7 +363,7 @@ ul.tools li.tableGrid ul li {
   border-bottom: 1px solid #F7F7F7;
   resize: none;
 }
-/* line 311, ../sass/app.scss */
+/* line 329, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot {
   display: block;
   border-right: 1px solid #F7F7F7;
@@ -354,22 +375,22 @@ ul.tools li.tableGrid ul li span.dot {
   line-height: 20px;
   text-align: center;
 }
-/* line 321, ../sass/app.scss */
+/* line 339, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot:hover {
   color: #ff6b6b;
 }
-/* line 324, ../sass/app.scss */
+/* line 342, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot.hover {
   background: #5abe8a;
 }
-/* line 330, ../sass/app.scss */
+/* line 348, ../sass/app.scss */
 ul.tools li.tableGrid li.label {
   background: #fff;
   color: #525252;
 }
 
 /* Drag and Drop */
-/* line 337, ../sass/app.scss */
+/* line 355, ../sass/app.scss */
 div[dropzone] {
   border: 10px dashed #fff;
   text-align: center;
@@ -385,17 +406,17 @@ div[dropzone] {
   display: none;
   opacity: 0.7;
 }
-/* line 351, ../sass/app.scss */
+/* line 369, ../sass/app.scss */
 div[dropzone].hover {
   border-color: red;
 }
-/* line 354, ../sass/app.scss */
+/* line 372, ../sass/app.scss */
 div[dropzone] h1 {
   color: white;
   padding-top: 48%;
 }
 
-/* line 360, ../sass/app.scss */
+/* line 378, ../sass/app.scss */
 .hovering [dropzone] {
   display: block;
 }
@@ -403,7 +424,7 @@ div[dropzone] h1 {
 /*
   Messages
 */
-/* line 368, ../sass/app.scss */
+/* line 386, ../sass/app.scss */
 .alert-box {
   margin: 0;
   border-left: 0;
@@ -411,7 +432,7 @@ div[dropzone] h1 {
   font-weight: normal;
   clear: both;
 }
-/* line 374, ../sass/app.scss */
+/* line 392, ../sass/app.scss */
 .alert-box strong {
   padding: 2px 5px;
   background: rgba(0, 0, 0, 0.2);
@@ -424,7 +445,7 @@ div[dropzone] h1 {
   and covers the old flexbox spec.
   FYI: http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=column&flex-wrap=nowrap&justify-content=flex-start&align-items=flex-start&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=1&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto 
 */
-/* line 389, ../sass/app.scss */
+/* line 407, ../sass/app.scss */
 .flexWrapper {
   display: -webkit-box;
   display: -moz-box;
@@ -457,7 +478,7 @@ div[dropzone] h1 {
   height: 100%;
 }
 
-/* line 421, ../sass/app.scss */
+/* line 439, ../sass/app.scss */
 .flexItem, .ace_editor_wrapper {
   -webkit-box-ordinal-group: 1;
   -moz-box-ordinal-group: 1;
@@ -475,7 +496,31 @@ div[dropzone] h1 {
 }
 
 /* Prevew Pane */
-/* line 438, ../sass/app.scss */
+/* line 456, ../sass/app.scss */
 .panel.preview {
   padding: 0;
+}
+
+/* Overlay */
+/* line 462, ../sass/app.scss */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(84, 179, 129, 0.6);
+  z-index: 99;
+  height: 100%;
+  margin-top: 45px;
+  display: none;
+}
+/* line 473, ../sass/app.scss */
+.overlay .overlayInner {
+  width: 600px;
+  background: white;
+  padding: 20px;
+  margin: 0 auto;
+  top: 30%;
+  position: relative;
 }

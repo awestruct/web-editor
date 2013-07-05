@@ -1,22 +1,4 @@
 ul.filesList
-  li.bar 
-    i.icon-code-fork
-    |  Git Repo
-
-  li[ng-repeat="(name,child) in files" ng-class="{ true: 'directory'}[child.directory]"]
-    a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
-      | {{name}}
-    a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
-      i.icon-folder-close[ng-hide="child.open"]
-      i.icon-folder-open[ng-show="child.open"]
-      | {{name}}
-    ul[ng-include="'partials/filetree.html'" ng-show="child.open"]
-  li
-    a
-      i.icon-file-alt
-      | &plus; Add New File
-  li.bar
-    | &plus;/- Changeset
   li.repoActions.right
     a.button
       i.icon-save
@@ -25,5 +7,22 @@ ul.filesList
       i.icon-cloud-upload
       |   Push
 
+  li.bar
+    | Git Repo
+    span.addFolder[ng-click="addFile({path : '/' })"]
+      i.icon-file
+      | &plus;
 
 
+  li[ng-repeat="(name,child) in files" ng-class="{ true: 'directory'}[child.directory]"]
+    a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
+      | {{name}}
+    a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
+      i.icon-folder-close[ng-hide="child.open"]
+      i.icon-folder-open[ng-show="child.open"]
+      | {{name}}
+    span.addFolder[ng-click="addFile(child)" ng-show="{{child.directory}}"]
+      i.icon-file-alt
+      | &plus;
+
+    ul[ng-include="'partials/filetree.html'" ng-show="child.open"]

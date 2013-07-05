@@ -1,0 +1,8 @@
+form(action='/repo/awestruct.org/images/test.png' method='post' enctype='multipart/form-data')
+<<<<<<< HEAD
+  input(type='file')
+=======
+  input(type='file' name='content' id='content')
+  input(type='hidden' name='binary' id='binary' value='true' )
+>>>>>>> ce8561aacc57a90b8d6c1c4b4ef779e898a7488b
+  input(type='submit')
