@@ -33,7 +33,7 @@ describe 'AwestructWebEditor::App' do
       expect(json_response['Gemfile']['links'][0]).to include 'text', 'url', 'method'
       expect(json_response['Gemfile']['path']).to eql('./Gemfile')
       expect(json_response['extensions']['children']['atomizer']['children']['description.md']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/extensions/atomizer/description.md')
-      expect(json_response['extensions']['children']['atomizer']['children']['description.md']['path']).to eq('http://example.org/repo/awestruct.org/extensions/atomizer/description.md')
+      expect(json_response['extensions']['children']['atomizer']['children']['description.md']['path']).to eq('extensions/atomizer/description.md')
     end
 
     context 'when retrieving file content' do
