@@ -1,6 +1,7 @@
 require 'find'
 require 'pathname'
 require 'shellwords'
+require 'bundler'
 require 'git'
 require 'octokit'
 
@@ -20,10 +21,13 @@ module AwestructWebEditor
 
     def self.clone
       raise 'Not implemented yet'
+      Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
+        exit_status = wait_thr.value.exitstatus
+      end
     end
 
     def all_files(ignores = [])
-      default_ignores = %w(.gitignore .git _site .awestruct .awestruct_ignore _config _ext .git .travis.yml)
+      default_ignores = [%r!(.gitignore$)|(.git$)|(_site$)|(.awestruct$)|(.awestruct_ignore$)|(_config$)|(_ext$)|(.git$)|(.travis.yml$)|(_tmp$)|(.sass-cache$)!]
       default_ignores << ignores.join unless ignores.empty?
       regexp_ignores = Regexp.union default_ignores
       files = []
@@ -47,7 +51,7 @@ module AwestructWebEditor
 
 
     def save_file(name, content)
-      if (content.is_a? Hash)
+      if content.is_a? Hash
         IO.copy_stream(content[:tempfile], File.join(base_repository_path, name))
         content[:tempfile].unlink
         content[:tempfile].close
@@ -57,10 +61,11 @@ module AwestructWebEditor
         end
       end
       @git_repo.add(Shellwords.escape name)
+      render_site unless ENV['RACK_ENV'] =~ /test/
     end
 
     def remove_file(name)
-      result = @git_repo.remove(Shellwords.escape name)
+      result = @git_repo.remove(Shellwords.escape name) # TODO: need to find a way to test / retrieve failure
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
       !File.exists? path_to_file
@@ -80,12 +85,20 @@ module AwestructWebEditor
     end
 
     def file_info(path)
-      {:location => File.basename(path), :directory => File.directory?(path),
-       :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s}
+      { :location => File.basename(path), :directory => File.directory?(path),
+        :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s }
     end
 
     def log(count = 30)
       @git_repo.log count
+    end
+
+    def render_site
+      cmd_string = "(bundle check || bundle install) && bundle exec awestruct --force -g -Pdevelopement -u 'http://localhost:9292/preview/\#{@name}'"
+      status = Bundler.with_clean_env do
+        Kernel.system(cmd_string, :chdir => "#{File.absolute_path base_repository_path}")
+      end
+      puts $stderr unless status == 0
     end
 
   end

@@ -46,7 +46,6 @@ module AwestructWebEditor
     end
 
     get '/partials/*.*' do |basename, ext|
-      logger.info "Rendering partial #{basename}"
       slim "partials/#{basename}".to_sym
     end
 
@@ -67,8 +66,6 @@ module AwestructWebEditor
       end
       [200, JSON.dump(return_structure)]
     end
-
-    # TODO put /repo/setup # params up for discussion
 
     # File related APIs
 
@@ -118,53 +115,20 @@ module AwestructWebEditor
     end
 
     # Preview APIs
-    # TODO get '/repo/:repo_name/preview' # comment about rethinking this one
-    # TODO get '/repo/:repo_name/*/preview'
+
+    get '/preview/:repo_name' do |repo_name|
+      retrieve_rendered_file(repo_name, 'index', 'html')
+    end
 
     get '/preview/:repo_name/*.*' do |repo_name, path, ext|
-      doc_root = File.join('repos', repo_name, '_site')
-      rendered_ext = ext
-      unless ext =~ /^(js|css|png|jp(e)?g|gif|svg|html)$/ # I suppose there could be others, but we'll start with this
-        rendered_ext = 'html'
-      end
-      rendered_path = "#{path}.#{rendered_ext}"
-      fs_path = File.join(doc_root, rendered_path)
-
-      if File.directory?(fs_path)
-        if !(rendered_path =~ %r(/$))
-          [301,
-           { 'location' => File.join(rendered_path, '') },
-           ["Redirecting to: #{rendered_path}"]]
-        elsif File.file?(File.join(fs_path, 'index.html'))
-          fs_path = File.join(fs_path, 'index.html')
-        end
-      end
-
-      # There must be a Content-Type, except when the Status is 1xx,
-      # 204 or 304, in which case there must be none given.
-      #
-      # The Body must respond to each and must only yield String
-      # values. The Body itself should not be an instance of String,
-      # as this will break in Ruby 1.9.
-      if File.file?(fs_path)
-        body = read_content(fs_path)
-        content_type = Rack::Mime.mime_type(File.extname(fs_path))
-        length = body.size.to_s
-        [200,
-         { "Content-Type" => content_type, "Content-Length" => length },
-         [body]]
-      else
-        body, content_type = read_error_document(rendered_path, doc_root)
-        length = body.size.to_s
-        [404,
-         { "Content-Type" => content_type || 'text/plain', "Content-Length" => length },
-         [body]]
-      end
+      retrieve_rendered_file(repo_name, path, ext)
     end
 
     # Git related APIs
-    # TODO post /repo/:reponame/commit # params[:message]
-    # TODO post /repo/:reponame/push
+    # TODO post '/init'
+    # TODO post '/repo/:repo_name/change_set' # should do a git fetch upstream && git checkout -b <name> upstream/master
+    # TODO post '/repo/:repo_name/commit' # params[:message]
+    # TODO post '/repo/:repo_name/push'
 
     helpers do
       Sinatra::JSON
@@ -182,7 +146,65 @@ module AwestructWebEditor
         repo = AwestructWebEditor::Repository.new({ :name => repo_name })
         request.body.rewind # in case someone already read it
         repo.save_file path, params[:content]
-        [200, JSON.dump({ :links => links_for_file(repo.file_info(path), repo_name) })]
+
+        filename_array = File.basename(path).split('.')
+        retrieve_filename = File.join(File.dirname(path), "#{filename_array.first}")
+        # between this and what's in retrieve_rendered_file we should be covered
+        retrieve_rendered_file(repo_name, retrieve_filename, filename_array.last)  unless ENV['RACK_ENV'] =~ /test/
+      end
+
+      def retrieve_rendered_file(repo_name, path, ext = nil)
+        # TODO a much easier way of doing all of these hacks for the file name would be to allow us to startup
+        #      awestruct in-process and run through the pipeline, then stop and get the output file name from there.
+        #      but there's a lot that needs to happen before we can do that.
+        doc_root = File.join('repos', repo_name, '_site')
+        final_path = path
+
+        # split for posts
+        if %r!^\d{4}\-\d{2}\-\d{2}! =~ path
+          final_path = path[0..9].split('-').join('/')
+          final_path << '/' << path[11..-1].split('.').first
+          final_path << '/index'
+        end
+
+        rendered_ext = ext || File.extname(path)
+        unless rendered_ext =~ /^(js|css|png|jp(e)?g|gif|svg|html)$/ # I suppose there could be others, but we'll start with this
+          rendered_ext = 'html'
+        end
+        rendered_path = "#{final_path}.#{rendered_ext}"
+
+        unless /index/ =~ path
+          rendered_path.gsub! ".#{rendered_ext}", ''
+        end
+
+        fs_path = File.join(doc_root, rendered_path)
+
+        if File.directory?(fs_path)
+          if File.file?(File.join(fs_path, 'index.html'))
+            fs_path = File.join(fs_path, 'index.html')
+          end
+        end
+
+        # There must be a Content-Type, except when the Status is 1xx,
+        # 204 or 304, in which case there must be none given.
+        #
+        # The Body must respond to each and must only yield String
+        # values. The Body itself should not be an instance of String,
+        # as this will break in Ruby 1.9.
+        if File.file?(fs_path)
+          body = read_content(fs_path)
+          content_type = Rack::Mime.mime_type(File.extname(fs_path))
+          length = body.size.to_s
+          [200,
+           { "Content-Type" => content_type, "Content-Length" => length },
+           [body]]
+        else
+          body, content_type = read_error_document(rendered_path, doc_root)
+          length = body.size.to_s
+          [404,
+           { "Content-Type" => content_type || 'text/plain', "Content-Length" => length },
+           [body]]
+        end
       end
 
       def read_error_document(path, doc_root)
