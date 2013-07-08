@@ -1,7 +1,16 @@
-function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
+function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
     
     window.Repo = Repo;
     window.scope = $scope;
+
+    window.onbeforeunload = function(e){
+      var currPath = $scope.currentFile.links[0].url,
+          currSession = $scope.openEditors[currPath];
+      if (currSession.dirty) {
+        return "You have unsaved changes, are you sure you want to leave?";
+      }
+    };
+
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
@@ -46,6 +55,16 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
           path = file.links[0].url,
           session;
       
+      // Make sure we aren't abandoning the current changes
+      if($scope.currentFile) {
+        var currPath = $scope.currentFile.links[0].url,
+            currSession = $scope.openEditors[currPath];
+        if (currSession.dirty) {
+          $scope.addMessage("Oops, You must save the current file to continue", "alert");
+          return;
+        }
+      }
+
       // check if new session needs to be created
       if(!!$scope.openEditors[path]) {
         session = $scope.openEditors[path];
@@ -88,7 +107,9 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
           path = currentFile.links[0].url;
           $scope.data.saving = true;
           repo.saveFile(path, content).then(function(response){
+            console.log(response);
             $scope.data.saving = false;
+            session.dirty = false;
           });
     };
 
