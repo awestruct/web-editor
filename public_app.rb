@@ -4,6 +4,8 @@ require 'json'
 require 'slim'
 require 'sprockets'
 require 'sinatra/sprockets-helpers'
+require 'bundler'
+require 'open3'
 
 require_relative 'helpers/repository'
 
@@ -145,14 +147,17 @@ module AwestructWebEditor
         request.body.rewind # in case someone already read it
         repo.save_file path, params[:content]
 
-        filename_array = File.basename(path).split('.')
-        retrieve_filename = File.join(File.dirname(path), "#{filename_array.first}")
-                            # between this and what's in retrieve_rendered_file we should be covered
-        retrieve_rendered_file(repo_name, retrieve_filename, filename_array.last) unless ENV['RACK_ENV'] =~ /test/
+        retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
       end
 
-      def retrieve_rendered_file(repo_name, path, ext = nil)
+      def retrieve_rendered_file(repo, path)
         # TODO use bundler, do a clean system execute of exec_awestruct.rb, load the json to get the path, return the contents of the loaded the file
+        Bundler.with_clean_env do
+          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
+            mapping = JSON.load stdout
+            File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }
+          end
+        end
       end
     end
   end

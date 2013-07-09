@@ -17,7 +17,7 @@ module AwestructWebEditor
       @relative_path = content['relative_path'] || content[:relative_path] || nil
       @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
       @git_repo = Git.open File.join @base_repo_dir, @name
-      @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) }
+      @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings')
     end
 
     def self.clone
@@ -62,7 +62,6 @@ module AwestructWebEditor
         end
       end
       @git_repo.add(Shellwords.escape name)
-      render_site unless ENV['RACK_ENV'] =~ /test/
     end
 
     def remove_file(name)
@@ -94,13 +93,12 @@ module AwestructWebEditor
       @git_repo.log count
     end
 
-    def render_site
-      cmd_string = "(bundle check || bundle install) && bundle exec awestruct --force -g -Pdevelopement -u 'http://localhost:9292/preview/\#{@name}'"
-      status = Bundler.with_clean_env do
-        Kernel.system(cmd_string, :chdir => "#{File.absolute_path base_repository_path}")
-      end
-      puts $stderr unless status == 0
-    end
+    #def render_site
+    #  cmd_string = "(bundle check || bundle install) && bundle exec awestruct --force -g -Pdevelopement -u 'http://localhost:9292/preview/\#{@name}'"
+    #  status = Bundler.with_clean_env do
+    #    Kernel.system(cmd_string, :chdir => "#{File.absolute_path base_repository_path}")
+    #  end
+    #end
 
   end
 end
