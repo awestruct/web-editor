@@ -9,11 +9,11 @@ set :run, false
 set :raise_errors, true
 
 map '/assets' do
-  run AwestructWebEditor::App.sprockets
+  run AwestructWebEditor::PublicApp.sprockets
 end
 
 map '/font' do
-  run AwestructWebEditor::App.sprockets
+  run AwestructWebEditor::PublicApp.sprockets
 end
 
-run AwestructWebEditor::App
+run AwestructWebEditor::SecureApp

@@ -2,7 +2,7 @@ require 'json'
 
 require_relative 'spec_helper'
 
-describe 'AwestructWebEditor::App' do
+describe 'AwestructWebEditor::PublicApp' do
   specify 'when obtaining a list of repositories' do
     get '/repo'
     expect(last_response).to be_successful
@@ -28,7 +28,7 @@ describe 'AwestructWebEditor::App' do
       json_response = JSON.load last_response.body
       expect(json_response).to have_at_least(24).items
       expect(json_response['news']['children']).to have_at_least(8).items # one may be deleted depending on order of test execution
-      # FIXME: eventually we need to check .awestruct_ignore and not do a rendered link for things awestruct ignores
+                                                                          # FIXME: eventually we need to check .awestruct_ignore and not do a rendered link for things awestruct ignores
       expect(json_response['Gemfile']['links']).to have_exactly(5).items
       expect(json_response['Gemfile']['links'][0]).to include 'text', 'url', 'method'
       expect(json_response['Gemfile']['path']).to eql('./Gemfile')
@@ -94,10 +94,10 @@ describe 'AwestructWebEditor::App' do
         end
 
         specify do
-            put "#{base_method}/images/#{URI.escape filename}",
-                :content => Rack::Test::UploadedFile.new('tmp/sample_image.png', 'image/png', true)
-            expect(last_response).to be_successful
-            expect(repo.file_content(File.join('images', filename), true)).to_not be_nil
+          put "#{base_method}/images/#{URI.escape filename}",
+              :content => Rack::Test::UploadedFile.new('tmp/sample_image.png', 'image/png', true)
+          expect(last_response).to be_successful
+          expect(repo.file_content(File.join('images', filename), true)).to_not be_nil
         end
       end
     end
@@ -111,5 +111,6 @@ describe 'AwestructWebEditor::App' do
                                                  :path_to_root => 'helpers' })
       end
     end
+
   end
 end

@@ -17,6 +17,7 @@ module AwestructWebEditor
       @relative_path = content['relative_path'] || content[:relative_path] || nil
       @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
       @git_repo = Git.open File.join @base_repo_dir, @name
+      @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) }
     end
 
     def self.clone

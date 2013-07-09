@@ -35,10 +35,17 @@ RSpec.configure do |config|
       Git.clone('git@github.com:awestruct/awestruct.org.git', 'awestruct.org',
                 :path => File.join(File.dirname(__FILE__), '..', 'tmp/repos'))
     end
+    unless File.exists? (File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings'))
+      File.open(File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings'), 'w+') do |f|
+        f.write('{"username":"LightGuard", "oauth_token":"b3dab477cdc44e2e1256f9e56beb9f31df19c3f0", "client_id":"672a8a89f1876edad431", "repo":"https://github.com/LightGuard/web-editor"}')
+      end
+    end
   end
 
   config.after(:suite) do
-    git = Git.open 'tmp/repos/awestruct.org'
+    FileUtils.rm File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings') if File.exists?(File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings'))
+
+    git = Git.open File.join(File.dirname(__FILE__), '..', 'tmp/repos/awestruct.org')
     git.reset_hard 'origin/master'
   end
 end
