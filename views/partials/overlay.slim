@@ -1,2 +1,16 @@
 .overlayInner
+  form
+    p Before we can get started, we need a little information.
+
+    label(for="username") Github Username
+    input(name="username" type="text" ng-model="settings.username" required)
+    
+    label(for="password") Github Password
+    input(name="password" type="password" ng-model="settings.password" required)
+
+    label(for="repo") Github Repo URL
+    small eg: https://github.com/awestruct/awestruct.org.git 
+    input(name="repo" type="text" ng-model="settings.repo" required)
+
+    button.button(ng-click="saveSettings(settings)") Submit
   

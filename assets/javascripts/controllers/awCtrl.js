@@ -132,8 +132,11 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
       }
     };
 
-    $scope.path = function(child) {
-      console.log(child);
+    $scope.saveSettings = function(settings) {
+      console.log(settings);
+      $http.post('/settings',settings).then(function(response){
+        console.log(response);
+      });
     }
 
     openSession = function(session,file) {
