@@ -1,4 +1,4 @@
-function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
+function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
     window.Repo = Repo;
     window.scope = $scope;
@@ -16,29 +16,50 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
     $scope.ace = {};
     $scope.openEditors = {};
     $scope.ace.EditSession = require("ace/edit_session").EditSession;
-
     $scope.data.repo = $routeParams.repo;
     $scope.data.repoUrl= window.location.origin + "/repo/" + $routeParams.repo;
-    
-    // Initialize
+
+    /*
+      Handle Location Changes
+    */
+    $scope.$on('$locationChangeSuccess', function(event) {
+      $scope.handleRouteChange();
+    });
+
+
+    /*
+      Initialize the repo
+      Note: This is only called once per full page load
+    */
     $scope.init = function() {
+      // check and get the settings
+      $http.get('/settings')
+        .success(function(data, status, headers, config){
+          console.log(data, status, headers, config);
+        })
+        .error(function(data, status, headers, config) {
+          // There was an error, lets show the init screen
+          // $scope.data.overlay = true;
+        });
+
       // to retrieve a book
        repo = new Repo();
        repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
+        // trigger a route change to load file if they have come via a permalink
+        $scope.handleRouteChange();
        });
+
     };
 
     $scope.syncFiles = function() {
       repo.get($scope.data.repo).then(function(res) {
-       console.log(res);
        $scope.files = res.data;
       });      
     };
 
     $scope.toggleOpen = function(child){
       child.open = !child.open;
-      console.log(child.open);
     };
 
     $scope.addMessage = function(text, type) {
@@ -51,9 +72,8 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
     };
 
     $scope.edit = function(file) {
-      var file = JSON.parse(file),
-          path = file.links[0].url,
-          session;
+        var path = file.links[0].url,
+        session;
       
       // Make sure we aren't abandoning the current changes
       if($scope.currentFile) {
@@ -125,6 +145,7 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
 
       if(fileName) {
         repo.saveFile(path, "").then(function(response) {
+          console.log(response);
           if(response) {
             $scope.syncFiles();
           }
@@ -134,9 +155,21 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http, $window) {
 
     $scope.saveSettings = function(settings) {
       console.log(settings);
+      // PUT on init, POST on settings update
       $http.post('/settings',settings).then(function(response){
         console.log(response);
       });
+    }
+
+    $scope.handleRouteChange = function() {
+      var file = _.findDeep($scope.files,{path:$routeParams.path});
+      if(!file) {
+        // nothing found, try it as a top level file
+        file = _.findDeep($scope.files,{path:"./"+$routeParams.path});
+      }
+      if(file){
+        $scope.edit(file);
+      }
     }
 
     openSession = function(session,file) {

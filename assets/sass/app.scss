@@ -88,6 +88,14 @@ $lightgrey : #ddd;
   padding: 0;
   overflow: scroll;
 }
+  ul {
+    max-height:0px;
+    -webkit-transition:all 0.2s;
+    &.open {
+      max-height:1000px;
+      -webkit-transition:all 2s;
+    }
+  }
   li.directory {
     a.folder {
       font-weight: 600;
@@ -136,6 +144,7 @@ $lightgrey : #ddd;
       margin-left: 0;
       border-left: 5px solid #888;
       float: left;
+      overflow: hidden;
       a {
         padding-left: 5%;
       }
@@ -472,7 +481,7 @@ div[dropzone] {
   z-index: 99;
   height:100%;
   margin-top: 45px;
-  display: none;
+  // display: none;
   .overlayInner {
     width:600px;
     background:white;
@@ -480,5 +489,13 @@ div[dropzone] {
     margin:0 auto;
     top:30%;
     position: relative;
+  }
+}
+
+button, .button {
+  background:$green;
+  border:1px solid darken($green, 10%);
+  &:hover {
+    background:darken($green, 10%);
   }
 }

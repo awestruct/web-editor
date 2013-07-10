@@ -51,7 +51,7 @@ if required_missing
   exit
 end
 
-Dir.chdir "/home/jporter/projects/ruby/awestruct-web-editor/repos/#{options[:repo]}" do
+Dir.chdir File.absolute_path(File.join(File.dirname(__FILE__), 'repos', "#{options[:repo]}")) do
   #ENV.keys.each do |key|
   #  $stderr.puts "DEBUG:: ENV[#{key}] = #{ENV[key]}"
   #end
