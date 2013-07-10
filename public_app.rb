@@ -154,8 +154,18 @@ module AwestructWebEditor
         # TODO use bundler, do a clean system execute of exec_awestruct.rb, load the json to get the path, return the contents of the loaded the file
         Bundler.with_clean_env do
           Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
-            mapping = JSON.load stdout
-            File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }
+            mapping = nil
+            stdout.each_line do |line|
+              if line.match /^\{.*/
+                mapping = JSON.load line
+              end
+            end
+
+            if !mapping.nil? && mapping.include?('/' + path)
+              [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
+            else
+              [500, JSON.dump("Error: #{path} not rendered")]
+            end
           end
         end
       end
