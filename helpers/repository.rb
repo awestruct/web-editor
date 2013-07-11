@@ -15,7 +15,17 @@ module AwestructWebEditor
       @name = content['name'] || content[:name] || ''
       @uri = content['uri'] || content[:uri] || ''
       @relative_path = content['relative_path'] || content[:relative_path] || nil
-      @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir] || ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
+
+      if ENV['OPENSHIFT_DATA_DIR']
+        @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
+      elsif ENV['RACK_ENV'] =~ /test/
+        @base_repo_dir = 'tmp/repos'
+      elsif content['base_repo_dir'] || content[:base_repo_dir]
+        @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir]
+      else
+        @base_repo_dir = 'repos'
+      end
+
       @git_repo = Git.open File.join @base_repo_dir, @name
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings')
     end

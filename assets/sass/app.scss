@@ -84,7 +84,7 @@ $lightgrey : #ddd;
 
 .filespane {
   border:0;
-  width:10%;
+  width:20%;
   padding: 0;
   overflow: scroll;
 }
@@ -200,10 +200,13 @@ $lightgrey : #ddd;
 span.addFolder {
   font-size: 10px;
   float: right;
-  cursor: crosshair;
   position: absolute;
   top: 7px;
   right: 5px;
+  cursor:pointer;
+  &:hover {
+    color:red;
+  }
 }
 
 .fileHeader {
@@ -251,11 +254,12 @@ span.addFolder {
 
 .editor {
   padding:0;
-  width:60%;
+  width:80%;
 }
 
 .preview {
-  width:30%;
+  // width:30%;
+  
 }
 
 /* Toolbar */

@@ -51,7 +51,9 @@ if required_missing
   exit
 end
 
-Dir.chdir File.absolute_path(File.join(File.dirname(__FILE__), 'repos', "#{options[:repo]}")) do
+base_repo_dir = (ENV['OPENSHIFT_DATA_DIR']) ?  File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos') : 'repos'
+
+Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   #ENV.keys.each do |key|
   #  $stderr.puts "DEBUG:: ENV[#{key}] = #{ENV[key]}"
   #end

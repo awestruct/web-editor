@@ -126,10 +126,12 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
           content = $scope.editor.getValue(),
           path = currentFile.links[0].url;
           $scope.data.saving = true;
-          repo.saveFile(path, content).then(function(response){
-            console.log(response);
+          repo.saveFile(path, content).then(function(response){            
             $scope.data.saving = false;
             session.dirty = false;
+            if($scope.previewWindow) {
+              $scope.previewWindow.document.write(response.data);
+            }
           });
     };
 
@@ -169,6 +171,12 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       }
       if(file){
         $scope.edit(file);
+      }
+    }
+
+    $scope.preview = function() {
+      if(!$scope.previewWindow) {
+        $scope.previewWindow = window.open('/#/preview');
       }
     }
 
