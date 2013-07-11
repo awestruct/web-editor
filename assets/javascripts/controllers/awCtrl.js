@@ -150,14 +150,10 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       var fileName = prompt("Please enter the file name, including the extension"),
           path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName;
 
-          console.log(child.path);
-
       if(fileName) {
-        repo.saveFile(path, "").then(function(response) {
+        repo.saveFile(path, "").always(function(response) {
           console.log(response);
-          if(response) {
             $scope.syncFiles();
-          }
         });
       }
     };
