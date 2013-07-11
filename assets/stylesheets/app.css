@@ -225,10 +225,14 @@ span.addFolder {
 }
 /* line 207, ../sass/app.scss */
 span.addFolder:hover {
-  color: red;
+  color: #5abe8a;
+}
+/* line 209, ../sass/app.scss */
+span.addFolder:hover i {
+  color: #5abe8a !important;
 }
 
-/* line 212, ../sass/app.scss */
+/* line 215, ../sass/app.scss */
 .fileHeader {
   padding: 20px 0px 0 0px;
   background: #fff;
@@ -237,11 +241,11 @@ span.addFolder:hover {
   width: 100%;
   border-bottom: 1px solid #dddddd;
 }
-/* line 219, ../sass/app.scss */
+/* line 222, ../sass/app.scss */
 .fileHeader .columns {
   padding: 0;
 }
-/* line 222, ../sass/app.scss */
+/* line 225, ../sass/app.scss */
 .fileHeader .close {
   background: none;
   border: 0;
@@ -250,45 +254,45 @@ span.addFolder:hover {
   top: 15px;
   right: 10px;
 }
-/* line 231, ../sass/app.scss */
+/* line 234, ../sass/app.scss */
 .fileHeader h3 {
   margin: 0;
   padding-left: 10px;
 }
-/* line 235, ../sass/app.scss */
+/* line 238, ../sass/app.scss */
 .fileHeader .controls {
   text-align: right;
   padding-right: 10px;
 }
 
 /* Buttons */
-/* line 244, ../sass/app.scss */
+/* line 247, ../sass/app.scss */
 .button {
   box-shadow: none;
 }
-/* line 246, ../sass/app.scss */
+/* line 249, ../sass/app.scss */
 .button.success {
   background: #5ABE8A;
   border-color: #54B381;
 }
-/* line 249, ../sass/app.scss */
+/* line 252, ../sass/app.scss */
 .button.success:hover {
   background: #54B381;
 }
 
-/* line 255, ../sass/app.scss */
+/* line 258, ../sass/app.scss */
 .editor {
   padding: 0;
   width: 80%;
 }
 
 /* Toolbar */
-/* line 266, ../sass/app.scss */
+/* line 269, ../sass/app.scss */
 ul.tools {
   border-top: 1px solid #ddd;
   clear: both;
 }
-/* line 270, ../sass/app.scss */
+/* line 273, ../sass/app.scss */
 ul.tools li {
   width: 5.88235%;
   display: inline-block;
@@ -296,15 +300,15 @@ ul.tools li {
   position: relative;
   overflow: hidden;
 }
-/* line 277, ../sass/app.scss */
+/* line 280, ../sass/app.scss */
 ul.tools li:hover {
   top: auto;
 }
-/* line 280, ../sass/app.scss */
+/* line 283, ../sass/app.scss */
 ul.tools li:hover a {
   color: #cf4131;
 }
-/* line 283, ../sass/app.scss */
+/* line 286, ../sass/app.scss */
 ul.tools .button {
   background: #fff;
   border-bottom: 0;
@@ -321,20 +325,20 @@ ul.tools .button {
   width: 100%;
   text-align: center;
 }
-/* line 298, ../sass/app.scss */
+/* line 301, ../sass/app.scss */
 ul.tools .button:hover {
   color: #cf4131;
 }
-/* line 301, ../sass/app.scss */
+/* line 304, ../sass/app.scss */
 ul.tools .button.inlineCode {
   font-size: 11px;
   padding: 12px 10px;
 }
-/* line 306, ../sass/app.scss */
+/* line 309, ../sass/app.scss */
 ul.tools li:first-child a {
   border-left: none;
 }
-/* line 309, ../sass/app.scss */
+/* line 312, ../sass/app.scss */
 ul.tools .filePicker {
   position: absolute;
   top: 0;
@@ -347,15 +351,15 @@ ul.tools .filePicker {
 }
 
 /* Table Grid */
-/* line 323, ../sass/app.scss */
+/* line 326, ../sass/app.scss */
 ul.tools li.tableGrid {
   overflow: visible;
 }
-/* line 325, ../sass/app.scss */
+/* line 328, ../sass/app.scss */
 ul.tools li.tableGrid:hover ul {
   display: block;
 }
-/* line 328, ../sass/app.scss */
+/* line 331, ../sass/app.scss */
 ul.tools li.tableGrid ul {
   position: absolute;
   width: 170px;
@@ -368,7 +372,7 @@ ul.tools li.tableGrid ul {
   border: 1px solid #ddd;
   border-top: 0;
 }
-/* line 339, ../sass/app.scss */
+/* line 342, ../sass/app.scss */
 ul.tools li.tableGrid ul li {
   width: 100%;
   clear: both;
@@ -376,7 +380,7 @@ ul.tools li.tableGrid ul li {
   border-bottom: 1px solid #F7F7F7;
   resize: none;
 }
-/* line 345, ../sass/app.scss */
+/* line 348, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot {
   display: block;
   border-right: 1px solid #F7F7F7;
@@ -388,22 +392,22 @@ ul.tools li.tableGrid ul li span.dot {
   line-height: 20px;
   text-align: center;
 }
-/* line 355, ../sass/app.scss */
+/* line 358, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot:hover {
   color: #ff6b6b;
 }
-/* line 358, ../sass/app.scss */
+/* line 361, ../sass/app.scss */
 ul.tools li.tableGrid ul li span.dot.hover {
   background: #5abe8a;
 }
-/* line 364, ../sass/app.scss */
+/* line 367, ../sass/app.scss */
 ul.tools li.tableGrid li.label {
   background: #fff;
   color: #525252;
 }
 
 /* Drag and Drop */
-/* line 371, ../sass/app.scss */
+/* line 374, ../sass/app.scss */
 div[dropzone] {
   border: 10px dashed #fff;
   text-align: center;
@@ -419,17 +423,17 @@ div[dropzone] {
   display: none;
   opacity: 0.7;
 }
-/* line 385, ../sass/app.scss */
+/* line 388, ../sass/app.scss */
 div[dropzone].hover {
   border-color: red;
 }
-/* line 388, ../sass/app.scss */
+/* line 391, ../sass/app.scss */
 div[dropzone] h1 {
   color: white;
   padding-top: 48%;
 }
 
-/* line 394, ../sass/app.scss */
+/* line 397, ../sass/app.scss */
 .hovering [dropzone] {
   display: block;
 }
@@ -437,7 +441,7 @@ div[dropzone] h1 {
 /*
   Messages
 */
-/* line 402, ../sass/app.scss */
+/* line 405, ../sass/app.scss */
 .alert-box {
   margin: 0;
   border-left: 0;
@@ -445,7 +449,7 @@ div[dropzone] h1 {
   font-weight: normal;
   clear: both;
 }
-/* line 408, ../sass/app.scss */
+/* line 411, ../sass/app.scss */
 .alert-box strong {
   padding: 2px 5px;
   background: rgba(0, 0, 0, 0.2);
@@ -458,7 +462,7 @@ div[dropzone] h1 {
   and covers the old flexbox spec.
   FYI: http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=column&flex-wrap=nowrap&justify-content=flex-start&align-items=flex-start&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=1&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto 
 */
-/* line 423, ../sass/app.scss */
+/* line 426, ../sass/app.scss */
 .flexWrapper {
   display: -webkit-box;
   display: -moz-box;
@@ -491,7 +495,7 @@ div[dropzone] h1 {
   height: 100%;
 }
 
-/* line 455, ../sass/app.scss */
+/* line 458, ../sass/app.scss */
 .flexItem, .ace_editor_wrapper {
   -webkit-box-ordinal-group: 1;
   -moz-box-ordinal-group: 1;
@@ -509,13 +513,13 @@ div[dropzone] h1 {
 }
 
 /* Prevew Pane */
-/* line 472, ../sass/app.scss */
+/* line 475, ../sass/app.scss */
 .panel.preview {
   padding: 0;
 }
 
 /* Overlay */
-/* line 478, ../sass/app.scss */
+/* line 481, ../sass/app.scss */
 .overlay {
   position: absolute;
   top: 0;
@@ -527,7 +531,7 @@ div[dropzone] h1 {
   height: 100%;
   margin-top: 45px;
 }
-/* line 489, ../sass/app.scss */
+/* line 492, ../sass/app.scss */
 .overlay .overlayInner {
   width: 600px;
   background: white;
@@ -537,12 +541,12 @@ div[dropzone] h1 {
   position: relative;
 }
 
-/* line 499, ../sass/app.scss */
+/* line 502, ../sass/app.scss */
 button, .button {
   background: #5abe8a;
   border: 1px solid #41a471;
 }
-/* line 502, ../sass/app.scss */
+/* line 505, ../sass/app.scss */
 button:hover, .button:hover {
   background: #41a471;
 }

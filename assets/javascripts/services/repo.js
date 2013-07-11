@@ -23,9 +23,10 @@ aw.factory('Repo', function($http) {
   };
 
   Repo.prototype.saveFile = function(path,content) {
-    return $http.post(path,{content:content}).then(function(response) {
-      return response;
-    });
+    // return $http.post(path,{content:content}).then(function(response) {
+    //   return response;
+    // });
+    return $http.post(path,{content:content});
   };
 
   Repo.prototype.saveImage = function(path,file, callback) {
