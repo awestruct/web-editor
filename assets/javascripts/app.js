@@ -56,18 +56,26 @@ var aw = angular.module('aw',['ui.ace', 'angular-underscore', 'ngResource'],func
 
 
 aw.config(function($routeProvider, $locationProvider){
+  
   $routeProvider
     .when('/',{
       templateUrl: "partials/layout.html",
+      reloadOnSearch : false,
       controller : "AwCtrl"
+    })
+    .when('/preview',{
+      template: "Preview will show here on save",
+      reloadOnSearch : false
     })
     .when('/:repo',{
       templateUrl: "partials/layout.html",
+      reloadOnSearch : false,
       controller : "AwCtrl"      
     })
-    .when('/edit/:fileName',{
+    .when('/:repo/*filepath',{
       templateUrl: "partials/layout.html",
-      controller : "AwCtrl"
+      reloadOnSearch : false,
+      controller : "AwCtrl"      
     })
     .otherwise({
       template : "Error"
