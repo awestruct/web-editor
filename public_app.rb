@@ -71,7 +71,7 @@ module AwestructWebEditor
     # File related APIs
 
     get '/repo/:repo_name' do |repo_name|
-      files = AwestructWebEditor::Repository.new({ 'name' => repo_name }).all_files
+      files = create_repo(repo_name).all_files
       return_links = {}
       files.each do |f|
         links = []
@@ -96,7 +96,7 @@ module AwestructWebEditor
     end
 
     get '/repo/:repo_name/*' do |repo_name, path|
-      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
+      repo = create_repo(repo_name)
       json_return = { :content => repo.file_content(path), :links => links_for_file(repo.file_info(path), repo_name) }
       [200, JSON.dump(json_return)]
     end
@@ -110,28 +110,43 @@ module AwestructWebEditor
     end
 
     delete '/repo/:repo_name/*' do |repo_name, path|
-      repo = AwestructWebEditor::Repository.new({ :name => repo_name })
-      result = repo.remove_file path
+      result = create_repo(repo_name).remove_file path
       result ? [200] : [500]
     end
 
     # Preview APIs
 
     get '/preview/:repo_name' do |repo_name|
-      retrieve_rendered_file(repo_name, 'index', 'html')
+      retrieve_rendered_file(create_repo repo_name, 'index', 'html')
     end
 
     get '/preview/:repo_name/*.*' do |repo_name, path, ext|
-      retrieve_rendered_file(repo_name, path, ext)
+      retrieve_rendered_file(create_repo repo_name, path, ext)
     end
 
     # Git related APIs
-    # TODO post '/repo/:repo_name/change_set' # should do a git fetch upstream && git checkout -b <name> upstream/master
-    # TODO post '/repo/:repo_name/commit' # params[:message]
-    # TODO post '/repo/:repo_name/push'
+    post '/repo/:repo_name/change_set' do |repo_name|
+      create_repo(repo_name).create_branch params[:name], params[:tracking_branch] || 'upstream/master'
+    end
+
+    post '/repo/:repo_name/commit' do |repo_name|
+      unless create_repo(repo_name).commit(params[:message]).nil?
+        [200, 'Success']
+      else
+        [500, 'Error committing']
+      end
+    end
+
+    post '/repo/:repo_name/push' do |repo_name|
+      # TODO Implement this
+    end
 
     helpers do
       Sinatra::JSON
+
+      def create_repo(repo_name)
+        AwestructWebEditor::Repository.new({ :name => repo_name })
+      end
 
       def links_for_file(f, repo_name)
         links = []
@@ -143,15 +158,14 @@ module AwestructWebEditor
       end
 
       def save_or_create(repo_name, path)
-        repo = AwestructWebEditor::Repository.new({ :name => repo_name })
         request.body.rewind # in case someone already read it
+        repo = create_repo repo_name
         repo.save_file path, params[:content]
 
         retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
       end
 
       def retrieve_rendered_file(repo, path)
-        # TODO use bundler, do a clean system execute of exec_awestruct.rb, load the json to get the path, return the contents of the loaded the file
         Bundler.with_clean_env do
           Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
             mapping = nil

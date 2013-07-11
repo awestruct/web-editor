@@ -32,6 +32,7 @@ module AwestructWebEditor
 
     def self.clone
       raise 'Not implemented yet'
+      # TODO git.clone ...
       Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
         exit_status = wait_thr.value.exitstatus
       end
@@ -75,7 +76,7 @@ module AwestructWebEditor
     end
 
     def remove_file(name)
-      result = @git_repo.remove(Shellwords.escape name) # TODO: need to find a way to test / retrieve failure
+      result = @git_repo.remove(Shellwords.escape name)
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
       !File.exists? path_to_file
@@ -84,6 +85,28 @@ module AwestructWebEditor
     def commit(message)
       @git_repo.commit_all(message)
       @git_repo.log(1).first # Give us back a commit object so we can actually query it
+    end
+
+    def fetch_remote(remote = 'upstream')
+      @git_repo.fetch remote
+    end
+
+    def create_branch(branch_name, tracking_branch = 'upstream/master')
+      fetch_remote tracking_branch.split('/').first
+      system("git checkout -b #{branch_name} #{tracking_branch}")
+    end
+
+    def remove_branch(branch_name)
+      @git_repo.branch('master').checkout
+      @git_repo.branch(branch_name).delete
+    end
+
+    def branches
+      @git_repo.branches
+    end
+
+    def push
+      # TODO implement this
     end
 
     def file_content(file, binary = false)
@@ -102,13 +125,5 @@ module AwestructWebEditor
     def log(count = 30)
       @git_repo.log count
     end
-
-    #def render_site
-    #  cmd_string = "(bundle check || bundle install) && bundle exec awestruct --force -g -Pdevelopement -u 'http://localhost:9292/preview/\#{@name}'"
-    #  status = Bundler.with_clean_env do
-    #    Kernel.system(cmd_string, :chdir => "#{File.absolute_path base_repository_path}")
-    #  end
-    #end
-
   end
 end
