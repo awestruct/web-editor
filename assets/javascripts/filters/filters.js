@@ -5,3 +5,9 @@ aw.filter('filename', function() {
     }
   };
 });
+
+aw.filter('normalize',function() {
+  return function(filename){
+    return filename.replace('./','');
+  }
+});

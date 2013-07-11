@@ -1,6 +1,5 @@
 ng-include[src="'partials/header.html'"]
 .panels[ng-init="init()"]
-  
   .panel.columns.filespane
     div[ng-include="'partials/filespane.html'"]
   
@@ -14,10 +13,7 @@ ng-include[src="'partials/header.html'"]
           a.button.small[ng-click="save(currentFile)"]
             i.icon-spinner.icon-spin[ng-show="data.saving"]
             | Save
-          a.button.small.secondary href="#"
-            i.icon-play
-            |  Live Preview
-          a.close.tiny.button[href="#" ng-click="closeFile()"]
+          a.small.button[ng-click="preview()"] Preview
     
         ng-include[src="'partials/messages.html'"]
       
@@ -25,7 +21,4 @@ ng-include[src="'partials/header.html'"]
       
       div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   
-  .panel.columns.preview.flexWrapper
-    .panel1 Panel 1.1
-    .panel2.flexItem Panel 2
-.overlay[ng-include="'partials/overlay.html'"]
+.overlay[ng-include="'partials/overlay.html'" ng-show="data.overlay"]

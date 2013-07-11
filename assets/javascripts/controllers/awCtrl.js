@@ -1,35 +1,65 @@
-function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
+function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
     window.Repo = Repo;
     window.scope = $scope;
+
+    window.onbeforeunload = function(e){
+      var currPath = $scope.currentFile.links[0].url,
+          currSession = $scope.openEditors[currPath];
+      if (currSession.dirty) {
+        return "You have unsaved changes, are you sure you want to leave?";
+      }
+    };
+
     $scope.data = Data;
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
     $scope.ace.EditSession = require("ace/edit_session").EditSession;
-
     $scope.data.repo = $routeParams.repo;
     $scope.data.repoUrl= window.location.origin + "/repo/" + $routeParams.repo;
-    
-    // Initialize
+
+    /*
+      Handle Location Changes
+    */
+    $scope.$on('$locationChangeSuccess', function(event) {
+      $scope.handleRouteChange();
+    });
+
+
+    /*
+      Initialize the repo
+      Note: This is only called once per full page load
+    */
     $scope.init = function() {
+      // check and get the settings
+      $http.get('/settings')
+        .success(function(data, status, headers, config){
+          console.log(data, status, headers, config);
+        })
+        .error(function(data, status, headers, config) {
+          // There was an error, lets show the init screen
+          // $scope.data.overlay = true;
+        });
+
       // to retrieve a book
        repo = new Repo();
        repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
+        // trigger a route change to load file if they have come via a permalink
+        $scope.handleRouteChange();
        });
+
     };
 
     $scope.syncFiles = function() {
       repo.get($scope.data.repo).then(function(res) {
-       console.log(res);
        $scope.files = res.data;
       });      
     };
 
     $scope.toggleOpen = function(child){
       child.open = !child.open;
-      console.log(child.open);
     };
 
     $scope.addMessage = function(text, type) {
@@ -42,10 +72,19 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
     };
 
     $scope.edit = function(file) {
-      var file = JSON.parse(file),
-          path = file.links[0].url,
-          session;
+        var path = file.links[0].url,
+        session;
       
+      // Make sure we aren't abandoning the current changes
+      if($scope.currentFile) {
+        var currPath = $scope.currentFile.links[0].url,
+            currSession = $scope.openEditors[currPath];
+        if (currSession.dirty) {
+          $scope.addMessage("Oops, You must save the current file to continue", "alert");
+          return;
+        }
+      }
+
       // check if new session needs to be created
       if(!!$scope.openEditors[path]) {
         session = $scope.openEditors[path];
@@ -87,8 +126,19 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
           content = $scope.editor.getValue(),
           path = currentFile.links[0].url;
           $scope.data.saving = true;
-          repo.saveFile(path, content).then(function(response){
+          repo.saveFile(path, content)
+            .success(function(response){            
+              $scope.data.saving = false;
+              session.dirty = false;
+              if($scope.previewWindow) {
+                $scope.previewWindow.document.write(response);
+              }
+          })
+          .error(function(){
+            // not really an error, this means it saved but has not
+            // returned a compiled file for preview. 
             $scope.data.saving = false;
+            session.dirty = false;
           });
     };
 
@@ -100,19 +150,37 @@ function AwCtrl($scope, $routeParams, Data, Repo, $resource, $http) {
       var fileName = prompt("Please enter the file name, including the extension"),
           path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName;
 
-          console.log(child.path);
-
       if(fileName) {
-        repo.saveFile(path, "").then(function(response) {
-          if(response) {
+        repo.saveFile(path, "").always(function(response) {
+          console.log(response);
             $scope.syncFiles();
-          }
         });
       }
     };
 
-    $scope.path = function(child) {
-      console.log(child);
+    $scope.saveSettings = function(settings) {
+      console.log(settings);
+      // PUT on init, POST on settings update
+      $http.post('/settings',settings).then(function(response){
+        console.log(response);
+      });
+    }
+
+    $scope.handleRouteChange = function() {
+      var file = _.findDeep($scope.files,{path:$routeParams.path});
+      if(!file) {
+        // nothing found, try it as a top level file
+        file = _.findDeep($scope.files,{path:"./"+$routeParams.path});
+      }
+      if(file){
+        $scope.edit(file);
+      }
+    }
+
+    $scope.preview = function() {
+      if(!$scope.previewWindow) {
+        $scope.previewWindow = window.open('/#/preview');
+      }
     }
 
     openSession = function(session,file) {

@@ -15,7 +15,8 @@ ul.filesList
 
 
   li[ng-repeat="(name,child) in files" ng-class="{ true: 'directory'}[child.directory]"]
-    a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
+    / a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-click="edit('{{child}}')" ng-hide="{{child.directory}}"]
+    a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-href="#/{{data.repo}}?path={{child.path | normalize}}" ng-hide="{{child.directory}}"]
       | {{name}}
     a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 
       i.icon-folder-close[ng-hide="child.open"]
@@ -25,4 +26,4 @@ ul.filesList
       i.icon-file-alt
       | &plus;
 
-    ul[ng-include="'partials/filetree.html'" ng-show="child.open"]
+    ul[ng-include="'partials/filetree.html'" ng-class="{open : child.open}"]

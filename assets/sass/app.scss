@@ -84,10 +84,18 @@ $lightgrey : #ddd;
 
 .filespane {
   border:0;
-  width:10%;
+  width:20%;
   padding: 0;
   overflow: scroll;
 }
+  ul {
+    max-height:0px;
+    -webkit-transition:all 0.2s;
+    &.open {
+      max-height:1000px;
+      -webkit-transition:all 2s;
+    }
+  }
   li.directory {
     a.folder {
       font-weight: 600;
@@ -136,6 +144,7 @@ $lightgrey : #ddd;
       margin-left: 0;
       border-left: 5px solid #888;
       float: left;
+      overflow: hidden;
       a {
         padding-left: 5%;
       }
@@ -191,10 +200,16 @@ $lightgrey : #ddd;
 span.addFolder {
   font-size: 10px;
   float: right;
-  cursor: crosshair;
   position: absolute;
   top: 7px;
   right: 5px;
+  cursor:pointer;
+  &:hover {
+    color:$green;
+    i {
+      color:$green !important;
+    }
+  }
 }
 
 .fileHeader {
@@ -210,8 +225,11 @@ span.addFolder {
   .close {
     background:none;
     border:0;
-    color:$green;
+    // color:$green;
+    color:#000;
     padding:0;
+    top:15px;
+    right:10px;
   }
   h3 {
     margin:0;
@@ -239,11 +257,12 @@ span.addFolder {
 
 .editor {
   padding:0;
-  width:60%;
+  width:80%;
 }
 
 .preview {
-  width:30%;
+  // width:30%;
+
 }
 
 /* Toolbar */
@@ -469,7 +488,7 @@ div[dropzone] {
   z-index: 99;
   height:100%;
   margin-top: 45px;
-  display: none;
+  // display: none;
   .overlayInner {
     width:600px;
     background:white;
@@ -477,5 +496,13 @@ div[dropzone] {
     margin:0 auto;
     top:30%;
     position: relative;
+  }
+}
+
+button, .button {
+  background:$green;
+  border:1px solid darken($green, 10%);
+  &:hover {
+    background:darken($green, 10%);
   }
 }
