@@ -32,8 +32,7 @@ module AwestructWebEditor
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings')
     end
 
-    def self.clone
-      raise 'Not implemented yet'
+    def clone
       Bundler.with_clean_env do
         Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
           exit_status = wait_thr.value.exitstatus

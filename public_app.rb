@@ -138,7 +138,6 @@ module AwestructWebEditor
     end
 
     post '/repo/:repo_name/push' do |repo_name|
-      # TODO Implement this
       create_repo(repo_name).push
     end
 

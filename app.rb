@@ -4,6 +4,7 @@ require 'json'
 require 'rack'
 require 'rack/ssl'
 require 'octokit'
+require 'uri'
 
 require_relative 'helpers/link'
 require_relative 'public_app'
@@ -35,7 +36,9 @@ module AwestructWebEditor
     end
 
     put '/settings' do
-      get_github_token JSON.load params['settings']
+      settings = JSON.load params['settings']
+      get_github_token settings
+      AwestructWebEditor::Repository.new({ :name => URI(settings['repo']).path.split('/').last }).clone
     end
 
     helpers do
