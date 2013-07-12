@@ -1,7 +1,7 @@
 function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
-    window.Repo = Repo;
-    window.scope = $scope;
+    // window.Repo = Repo;
+    // window.scope = $scope;
 
     window.onbeforeunload = function(e){
       var currPath = $scope.currentFile.links[0].url,
@@ -12,6 +12,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.data = Data;
+    $scope.data.folderState = {}; // record folder open/closed state
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
@@ -59,7 +60,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.toggleOpen = function(child){
-      child.open = !child.open;
+      $scope.data.folderState[child.path] = !$scope.data.folderState[child.path];
     };
 
     $scope.addMessage = function(text, type) {

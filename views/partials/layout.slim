@@ -12,8 +12,11 @@ ng-include[src="'partials/header.html'"]
         .columns.large-4.controls
           a.button.small[ng-click="save(currentFile)"]
             i.icon-spinner.icon-spin[ng-show="data.saving"]
-            | Save
-          a.small.button[ng-click="preview()"] Preview
+            i.icon-save[ng-hide="data.saving"]
+            |  Save
+          a.small.button[ng-click="preview()"]
+            i.icon-external-link
+            |  Open Preview
     
         ng-include[src="'partials/messages.html'"]
       
