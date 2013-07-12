@@ -40,10 +40,9 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen
-          // $scope.data.overlay = true;
+          $scope.data.overlay = true;
         });
 
-      // to retrieve a book
        repo = new Repo();
        repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
@@ -160,9 +159,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.saveSettings = function(settings) {
-      console.log(settings);
       // PUT on init, POST on settings update
-      $http.post('/settings',settings).then(function(response){
+      $http.put('/settings',settings).then(function(response){
         console.log(response);
       });
     }
