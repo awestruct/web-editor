@@ -4,6 +4,8 @@ require 'shellwords'
 require 'bundler'
 require 'git'
 require 'octokit'
+require 'bundler'
+require 'fileutils'
 
 module AwestructWebEditor
   class Repository
@@ -26,16 +28,28 @@ module AwestructWebEditor
         @base_repo_dir = 'repos'
       end
 
-      @git_repo = Git.open File.join @base_repo_dir, @name
+      @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings')
     end
 
     def self.clone
       raise 'Not implemented yet'
-      # TODO git.clone ...
-      Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
-        exit_status = wait_thr.value.exitstatus
+      Bundler.with_clean_env do
+        Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
+          exit_status = wait_thr.value.exitstatus
+        end
       end
+
+      github = Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
+                                   :client_id => @settings['client_id'])
+      fork_response = github.fork(URI(@settings['repo']).path[1..-1])
+
+      FileUtils.mkdir_p(File.join @base_repo_dir, @name)
+      Dir.chdir(File.join @base_repo_dir) do
+        Git.clone(fork_response.ssh_url, @name)
+      end
+
+      @git_repo = Git.open File.join @base_repo_dir, @name
     end
 
     def all_files(ignores = [])
@@ -105,8 +119,16 @@ module AwestructWebEditor
       @git_repo.branches
     end
 
-    def push
-      # TODO implement this
+    def push(remote = 'upstream')
+      @git_repo.push(remote, 'HEAD')
+
+    end
+
+    def pull_request(title, body)
+      github = Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
+                                   :client_id => @settings['client_id'])
+      github.create_pull_request("#{settings['username']}/#{@name}", 'master', @git_repo.lib.branch_current, title, body)
+      @git_repo.branch('master').checkout
     end
 
     def file_content(file, binary = false)

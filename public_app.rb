@@ -139,6 +139,7 @@ module AwestructWebEditor
 
     post '/repo/:repo_name/push' do |repo_name|
       # TODO Implement this
+      create_repo(repo_name).push
     end
 
     helpers do
@@ -170,7 +171,7 @@ module AwestructWebEditor
           Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
             mapping = nil
             stdout.each_line do |line|
-              if line.match /^\{.*/
+              if line.match(/^\{.*/)
                 mapping = JSON.load line
               end
             end
