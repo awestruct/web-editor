@@ -1,6 +1,6 @@
 function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
-    window.Repo = Repo;
+    // window.Repo = Repo;
     window.scope = $scope;
 
     window.onbeforeunload = function(e){
@@ -12,6 +12,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.data = Data;
+    $scope.data.folderState = {}; // record folder open/closed state
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
@@ -35,14 +36,16 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       // check and get the settings
       $http.get('/settings')
         .success(function(data, status, headers, config){
-          console.log(data, status, headers, config);
+          if(!!data) {
+            // nothing setup yet...
+            $scope.data.overlay = true;
+          }
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen
-          // $scope.data.overlay = true;
+          $scope.data.overlay = true;
         });
 
-      // to retrieve a book
        repo = new Repo();
        repo.get($scope.data.repo).then(function(res) {
         $scope.files = res.data;
@@ -52,6 +55,10 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     };
 
+    $scope.toggleOverlay = function() {
+      $scope.data.overlay = !$scope.data.overlay;
+    }
+
     $scope.syncFiles = function() {
       repo.get($scope.data.repo).then(function(res) {
        $scope.files = res.data;
@@ -59,7 +66,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.toggleOpen = function(child){
-      child.open = !child.open;
+      $scope.data.folderState[child.path] = !$scope.data.folderState[child.path];
     };
 
     $scope.addMessage = function(text, type) {
@@ -153,15 +160,15 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       if(fileName) {
         repo.saveFile(path, "").always(function(response) {
           console.log(response);
+            // console.log(response);
             $scope.syncFiles();
         });
       }
     };
 
     $scope.saveSettings = function(settings) {
-      console.log(settings);
       // PUT on init, POST on settings update
-      $http.post('/settings',settings).then(function(response){
+      $http.put('/settings',settings).then(function(response){
         console.log(response);
       });
     }

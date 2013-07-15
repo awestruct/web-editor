@@ -11,6 +11,7 @@
 
 html,body {
   height:100%;
+  overflow: hidden;
 }
 
 /*
@@ -51,6 +52,9 @@ $lightgrey : #ddd;
   }
 }
 
+.editorFlex {
+  width:100%;
+}
 
 .wrapper, [ng-view] {
   height:100%;
@@ -76,6 +80,9 @@ $lightgrey : #ddd;
   }
 }
 
+.row {
+  max-width: 100%;
+}
 
 /*
   Files Pane
@@ -249,9 +256,13 @@ span.addFolder {
   &.success {
     background:#5ABE8A;
     border-color:#54B381;
-    &:hover {
-      background:#54B381;
-    }
+  }
+  &:hover {
+    background:#54B381;
+  }
+  &:focus, &:active {
+   background:#54B381; 
+   outline:0;
   }
 }
 
@@ -476,6 +487,7 @@ div[dropzone] {
   padding:0;
 }
 
+
 /* Overlay */
 
 .overlay {
@@ -496,6 +508,11 @@ div[dropzone] {
     margin:0 auto;
     top:30%;
     position: relative;
+    .close {
+      position: absolute;
+      top:10px;
+      right:10px;
+    }
   }
 }
 
