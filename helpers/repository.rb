@@ -51,22 +51,26 @@ module AwestructWebEditor
       @git_repo = Git.open File.join @base_repo_dir, @name
     end
 
-    def all_files(ignores = [])
+    def all_files(allows = [])
+      default_allows = [%r!(.ad)|(.adoc)|(.adoc)!]
+      default_allows << allows.join unless allows.empty?
+      regexp_ignores = Regexp.union default_allows
+
       default_ignores = [%r!(.gitignore$)|(.git$)|(_site$)|(.awestruct$)|(.awestruct_ignore$)|(_config$)|(_ext$)|(.git$)|(.travis.yml$)|(_tmp$)|(.sass-cache$)!]
-      default_ignores << ignores.join unless ignores.empty?
-      regexp_ignores = Regexp.union default_ignores
       files = []
 
       Find.find(base_repository_path) do |path|
-        if regexp_ignores.match(path.to_s)
+        if Regexp.union(default_ignores).match(path.to_s)
           Find.prune
-        else
-          unless File.basename(path.to_s) == @name
-            files << file_info(path)
+        end
 
+        if regexp_ignores.match(path.to_s) || File.directory?(path)
+          if File.basename(path.to_s) != @name
+            files << file_info(path)
           end
         end
       end
+
       files
     end
 

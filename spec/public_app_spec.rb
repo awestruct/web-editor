@@ -26,14 +26,12 @@ describe 'AwestructWebEditor::PublicApp' do
       expect(last_response).to be_successful
 
       json_response = JSON.load last_response.body
-      expect(json_response).to have_at_least(24).items
-      expect(json_response['news']['children']).to have_at_least(8).items # one may be deleted depending on order of test execution
+      expect(json_response).to have_at_least(5).items
+      expect(json_response['news']['children']).to have_at_least(3).items # one may be deleted depending on order of test execution
                                                                           # FIXME: eventually we need to check .awestruct_ignore and not do a rendered link for things awestruct ignores
-      expect(json_response['Gemfile']['links']).to have_exactly(5).items
-      expect(json_response['Gemfile']['links'][0]).to include 'text', 'url', 'method'
-      expect(json_response['Gemfile']['path']).to eql('./Gemfile')
-      expect(json_response['extensions']['children']['atomizer']['children']['description.md']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/extensions/atomizer/description.md')
-      expect(json_response['extensions']['children']['atomizer']['children']['description.md']['path']).to eq('extensions/atomizer/description.md')
+      expect(json_response['news']['children']['awestruct-0-5-0-released.adoc']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/news/awestruct-0-5-0-released.adoc')
+      expect(json_response['news']['children']['awestruct-0-5-1-released.adoc']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/news/awestruct-0-5-1-released.adoc')
+      expect(json_response['news']['children']['awestruct-0-5-2-released.adoc']['links'][0]['url']).to eq('http://example.org/repo/awestruct.org/news/awestruct-0-5-2-released.adoc')
     end
 
     context 'when retrieving file content' do

@@ -71,7 +71,8 @@ module AwestructWebEditor
     # File related APIs
 
     get '/repo/:repo_name' do |repo_name|
-      files = create_repo(repo_name).all_files
+      additional_allows = params[:allow] || ''
+      files = create_repo(repo_name).all_files([Regexp.compile(additional_allows)])
       return_links = {}
       files.each do |f|
         links = []

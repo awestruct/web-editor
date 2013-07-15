@@ -16,15 +16,15 @@ describe 'AwestructWebEditor::Repository' do
     context '#all_files' do
       subject { repo.all_files }
 
-      it { should include a_link({ :location => 'news', :directory => true }) }
-      it { should include a_link({ :location => 'Gemfile', :directory => false }) }
+      it { should include a_link({ :location => 'news', :directory => true, :path_to_root => '.' }) }
+      it { should include a_link({ :location => 'awestruct-0-5-1-released.adoc', :directory => false, :path_to_root => 'news' }) }
       it { should_not include a_link({ :location => '_site/news/index.html', :directory => false }) }
       it { should_not include a_link({ :location => '_ext/', :directory => true }) }
-      it { should have_at_least(100).items }
+      it { should have_at_least(20).items }
     end
 
     context "#remove_file('helpers/partial.md')" do
-      let(:response) { repo.remove_file('news/awestruct-0-5-1-released.adoc') }
+      let(:response) { repo.remove_file('news/2010-06-12-awestruct-006-released.md') }
 
       specify 'should succeed' do
         expect(response).to be_true
