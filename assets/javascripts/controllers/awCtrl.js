@@ -36,7 +36,10 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       // check and get the settings
       $http.get('/settings')
         .success(function(data, status, headers, config){
-          console.log(data, status, headers, config);
+          if(!!data) {
+            // nothing setup yet...
+            $scope.data.overlay = true;
+          }
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen

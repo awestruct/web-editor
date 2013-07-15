@@ -36,7 +36,7 @@ module AwestructWebEditor
     end
 
     put '/settings' do
-      settings = JSON.load params['settings']
+      settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
       get_github_token settings
       AwestructWebEditor::Repository.new({ :name => URI(settings['repo']).path.split('/').last }).clone
     end
