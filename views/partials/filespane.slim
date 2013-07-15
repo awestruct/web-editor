@@ -26,4 +26,4 @@ ul.filesList
       i.icon-file-alt
       | &plus;
 
-    ul[ng-include="'partials/filetree.html'" ng-class="{open : child.open}"]
+    ul[ng-include="'partials/filetree.html'" ng-class="{open : data.folderState[child.path]}"]

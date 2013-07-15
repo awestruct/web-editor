@@ -11,11 +11,11 @@ require_relative 'public_app'
 
 module AwestructWebEditor
   class SecureApp < Sinatra::Base
-    set :ssl, lambda { |_| !development? }
+    set :ssl, lambda { |_| development? }
     register Sinatra::Sprockets::Helpers
 
     use AwestructWebEditor::PublicApp
-    use Rack::SSL, :exclude => lambda { |env| !development? }
+    use Rack::SSL, :exclude => lambda { |env| development? }
 
     configure :development do
       require 'sinatra/reloader'
@@ -36,7 +36,7 @@ module AwestructWebEditor
     end
 
     put '/settings' do
-      settings = JSON.load params['settings']
+      settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
       get_github_token settings
       AwestructWebEditor::Repository.new({ :name => URI(settings['repo']).path.split('/').last }).clone
     end
