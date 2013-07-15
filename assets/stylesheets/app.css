@@ -556,13 +556,19 @@ div[dropzone] h1 {
   top: 30%;
   position: relative;
 }
+/* line 511, ../sass/app.scss */
+.overlay .overlayInner .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
 
-/* line 514, ../sass/app.scss */
+/* line 519, ../sass/app.scss */
 button, .button {
   background: #5abe8a;
   border: 1px solid #41a471;
 }
-/* line 517, ../sass/app.scss */
+/* line 522, ../sass/app.scss */
 button:hover, .button:hover {
   background: #41a471;
 }

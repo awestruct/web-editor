@@ -1,0 +1,19 @@
+# Awestruct GUI Editor
+
+## Getting Started
+
+1. Clone this repo into a directory: `git@github.com:awestruct/web-editor.git`
+2. Move into the directory: `cd web-editor`
+3. Install dependencies: `bundle install`
+4. Start the server: `rackup`
+
+## Browser Support
+The application takes advantage of the latest in CSS3 flexbox so the following browsers are currently supported:
+
+* Google Chrome Latest
+* Firefox 22+
+* Safari 6+
+
+## Contributing 
+
+`compass watch` to watch for SASS changes
