@@ -1,4 +1,4 @@
-li[ng-repeat="(name,child) in child.children"]
+li[ng-repeat="(name,child) in child.children" ng-animate="'animate'"]
   a[class="{{(child.links[0].url === currentFile.links[0].url) ? 'active' : ''}}" ng-href="#/{{data.repo}}?path={{child.path | normalize}}" ng-hide="{{child.directory}}"]
     | {{name}}
   a.folder[ng-show="{{child.directory}}" ng-click="toggleOpen(child)"] 

@@ -1,7 +1,7 @@
 function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
     // window.Repo = Repo;
-    // window.scope = $scope;
+    window.scope = $scope;
 
     window.onbeforeunload = function(e){
       var currPath = $scope.currentFile.links[0].url,
@@ -51,6 +51,10 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
        });
 
     };
+
+    $scope.toggleOverlay = function() {
+      $scope.data.overlay = !$scope.data.overlay;
+    }
 
     $scope.syncFiles = function() {
       repo.get($scope.data.repo).then(function(res) {
@@ -153,6 +157,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       if(fileName) {
         repo.saveFile(path, "").always(function(response) {
           console.log(response);
+            // console.log(response);
             $scope.syncFiles();
         });
       }

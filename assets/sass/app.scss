@@ -51,6 +51,9 @@ $lightgrey : #ddd;
   }
 }
 
+.editorFlex {
+  width:100%;
+}
 
 .wrapper, [ng-view] {
   height:100%;
@@ -76,6 +79,9 @@ $lightgrey : #ddd;
   }
 }
 
+.row {
+  max-width: 100%;
+}
 
 /*
   Files Pane
@@ -249,12 +255,13 @@ span.addFolder {
   &.success {
     background:#5ABE8A;
     border-color:#54B381;
-    &:hover {
-      background:#54B381;
-    }
-    &:focus {
-     background:#54B381; 
-    }
+  }
+  &:hover {
+    background:#54B381;
+  }
+  &:focus, &:active {
+   background:#54B381; 
+   outline:0;
   }
 }
 
@@ -478,6 +485,7 @@ div[dropzone] {
 .panel.preview {
   padding:0;
 }
+
 
 /* Overlay */
 

@@ -4,7 +4,7 @@ ng-include[src="'partials/header.html'"]
     div[ng-include="'partials/filespane.html'"]
   
   .panel.columns.editor[dropclass ng-class="{hovering : data.hovering}"]
-    di.flexWrapper[ng-show="currentFile"]
+    div.flexWrapper.editorFlex[ng-show="currentFile"]
       .fileHeader.row
         .columns.large-8
           h3 
