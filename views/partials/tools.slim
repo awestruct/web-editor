@@ -47,7 +47,7 @@ div[ng-controller="ToolsCtrl"]
             ng-click="format('table',{{x}},{{y}})"] &bull;
 
     li[ng-repeat="i in [1,2,3,4,5,6]"]
-      a.button.small[ng-click="format('h{{i}}')" title="Heading level {{i}}"] #h{{i}}
+      a.button.small[ng-click="format('h{{i}}')" title="Heading level {{i}}"] H{{i}}
 
   div[dropzone] 
     h1 Drop Images Here
