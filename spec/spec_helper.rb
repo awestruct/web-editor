@@ -14,8 +14,6 @@ require_relative '../helpers/repository'
 require_relative '../helpers/link'
 
 APP = Rack::Builder.parse_file(File.join(File.dirname(__FILE__), '..', 'config.ru')).first
-GITHUB_AUTH = File.open(File.join(File.dirname(__FILE__), '.github_auth')).readlines[0].split '::'
-#$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..')
 
 RSpec.configure do |config|
   ENV['RACK_ENV'] = 'test'
@@ -33,7 +31,6 @@ RSpec.configure do |config|
     end
     #unless File.exists? (File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings'))
     #  File.open(File.join(File.dirname(__FILE__), '..', 'tmp/repos/github-settings'), 'w+') do |f|
-    #    f.write('{"username":"LightGuard", "oauth_token":"b3dab477cdc44e2e1256f9e56beb9f31df19c3f0", "client_id":"672a8a89f1876edad431", "repo":"https://github.com/asciidoctor/asciidoctor.github.com"}')
     #  end
     #end
   end
