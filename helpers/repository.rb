@@ -39,7 +39,8 @@ module AwestructWebEditor
 
       #FileUtils.mkdir_p(File.join @base_repo_dir, @name)
       Dir.chdir(File.join @base_repo_dir) do
-        Git.clone(fork_response.ssh_url, @name)
+        git = Git.clone(fork_response.ssh_url, @name)
+        git.add_remote('upstream', fork_response.parent.git_url)
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
