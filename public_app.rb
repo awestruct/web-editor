@@ -52,6 +52,20 @@ module AwestructWebEditor
 
     # Application API
 
+    # Git related APIs
+    post '/repo/:repo_name/change_set' do |repo_name|
+      create_repo(repo_name).create_branch params[:name], params[:tracking_branch] || 'upstream/master'
+    end
+
+    post '/repo/:repo_name/commit' do |repo_name|
+      unless create_repo(repo_name).commit(params[:message]).nil?
+        [200, 'Success']
+      else
+        [500, 'Error committing']
+      end
+    end
+
+
     # Repo APIs
 
     get '/repo' do
@@ -123,19 +137,6 @@ module AwestructWebEditor
 
     get '/preview/:repo_name/*.*' do |repo_name, path, ext|
       retrieve_rendered_file(create_repo repo_name, path, ext)
-    end
-
-    # Git related APIs
-    post '/repo/:repo_name/change_set' do |repo_name|
-      create_repo(repo_name).create_branch params[:name], params[:tracking_branch] || 'upstream/master'
-    end
-
-    post '/repo/:repo_name/commit' do |repo_name|
-      unless create_repo(repo_name).commit(params[:message]).nil?
-        [200, 'Success']
-      else
-        [500, 'Error committing']
-      end
     end
 
     post '/repo/:repo_name/push' do |repo_name|
