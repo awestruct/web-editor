@@ -32,7 +32,8 @@ module AwestructWebEditor
     end
 
     post '/settings' do
-      write_settings JSON.load params['settings']
+      settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
+      write_settings settings
     end
 
     put '/settings' do
@@ -64,11 +65,12 @@ module AwestructWebEditor
       end
 
       def get_github_token(settings)
+        # TODO check for an oauth token already, use that if it returns, eventually we'll need to use https://github.com/atmos/sinatra_auth_github
         client = Octokit::Client.new(:login => settings['username'], :password => settings['password'])
         result = client.create_authorization :note => 'Awestruct Web Editor', :scopes => ['repo']
         settings.delete('password')
         settings['oauth_token'] = result['token']
-        settings['client_id'] = result['client_id']
+        settings['client_id'] = result['app']['client_id']
 
         write_settings settings
       end

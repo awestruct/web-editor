@@ -33,22 +33,25 @@ module AwestructWebEditor
     end
 
     def clone
-      Bundler.with_clean_env do
-        Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |stdin, stdout, stderr, wait_thr|
-          exit_status = wait_thr.value.exitstatus
-        end
-      end
-
       github = Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
-                                   :client_id => @settings['client_id'])
+      :client_id => @settings['client_id'])
       fork_response = github.fork(URI(@settings['repo']).path[1..-1])
 
-      FileUtils.mkdir_p(File.join @base_repo_dir, @name)
+      #FileUtils.mkdir_p(File.join @base_repo_dir, @name)
       Dir.chdir(File.join @base_repo_dir) do
         Git.clone(fork_response.ssh_url, @name)
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
+
+      Bundler.with_clean_env do
+        Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, stdout, stderr, wait_thr|
+          #exit_status = wait_thr.value.exitstatus
+          #puts exit_status
+          #$stdout.puts stdout
+          #$stdout.puts stderr
+        end
+      end
     end
 
     def all_files(allows = [])
