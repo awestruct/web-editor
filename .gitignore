@@ -16,3 +16,6 @@ spec/.github_auth
 
 # ignore the repo
 /repos
+
+#ignore stylesheets
+/assets/stylesheets
