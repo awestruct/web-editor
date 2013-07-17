@@ -18,4 +18,4 @@ spec/.github_auth
 /repos
 
 #ignore stylesheets
-/assets/stylesheets
+/assets/stylesheets/*.css
