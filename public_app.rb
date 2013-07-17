@@ -67,6 +67,11 @@ module AwestructWebEditor
 
 
     # Repo APIs
+    post '/repo/:repo_name/push' do |repo_name|
+      repo = create_repo(repo_name)
+      repo.push
+      repo.pull_request params[:title], params[:message]
+    end
 
     get '/repo' do
       repo_base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
@@ -137,10 +142,6 @@ module AwestructWebEditor
 
     get '/preview/:repo_name/*.*' do |repo_name, path, ext|
       retrieve_rendered_file(create_repo repo_name, path, ext)
-    end
-
-    post '/repo/:repo_name/push' do |repo_name|
-      create_repo(repo_name).push
     end
 
     helpers do

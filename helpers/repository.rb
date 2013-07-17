@@ -33,14 +33,14 @@ module AwestructWebEditor
     end
 
     def clone
-      github = Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
-      :client_id => @settings['client_id'])
+      github = create_github_client
       fork_response = github.fork(URI(@settings['repo']).path[1..-1])
 
       #FileUtils.mkdir_p(File.join @base_repo_dir, @name)
       Dir.chdir(File.join @base_repo_dir) do
         git = Git.clone(fork_response.ssh_url, @name)
         git.add_remote('upstream', fork_response.parent.git_url)
+        git.fetch 'upstream'
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
@@ -112,9 +112,11 @@ module AwestructWebEditor
       @git_repo.fetch remote
     end
 
-    def create_branch(branch_name, tracking_branch = 'upstream/master')
-      fetch_remote tracking_branch.split('/').first
-      system("git checkout -b #{branch_name} #{tracking_branch}")
+    def create_branch(branch_name)
+      github = create_github_client
+      upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
+      fetch_remote
+      system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
     end
 
     def remove_branch(branch_name)
@@ -132,10 +134,10 @@ module AwestructWebEditor
     end
 
     def pull_request(title, body)
-      github = Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
-                                   :client_id => @settings['client_id'])
-      github.create_pull_request("#{settings['username']}/#{@name}", 'master', @git_repo.lib.branch_current, title, body)
-      @git_repo.branch('master').checkout
+      github = create_github_client
+      upstream_response = github.repository(Octokit::Repository.from_url @settings['repo'])
+      github.create_pull_request("#{settings['username']}/#{@name}", upstream_response.master_branch, @git_repo.lib.branch_current, title, body)
+      @git_repo.branch(upstream_response.master_branch).checkout
     end
 
     def file_content(file, binary = false)
@@ -153,6 +155,13 @@ module AwestructWebEditor
 
     def log(count = 30)
       @git_repo.log count
+    end
+
+    private
+
+    def create_github_client
+      Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
+                          :client_id => @settings['client_id'])
     end
   end
 end
