@@ -126,7 +126,7 @@ module AwestructWebEditor
       @git_repo.branches
     end
 
-    def push(remote = 'upstream')
+    def push(remote = 'origin')
       @git_repo.push(remote, 'HEAD')
 
     end
