@@ -185,15 +185,17 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         });
     }
 
-    $scope.commit = function(commit) {
+    $scope.commit = function(commitdata) {
+  
       $scope.data.waiting = true;
-      $http.post('/repo/' + $scope.data.repo + '/commit')
+      $http.post('/repo/' + $scope.data.repo + '/commit', commitdata)
         .success(function(data) {
           console.log(data);
           $scope.data.waiting = false;
+          $scope.data.commitdata = {};
         })
         .error(function(data){
-          console.log(data);
+          // console.log(data);
           $scope.data.waiting = false;
         });
     }
