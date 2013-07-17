@@ -137,7 +137,7 @@ module AwestructWebEditor
       github = create_github_client
       upstream_repo = Octokit::Repository.from_url @settings['repo']
       upstream_response = github.repository(upstream_repo)
-      github.create_pull_request("#{upstream_repo.username}/#{upstream_repo.name}", upstream_response.master_branch,
+      github.create_pull_request(upstream_repo, upstream_response.master_branch,
                                  @git_repo.lib.branch_current, title, body)
       @git_repo.branch(upstream_response.master_branch).checkout
     end
