@@ -12,6 +12,8 @@ gem 'uglifier', '~> 2.1'
 gem 'octokit', '~> 1.24'
 gem 'git', '~> 1.2'
 gem 'rack-ssl', '~> 1.3'
+gem 'sprockets-sass', '~> 1.0'
+gem 'execjs', '~> 1.4.0'
 
 # Gems related to the use of awestruct
 group :awestruct do

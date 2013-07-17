@@ -50,7 +50,7 @@ describe 'AwestructWebEditor::Repository' do
       after(:each) do
         repo.remove_branch 'new_branch'
       end
-      subject { repo.create_branch('new_branch', 'origin/master') }
+      subject { repo.create_branch('new_branch') }
 
       specify 'should create a new branch named "new_branch"' do
         expect(subject).to be_true

@@ -1,5 +1,4 @@
 require 'sinatra/base'
-require 'sinatra/json'
 require 'json'
 require 'rack'
 require 'rack/ssl'
@@ -12,10 +11,9 @@ require_relative 'public_app'
 module AwestructWebEditor
   class SecureApp < Sinatra::Base
     set :ssl, lambda { |_| development? }
-    register Sinatra::Sprockets::Helpers
 
     use AwestructWebEditor::PublicApp
-    use Rack::SSL, :exclude => lambda { |env| development? }
+    use Rack::SSL, :exclude => lambda { |_| development? }
 
     configure :development do
       require 'sinatra/reloader'

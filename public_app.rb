@@ -1,9 +1,10 @@
 require 'sinatra/base'
-require 'sinatra/json'
 require 'json'
 require 'slim'
 require 'sprockets'
-require 'sinatra/sprockets-helpers'
+require 'compass'
+require 'sprockets-sass'
+require 'sprockets-helpers'
 require 'bundler'
 require 'open3'
 
@@ -11,20 +12,20 @@ require_relative 'helpers/repository'
 
 module AwestructWebEditor
   class PublicApp < Sinatra::Base
-    register Sinatra::Sprockets::Helpers
     set :sprockets, Sprockets::Environment.new(root)
-    set :assets_prefix, '/assets'
-    set :public_folder, '/public'
-    set :digest_assets, true
 
     configure do
       # Setup Sprockets
-      sprockets.append_path File.join(root, 'assets', 'stylesheets')
-      sprockets.append_path File.join(root, 'assets', 'javascripts')
-      sprockets.append_path File.join(root, 'assets', 'images')
-      sprockets.append_path File.join(root, 'assets', 'font')
+      Sprockets::Helpers.configure do |config|
+        config.environment = sprockets
 
-      configure_sprockets_helpers
+        %w(sass javascripts images fonts).each do |dir|
+          sprockets.append_path File.join(root, 'assets', dir)
+        end
+
+        config.debug = true if development?
+
+      end
     end
 
     configure :development do
@@ -36,14 +37,15 @@ module AwestructWebEditor
       enable :logging, :dump_errors, :raise_errors
     end
 
+    configure :production do
+      sprockets.js_compressor = :uglifier
+      sprockets.css_compressor = :scss
+    end
+
     # Views
 
     get '/' do
       slim :index
-    end
-
-    get '/assets/*' do
-      sprockets
     end
 
     get '/partials/*.*' do |basename, ext|
@@ -145,7 +147,7 @@ module AwestructWebEditor
     end
 
     helpers do
-      Sinatra::JSON
+      include Sprockets::Helpers
 
       def create_repo(repo_name)
         AwestructWebEditor::Repository.new({ :name => repo_name })
