@@ -202,13 +202,17 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         });
     }
 
-    $scope.push = function() {
-      $http.post('/repo/' + $scope.data.repo + '/push')
+    $scope.push = function(pushdata) {
+      /* Perform push and pull request */
+      console.log(pushdata);
+      $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
         .success(function(data){
           console.log(data);
+          alert("Success, check the console for the message. This will not be an alert box for long");
         })
         .error(function(data){
           console.log(data);
+          alert("error, check the console for the message. This will not be an alert box for long");
         })
     }
 

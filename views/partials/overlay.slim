@@ -22,3 +22,12 @@
     label Message
     textarea(ng-model="data.commitdata.message")
     button(ng-click="commit(data.commitdata)") Commit
+
+  form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
+    h2 Push & Pull Request
+    hr
+    label Title
+    input(type="text" ng-model="data.pushdata.title")
+    label Message
+    textarea(ng-model="data.pushdata.message")
+    button(ng-click="push(data.pushdata)") Push
