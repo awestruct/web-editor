@@ -36,9 +36,15 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       // check and get the settings
       $http.get('/settings')
         .success(function(data, status, headers, config){
-          if(!!data) {
-            // nothing setup yet...
-            $scope.data.overlay = true;
+          if(data.repo) {
+            $scope.settings = data;
+
+            if(!$routeParams.repo) { // if we dont have any route params, route them!
+              window.location = "/#/" + data.repo.split('/').pop();
+            }
+          }
+          else {
+            $scope.toggleOverlay('settings');
           }
         })
         .error(function(data, status, headers, config) {
@@ -55,7 +61,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     };
 
-    $scope.toggleOverlay = function() {
+    $scope.toggleOverlay = function(overlaytype) {
+      $scope.data.overlaytype = overlaytype;
       $scope.data.overlay = !$scope.data.overlay;
     }
 
@@ -159,22 +166,57 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
       if(fileName) {
         repo.saveFile(path, "").always(function(response) {
-          console.log(response);
-            // console.log(response);
             $scope.syncFiles();
         });
       }
     };
 
     $scope.saveSettings = function(settings) {
+      $scope.data.waiting = true;
       // PUT on init, POST on settings update
-      $http.put('/settings',settings).then(function(response){
-        console.log(response);
-      });
+      $http.put('/settings',settings)
+        .success(function(response){
+          console.log(response);
+        })
+        .error(function(data, status, headers, config) {          
+          // Find the error code
+          alert('Oops, there has been an error. Please check your credentials and try again');
+          $scope.data.waiting = false;
+        });
+    }
+
+    $scope.commit = function(commitdata) {
+  
+      $scope.data.waiting = true;
+      $http.post('/repo/' + $scope.data.repo + '/commit', commitdata)
+        .success(function(data) {
+          console.log(data);
+          $scope.data.waiting = false;
+          $scope.data.commitdata = {};
+        })
+        .error(function(data){
+          // console.log(data);
+          $scope.data.waiting = false;
+        });
+    }
+
+    $scope.push = function() {
+      $http.post('/repo/' + $scope.data.repo + '/push')
+        .success(function(data){
+          console.log(data);
+        })
+        .error(function(data){
+          console.log(data);
+        })
     }
 
     $scope.handleRouteChange = function() {
+    
+      if(!$routeParams.path) {
+        return; // no routes
+      }
       var file = _.findDeep($scope.files,{path:$routeParams.path});
+
       if(!file) {
         // nothing found, try it as a top level file
         file = _.findDeep($scope.files,{path:"./"+$routeParams.path});

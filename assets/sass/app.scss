@@ -36,8 +36,18 @@ $lightgrey : #ddd;
   }
 }
 
-
-
+a.settings {
+  float:right;
+  margin-right: 5px;
+  color:darken($green,20%);
+  padding:10px;
+  line-height: 1;
+  margin-top: 4px;
+  &:hover {
+    background:darken($green,20%);
+    color:white;
+  }
+}
 
 // Main Application setup
 
@@ -356,6 +366,7 @@ ul.tools li.tableGrid {
       display: block;
       border-bottom: 1px solid #F7F7F7;
       resize:none;
+      background:#fff;
       span.dot {
         display: block;
         border-right: 1px solid #F7F7F7;
@@ -513,6 +524,16 @@ div[dropzone] {
       top:10px;
       right:10px;
     }
+  }
+}
+
+form {
+  &.waiting {
+    & > * {
+      visibility: hidden;
+
+    }
+    background:center center url('/assets/octocat-spinner-128.gif') no-repeat;
   }
 }
 

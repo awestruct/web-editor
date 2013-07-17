@@ -175,42 +175,42 @@ function ToolsCtrl($scope, Data){
 
     'h1' : {
       search: /(.+)([\n]?)/g,
-      replace: "# $1$2",
+      replace: "= $1$2",
       blockLevel : true,
       textDefault : "Heading level 1"
     },
 
     'h2' : {
       search: /(.+)([\n]?)/g,
-      replace: "## $1$2",
+      replace: "== $1$2",
       blockLevel : true,
       textDefault : "Heading level 2"
     },
 
     'h3' : {
       search: /(.+)([\n]?)/g,
-      replace: "### $1$2",
+      replace: "=== $1$2",
       blockLevel : true,
       textDefault : "Heading level 3"
     },
 
     'h4' : {
       search: /(.+)([\n]?)/g,
-      replace: "#### $1$2",
+      replace: "==== $1$2",
       blockLevel : true,
       textDefault : "Heading level 4"
     },
 
     'h5' : {
       search: /(.+)([\n]?)/g,
-      replace: "##### $1$2",
+      replace: "===== $1$2",
       blockLevel : true,
       textDefault : "Heading level 5"
     },
 
     'h6' : {
       search: /(.+)([\n]?)/g,
-      replace: "###### $1$2",
+      replace: "====== $1$2",
       blockLevel : true,
       textDefault : "Heading level 6"
     },
