@@ -176,7 +176,9 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       // PUT on init, POST on settings update
       $http.put('/settings',settings)
         .success(function(response){
-          console.log(response);
+          $scope.data.waiting = false;
+          $scope.overlay = false;
+          window.location.reload();
         })
         .error(function(data, status, headers, config) {          
           // Find the error code
