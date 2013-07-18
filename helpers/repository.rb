@@ -97,7 +97,7 @@ module AwestructWebEditor
     end
 
     def remove_file(name)
-      result = @git_repo.remove(Shellwords.escape name)
+      @git_repo.remove(Shellwords.escape name)
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
       !File.exists? path_to_file
@@ -136,10 +136,11 @@ module AwestructWebEditor
       github = create_github_client
       upstream_repo = Octokit::Repository.from_url @settings['repo']
       upstream_response = github.repository(upstream_repo)
-      github.create_pull_request(upstream_repo,
-                                 "#{upstream_response.owner.login}:#{upstream_response.master_branch}",
-                                 "#{@settings['username']}:#{@git_repo.lib.branch_current}", title, body)
+      pull_request_result = github.create_pull_request(upstream_repo,
+                                                       "#{upstream_response.owner.login}:#{upstream_response.master_branch}",
+                                                       "#{@settings['username']}:#{@git_repo.lib.branch_current}", title, body)
       @git_repo.branch(upstream_response.master_branch).checkout
+      pull_request_result['url']
     end
 
     def file_content(file, binary = false)
