@@ -37,5 +37,4 @@
     button(ng-click="push(data.pushdata)") Push
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")
-    p
-      | {{data.popupmessage}}
+    p(ng-bind-html-unsafe="data.popupmessage")

@@ -232,7 +232,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         .success(function(data){
           // console.log(data);
           $scope.data.waiting = false;
-          $scope.popupMessage("Success! Your pull request is accessible at "+data);
+          $scope.popupMessage("Success! Your pull request is accessible at <a href='"+data+"'>"+data+"</a>");
         })
         .error(function(data){
           // console.log(data);
