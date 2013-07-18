@@ -1,0 +1,547 @@
+// @import "settings";
+// @import "normalize";
+// @import "foundation";
+// @import "compass";
+// Compiled the above into a static CSS file to save ~10 seconds every file save
+
+@import "start.css";
+@import "compass/css3";
+
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+html,body {
+  height:100%;
+  overflow: hidden;
+}
+
+/*
+ Base Styles
+*/
+
+$green : #5ABE8A;
+$orange : #CF4131;
+$grey : #525252;
+$pink : #FF6B6B;
+$lightgrey : #ddd;
+/*
+  Navigation
+*/
+.top-bar {
+  margin: 0;
+  background:$green;
+  border-bottom: 2px solid #54B381;
+  a {
+    color:white;
+    margin-left: 20px;
+  }
+}
+
+a.settings {
+  float:right;
+  margin-right: 5px;
+  color:darken($green,20%);
+  padding:10px;
+  line-height: 1;
+  margin-top: 4px;
+  &:hover {
+    background:darken($green,20%);
+    color:white;
+  }
+}
+
+// Main Application setup
+
+.ace_editor_wrapper {
+  width:100%;
+  position: relative;
+  * {resize:none;} /* pesky resize handles */
+  .ace_editor {
+    top: 0; bottom: 0; right: 0; left: 0;
+    height:100%;
+    position: absolute;
+  }
+}
+
+.editorFlex {
+  width:100%;
+}
+
+.wrapper, [ng-view] {
+  height:100%;
+}
+
+.wrapper {
+  margin-top:-45px;
+  padding-top:45px;
+}
+
+.panels {    
+  float:left;
+  width:100%;
+  height:100%;
+  border:0;
+  .panel {
+    height:100%;  
+    border:0;
+    border-right:1px solid #ddd;
+    & > div {
+      width:100%;
+    }
+  }
+}
+
+.row {
+  max-width: 100%;
+}
+
+/*
+  Files Pane
+*/ 
+
+
+.filespane {
+  border:0;
+  width:20%;
+  padding: 0;
+  overflow: scroll;
+}
+  ul {
+    max-height:0px;
+    -webkit-transition:all 0.2s;
+    &.open {
+      max-height:1000px;
+      -webkit-transition:all 2s;
+    }
+  }
+  li.directory {
+    a.folder {
+      font-weight: 600;
+    }
+  }
+  .filesList { // top UL
+    color:#000;
+    display: block;
+    list-style:none;
+    margin: 0;
+    font-size: 11px;
+    i {
+      margin-right:4px;
+      color:$pink;
+    }
+    li {
+      clear:both;
+      position: relative;
+      &.open > ul {
+        display: block;
+      }
+    }
+    a {
+      float: left;
+      width:100%;
+      border-top: 1px solid white;
+      border-bottom: 1px solid #ddd;
+      padding:5px;
+      color:$grey;
+      font-weight:normal;
+      @include transition(padding .2s);
+      &:hover, &.active {
+        cursor:pointer;
+        background:#fff;
+        // color:white;
+        // border-top-color:#646464;
+        border-left:2px solid $pink;
+        padding-left:10px;
+      }
+    }
+    li ul { // level 1
+      list-style:none;
+      // display: none;
+      // margin-left: 5%;
+      width:100%;
+      margin-left: 0;
+      border-left: 5px solid #888;
+      float: left;
+      overflow: hidden;
+      a {
+        padding-left: 5%;
+      }
+    }
+
+    li.bar {
+      background:$pink;
+      color:white;
+      padding:2px;
+      font-size:12px;
+      font-weight:bold;
+      span {
+        color:white;
+        top:4px;
+        i {
+          color:white;
+        }
+      }
+    }
+  }
+
+.repoActions {
+  width:100%;
+  .button {
+    top:auto;
+    // background:darken($green,10%);
+    background:#fff;
+    border:0;
+    font-weight: normal;
+    width:50%;
+    float: left;
+    border-bottom:1px solid $lightgrey;
+    padding:10px 0;
+    margin-bottom: 0;
+    i {
+      font-size:20px;
+      display: block;
+      width:100%;
+      text-align: center;
+    }
+    &:hover {
+      color:$pink;
+      padding:auto;
+      border-left:0;
+      padding:10px 0;
+    }
+    &:first-child {
+      border-right:1px solid $lightgrey;
+    }
+  }
+}
+
+span.addFolder {
+  font-size: 10px;
+  float: right;
+  position: absolute;
+  top: 7px;
+  right: 5px;
+  cursor:pointer;
+  &:hover {
+    color:$green;
+    i {
+      color:$green !important;
+    }
+  }
+}
+
+.fileHeader {
+  padding:20px 0px 0 0px;
+  background:#fff;
+  margin:0;
+  max-width: 100%;
+  width:100%;
+  border-bottom:1px solid $lightgrey;
+  .columns {
+    padding:0;
+  }
+  .close {
+    background:none;
+    border:0;
+    // color:$green;
+    color:#000;
+    padding:0;
+    top:15px;
+    right:10px;
+  }
+  h3 {
+    margin:0;
+    padding-left: 10px;
+  }
+  .controls {
+    text-align: right;
+    padding-right: 10px;
+  }
+}  
+
+
+/* Buttons */
+
+.button {
+  box-shadow: none;
+  &.success {
+    background:#5ABE8A;
+    border-color:#54B381;
+  }
+  &:hover {
+    background:#54B381;
+  }
+  &:focus, &:active {
+   background:#54B381; 
+   outline:0;
+  }
+}
+
+.editor {
+  padding:0;
+  width:80%;
+}
+
+.preview {
+  // width:30%;
+
+}
+
+/* Toolbar */
+ul.tools {
+  border-top:1px solid #ddd;
+  // border-bottom:1px solid #ddd;
+  clear: both;
+  li {
+    width: (100 / 17) * 1%;
+    display: inline-block;
+    margin:0;
+    position: relative;
+    overflow: hidden;
+  }
+  li:hover {
+    top:auto;
+  }
+  li:hover a {
+    color:$orange;
+  }
+  .button {
+    background:#fff;
+    border-bottom: 0;
+    padding:10px 0px;
+    color:black;
+    font-size: 15px;
+    margin:0;
+    float: left;
+    color:$grey;
+    border:0;
+    border-left:1px solid #ddd;
+    border-radius:0;
+    display: block;
+    width:100%;
+    text-align: center;
+    &:hover {
+      color:$orange;
+    }
+    &.inlineCode {
+      font-size: 11px;
+      padding:12px 10px;
+    }
+  }
+  li:first-child a {
+    border-left:none;
+  }
+  .filePicker {
+    position: absolute;
+    top: 0;
+    z-index: 99;
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+}
+
+/* Table Grid */
+
+ul.tools li.tableGrid {
+  overflow: visible;
+  &:hover ul {
+    display: block;
+  }
+  ul {
+    position: absolute;
+    width:170px;
+    display: none;
+    background:#fff;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    border:1px solid #ddd;
+    border-top: 0;
+    li {
+      width:100%;
+      clear:both;
+      display: block;
+      border-bottom: 1px solid #F7F7F7;
+      resize:none;
+      background:#fff;
+      span.dot {
+        display: block;
+        border-right: 1px solid #F7F7F7;
+        width:12.5%;
+        float: left;
+        height: 20px;
+        font-size: 40px;
+        color:#ddd;
+        line-height: 20px;
+        text-align: center;
+        &:hover {
+          color:$pink;
+        }
+        &.hover {
+          background:$green;
+        }
+      }
+    }
+  }
+  li.label {
+    background:#fff;
+    color:$grey;
+  }
+}
+
+/* Drag and Drop */
+div[dropzone] {
+    border: 10px dashed #fff;
+    text-align: center;
+    font: 20px bold;
+    color: white;
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    bottom:0;
+    z-index: 999;
+    background:$green;
+    display: none;
+    opacity:0.7;
+    &.hover {
+      border-color: red;
+    }
+    h1 {
+      color:white;
+      padding-top:48%;
+    }
+}
+
+.hovering [dropzone] {
+  display: block;
+}
+
+/*
+  Messages
+*/
+
+.alert-box {
+  margin:0;
+  border-left:0;
+  border-right:0;
+  font-weight: normal;
+  clear: both;
+  strong {
+    padding: 2px 5px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+
+/* 
+  Flexible panels.
+  Seriously.
+  THe compass implementation is broken
+  and covers the old flexbox spec.
+  FYI: http://the-echoplex.net/flexyboxes/?fixed-height=on&legacy=on&display=flex&flex-direction=column&flex-wrap=nowrap&justify-content=flex-start&align-items=flex-start&align-content=stretch&order%5B%5D=0&flex-grow%5B%5D=0&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto&order%5B%5D=0&flex-grow%5B%5D=1&flex-shrink%5B%5D=1&flex-basis%5B%5D=auto&align-self%5B%5D=auto 
+*/
+.flexWrapper {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: start;
+  -moz-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-align-content: stretch;
+  -ms-flex-line-pack: stretch;
+  align-content: stretch;
+  -webkit-box-align: start;
+  -moz-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.flexItem, .ace_editor_wrapper {
+  -webkit-box-ordinal-group: 1;
+  -moz-box-ordinal-group: 1;
+  -webkit-order: 0;
+  -ms-flex-order: 0;
+  order: 0;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  -webkit-align-self: auto;
+  -ms-flex-item-align: auto;
+  align-self: auto;
+}
+
+/* Prevew Pane */
+.panel.preview {
+  padding:0;
+}
+
+
+/* Overlay */
+
+.overlay {
+  position: absolute;
+  top:0;
+  left:0;
+  bottom: 0;
+  right: 0;
+  background:rgba(84, 179, 129, 0.6);
+  z-index: 99;
+  height:100%;
+  margin-top: 45px;
+  // display: none;
+  .overlayInner {
+    width:600px;
+    background:white;
+    padding:20px;
+    margin:0 auto;
+    top:30%;
+    position: relative;
+    .close {
+      position: absolute;
+      top:10px;
+      right:10px;
+      color:$green;
+    }
+  }
+}
+
+form {
+  &.waiting {
+    & > * {
+      visibility: hidden;
+
+    }
+    background:center center url('/assets/octocat-spinner-128.gif') no-repeat;
+  }
+}
+
+button, .button {
+  background:$green;
+  border:1px solid darken($green, 10%);
+  &:hover {
+    background:darken($green, 10%);
+  }
+}
