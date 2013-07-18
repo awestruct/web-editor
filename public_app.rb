@@ -56,7 +56,7 @@ module AwestructWebEditor
 
     # Git related APIs
     post '/repo/:repo_name/change_set' do |repo_name|
-      create_repo(repo_name).create_branch params[:name], params[:tracking_branch] || 'upstream/master'
+      create_repo(repo_name).create_branch params[:name]
     end
 
     post '/repo/:repo_name/commit' do |repo_name|
