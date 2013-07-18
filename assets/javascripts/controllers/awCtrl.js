@@ -63,7 +63,13 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     $scope.toggleOverlay = function(overlaytype) {
       $scope.data.overlaytype = overlaytype;
-      $scope.data.overlay = !$scope.data.overlay;
+      if(!!overlaytype) {
+        $scope.data.overlay = true;
+      }
+      else {
+       $scope.data.overlay = false; 
+      }
+
     }
 
     $scope.syncFiles = function() {
@@ -84,6 +90,11 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     $scope.removeMessage = function(el){
       $scope.data.messages.splice(el.$index,1);
     };
+
+    $scope.popupMessage = function(message){
+      $scope.data.popupmessage = message;
+      $scope.toggleOverlay('popupmessage');
+    }
 
     $scope.edit = function(file) {
         var path = file.links[0].url,
@@ -173,14 +184,25 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     $scope.saveSettings = function(settings) {
       $scope.data.waiting = true;
+
+      if($scope.repo) {
+        var method = "post";
+      }
+      else {
+        var method = "put"
+      }
+
       // PUT on init, POST on settings update
-      $http.put('/settings',settings)
+      $http[method]('/settings',settings)
         .success(function(response){
-          $scope.data.waiting = false;
-          $scope.overlay = false;
-          window.location.reload();
+          /* Switch Branches */
+          $scope.change_set(settings.branch, function() {
+            $scope.data.waiting = false;
+            $scope.overlay = false;
+            window.location.reload();
+          });
         })
-        .error(function(data, status, headers, config) {          
+        .error(function(data, status, headers, config) {
           // Find the error code
           alert('Oops, there has been an error. Please check your credentials and try again');
           $scope.data.waiting = false;
@@ -192,28 +214,43 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       $scope.data.waiting = true;
       $http.post('/repo/' + $scope.data.repo + '/commit', commitdata)
         .success(function(data) {
-          console.log(data);
           $scope.data.waiting = false;
+          $scope.toggleOverlay('push');
           $scope.data.commitdata = {};
         })
         .error(function(data){
           // console.log(data);
+          alert("Oops, there was an error, make sure you have saved changes to commit first.");
           $scope.data.waiting = false;
         });
     }
 
     $scope.push = function(pushdata) {
       /* Perform push and pull request */
-      console.log(pushdata);
+      $scope.data.waiting = true;
       $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
         .success(function(data){
+          // console.log(data);
+          $scope.data.waiting = false;
+          $scope.popupMessage("Success! Your pull request is accessible at "+data);
+        })
+        .error(function(data){
+          // console.log(data);
+          $scope.data.waiting = false;
+          alert("Error");
+        })
+    }
+
+    $scope.change_set = function(name, callback){
+      $http.post('/repo/' + $scope.data.repo + '/change_set', { name : name })
+        .success(function(data){
           console.log(data);
-          alert("Success, check the console for the message. This will not be an alert box for long");
+          callback();
         })
         .error(function(data){
           console.log(data);
           alert("error, check the console for the message. This will not be an alert box for long");
-        })
+        })      
     }
 
     $scope.handleRouteChange = function() {
