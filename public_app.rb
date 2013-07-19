@@ -38,7 +38,7 @@ module AwestructWebEditor
     end
 
     configure :production do
-      sprockets.js_compressor = :uglifier
+      #sprockets.js_compressor = :uglifier
       sprockets.css_compressor = :scss
     end
 
