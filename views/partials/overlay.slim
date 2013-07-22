@@ -1,5 +1,7 @@
 .overlayInner
   a.close(ng-click="toggleOverlay()") &times;
+  .progress(ng-show="data.waiting")
+    .meter(ng-style="{'width': data.progress + '%'}")
   form.init(method="PUT" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'settings'")
     h4 Configuration
     hr
@@ -21,16 +23,16 @@
     h4 Commit
     hr
     label Message
-    textarea(ng-model="data.commitdata.message")
+    textarea(ng-model="data.commitdata.message" required)
     button(ng-click="commit(data.commitdata)") Commit
 
   form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
     h2 Push & Pull Request
     hr
     label Title
-    input(type="text" ng-model="data.pushdata.title")
+    input(type="text" ng-model="data.pushdata.title" required)
     label Message
-    textarea(ng-model="data.pushdata.message")
+    textarea(ng-model="data.pushdata.message" required)
     button(ng-click="push(data.pushdata)") Push
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")

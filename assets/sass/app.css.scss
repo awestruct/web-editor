@@ -549,6 +549,10 @@ form {
   }
 }
 
+.meter {
+ @include transition(all 3s); 
+}
+
 button, .button {
   background:$green;
   border:1px solid darken($green, 10%);

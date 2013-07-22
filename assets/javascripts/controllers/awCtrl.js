@@ -13,6 +13,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     $scope.data = Data;
     $scope.data.folderState = {}; // record folder open/closed state
+    $scope.data.progress = 10;
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
@@ -67,6 +68,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         $scope.data.overlay = true;
       }
       else {
+       $scope.data.progress = 0;
+       $scope.data.waiting = false;
        $scope.data.overlay = false; 
       }
 
@@ -235,21 +238,21 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     $scope.push = function(pushdata) {
       /* Perform commit, push and pull request */
       $scope.data.waiting = true;
-
+      $scope.data.progress = 50;
       /* Start with the commit */
       $http.post('/repo/' + $scope.data.repo + '/commit', { message : pushdata.message })
         .success(function(data) {
           // $scope.data.waiting = false;
           console.log("Commit was successfull")
+          $scope.data.progress = 80;
 
           /* Move onto the push and pull req */
-
           $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
             .success(function(data){
               // console.log(data);
-              console.log("Push and PR successfull");
+              $scope.data.progress = 100;
               $scope.data.waiting = false;
-              $scope.popupMessage("Success! Your pull request is accessible at <a href='"+data+"'>"+data+"</a>");
+              $scope.popupMessage("Success! Your pull request is accessible at <a target='_blank' href='"+data+"'>"+data+"</a>");
             })
             .error(function(data){
               console.log(data);
