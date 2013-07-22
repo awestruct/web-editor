@@ -185,6 +185,10 @@ a.settings {
 
 .repoActions {
   width:100%;
+  .button[disabled] {
+    background:red;
+    color:blue;
+  }
   .button {
     top:auto;
     // background:darken($green,10%);

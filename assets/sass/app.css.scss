@@ -196,6 +196,17 @@ a.settings {
     border-bottom:1px solid $lightgrey;
     padding:10px 0;
     margin-bottom: 0;
+    color:$grey;
+    &[disabled] {
+      cursor: not-allowed;
+      color:#ccc;
+      i {
+        color:#ccc;
+      }
+      &:hover {
+        color:#ccc;
+      }
+    }
     i {
       font-size:20px;
       display: block;
@@ -205,6 +216,7 @@ a.settings {
     &:hover {
       color:$pink;
       padding:auto;
+      background:#fff;
       border-left:0;
       padding:10px 0;
     }
@@ -543,4 +555,12 @@ button, .button {
   &:hover {
     background:darken($green, 10%);
   }
+}
+
+.previewHolder {
+  text-align: center;
+  display: block;
+  height:500px;
+  background:center center url('/assets/octocat-spinner-128.gif') no-repeat;
+  padding-top:50px;
 }

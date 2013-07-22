@@ -114,8 +114,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       if(!!$scope.openEditors[path]) {
         session = $scope.openEditors[path];
         $scope.currentFile = file;
+        $scope.currentSession = session;
         openSession(session,file);
-        console.log("Opening existing session");
       }
       else {
         // goahead and grab the file
@@ -136,9 +136,15 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
             
             //  bind to change events
             session.on("change",function() {
+              var before = session.dirty;
               session.dirty = true;
+              if(!before) {
+                $scope.$apply();
+              }
+
             });
 
+            $scope.currentSession = session;
             openSession(session,file);
           });
       }
@@ -155,6 +161,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
             .success(function(response){            
               $scope.data.saving = false;
               session.dirty = false;
+              $scope.$apply();
               if($scope.previewWindow) {
                 $scope.previewWindow.document.write(response);
               }
@@ -226,19 +233,36 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     }
 
     $scope.push = function(pushdata) {
-      /* Perform push and pull request */
+      /* Perform commit, push and pull request */
       $scope.data.waiting = true;
-      $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
-        .success(function(data){
-          // console.log(data);
-          $scope.data.waiting = false;
-          $scope.popupMessage("Success! Your pull request is accessible at <a href='"+data+"'>"+data+"</a>");
+
+      /* Start with the commit */
+      $http.post('/repo/' + $scope.data.repo + '/commit', { message : pushdata.message })
+        .success(function(data) {
+          // $scope.data.waiting = false;
+          console.log("Commit was successfull")
+
+          /* Move onto the push and pull req */
+
+          $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
+            .success(function(data){
+              // console.log(data);
+              console.log("Push and PR successfull");
+              $scope.data.waiting = false;
+              $scope.popupMessage("Success! Your pull request is accessible at <a href='"+data+"'>"+data+"</a>");
+            })
+            .error(function(data){
+              console.log(data);
+              $scope.data.waiting = false;
+              alert("Error");
+            });
         })
         .error(function(data){
           // console.log(data);
+          alert("Oops, there was an error commiting your data, make sure you have saved changes to commit first.");
           $scope.data.waiting = false;
-          alert("Error");
-        })
+        });
+  
     }
 
     $scope.change_set = function(name, callback){
