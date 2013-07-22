@@ -1,7 +1,5 @@
 .overlayInner
   a.close(ng-click="toggleOverlay()") &times;
-  .progress(ng-show="data.waiting")
-    .meter(ng-style="{'width': data.progress + '%'}")
   form.init(method="PUT" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'settings'")
     h4 Configuration
     hr
@@ -27,7 +25,7 @@
     button(ng-click="commit(data.commitdata)") Commit
 
   form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
-    h2 Push & Pull Request
+    h2 Push & Pull Request 
     hr
     label Title
     input(type="text" ng-model="data.pushdata.title" required)

@@ -44,7 +44,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
               window.location = "/#/" + data.repo.split('/').pop();
             }
           }
-          else {
+          else { 
             $scope.toggleOverlay('settings');
           }
         })
@@ -205,12 +205,13 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       // PUT on init, POST on settings update
       $http[method]('/settings',settings)
         .success(function(response){
-          /* Switch Branches */
-          $scope.change_set(settings.branch, function() {
-            $scope.data.waiting = false;
-            $scope.overlay = false;
-            window.location.reload();
-          });
+          /* Switch Branches, wait 5 seconds before we switch */
+          console.log("Setting PUT is successfull");
+            $scope.change_set(function() {
+              $scope.data.waiting = false;
+              $scope.overlay = false;
+              window.location.reload();
+            });
         })
         .error(function(data, status, headers, config) {
           // Find the error code
@@ -242,17 +243,19 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       /* Start with the commit */
       $http.post('/repo/' + $scope.data.repo + '/commit', { message : pushdata.message })
         .success(function(data) {
-          // $scope.data.waiting = false;
           console.log("Commit was successfull")
-          $scope.data.progress = 80;
 
           /* Move onto the push and pull req */
           $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
             .success(function(data){
               // console.log(data);
-              $scope.data.progress = 100;
-              $scope.data.waiting = false;
-              $scope.popupMessage("Success! Your pull request is accessible at <a target='_blank' href='"+data+"'>"+data+"</a>");
+
+              /* Start a fresh branch */
+              $scope.change_set(function() {
+                $scope.data.progress = 100;
+                $scope.data.waiting = false;
+                $scope.popupMessage("Success! Your pull request is accessible at <a target='_blank' href='"+data+"'>"+data+"</a>");
+              });
             })
             .error(function(data){
               console.log(data);
@@ -268,15 +271,22 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
   
     }
 
-    $scope.change_set = function(name, callback){
+    $scope.change_set = function(callback){
+      var dateObj = new Date()
+          , month = dateObj.getUTCMonth()
+          , day = dateObj.getUTCDate()
+          , year = dateObj.getUTCFullYear()
+          , timestamp = dateObj.getTime();
+
+      var name = "changeset-"+ year + "-" + month + "-" + day + "-" + timestamp;
+
       $http.post('/repo/' + $scope.data.repo + '/change_set', { name : name })
         .success(function(data){
-          console.log(data);
+          console.log("Changed Branch!");
           callback();
         })
         .error(function(data){
-          console.log(data);
-          alert("error, check the console for the message. This will not be an alert box for long");
+          alert("Error, unable to change to changeset branch "+ name);
         })      
     }
 
