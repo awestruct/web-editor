@@ -37,7 +37,16 @@ module AwestructWebEditor
     put '/settings' do
       settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
       get_github_token settings
-      AwestructWebEditor::Repository.new({ :name => URI(settings['repo']).path.split('/').last }).clone
+      clone_result = AwestructWebEditor::Repository.new({ :name => URI(settings['repo']).path.split('/').last }).clone
+      if clone_result.first != 0
+        [500, clone_result[1]]
+      else
+        [200, 'Successfully cloned']
+      end
+    end
+
+    error do
+      "An error occurred while processing: #{env['sinatra.error'].name}. Message: #{env['sinatra.error'].message}"
     end
 
     helpers do

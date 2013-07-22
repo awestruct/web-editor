@@ -34,7 +34,11 @@ module AwestructWebEditor
 
     def clone
       github = create_github_client
-      fork_response = github.fork(URI(@settings['repo']).path[1..-1])
+      begin
+        fork_response = github.fork(URI(@settings['repo']).path[1..-1])
+      rescue Exception => e
+        return [500, e.message.join("\n")]
+      end
 
       #FileUtils.mkdir_p(File.join @base_repo_dir, @name)
       Dir.chdir(File.join @base_repo_dir) do
@@ -47,10 +51,8 @@ module AwestructWebEditor
 
       Bundler.with_clean_env do
         Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, stdout, stderr, wait_thr|
-          #exit_status = wait_thr.value.exitstatus
-          #puts exit_status
-          #$stdout.puts stdout
-          #$stdout.puts stderr
+          exit_status = wait_thr.value.exitstatus
+          [exit_status, stderr.readlines().join("\n")]
         end
       end
     end
@@ -140,7 +142,7 @@ module AwestructWebEditor
                                                        "#{upstream_response.owner.login}:#{upstream_response.master_branch}",
                                                        "#{@settings['username']}:#{@git_repo.lib.branch_current}", title, body)
       @git_repo.branch(upstream_response.master_branch).checkout
-      pull_request_result['url']
+      pull_request_result['html_url']
     end
 
     def file_content(file, binary = false)
