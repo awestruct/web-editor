@@ -14,9 +14,6 @@
     small eg: https://github.com/awestruct/awestruct.org
     input(name="repo" type="text" ng-model="settings.repo" required)
 
-    label Branch Name
-    input(type="text" ng-model="settings.branch")
-
     button.button(ng-click="saveSettings(settings)" ng-hide="settings.oauth_token") Initialize
     button.button(ng-click="saveSettings(settings)" ng-show="settings.oauth_token") Update
   
@@ -24,16 +21,16 @@
     h4 Commit
     hr
     label Message
-    textarea(ng-model="data.commitdata.message")
+    textarea(ng-model="data.commitdata.message" required)
     button(ng-click="commit(data.commitdata)") Commit
 
   form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
-    h2 Push & Pull Request
+    h2 Push & Pull Request 
     hr
     label Title
-    input(type="text" ng-model="data.pushdata.title")
+    input(type="text" ng-model="data.pushdata.title" required)
     label Message
-    textarea(ng-model="data.pushdata.message")
+    textarea(ng-model="data.pushdata.message" required)
     button(ng-click="push(data.pushdata)") Push
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")
