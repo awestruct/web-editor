@@ -20,6 +20,7 @@ aw.factory('Repo', function($http) {
   };
 
   Repo.prototype.saveFile = function(path,content) {
+    path = path.replace('./',''); // fix root level files
     return $http.post(path,{content:content});
   };
 

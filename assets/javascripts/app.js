@@ -64,7 +64,7 @@ aw.config(function($routeProvider, $locationProvider){
       controller : "AwCtrl"
     })
     .when('/preview',{
-      template: "Preview will show here on save",
+      template: "<div class='previewHolder'>Save a file to initialize preview</div>",
       reloadOnSearch : false
     })
     .when('/:repo',{

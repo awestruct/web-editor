@@ -1,9 +1,9 @@
 ul.filesList
   li.repoActions.right
-    a.button(ng-click="toggleOverlay('commit')")
-      i.icon-save
-      |   Commit
-    a.button(ng-click="toggleOverlay('push')")
+    a.button(ng-click="alert('to be coded')")
+      i.icon-cloud-download 
+      |   Pull Updates
+    button.button(ng-disabled="currentSession.dirty" ng-click="toggleOverlay('push')")
       i.icon-cloud-upload
       |   Push
 
