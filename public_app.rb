@@ -67,6 +67,10 @@ module AwestructWebEditor
       end
     end
 
+    post '/repo/:repo_name/pull_latest' do |repo_name|
+      repo = create_repo(repo_name)
+      repo.rebase(params.include? :overwrite)
+    end
 
     # Repo APIs
     post '/repo/:repo_name/push' do |repo_name|

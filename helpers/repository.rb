@@ -121,6 +121,23 @@ module AwestructWebEditor
       system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
     end
 
+    def rebase(overwrite, remote = 'upstream')
+      fetch_remote remote
+      github = create_github_client
+      upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
+      if overwrite
+        successful_return = system("git rebase upstream/#{upstream_repo.master_branch} -X ours")
+      else
+        successful_return = system("git rebase upstream/#{upstream_repo.master_branch}")
+      end
+
+      if successful_return
+        [200, 'Successful merge']
+      else
+        [500, 'Merge conflict detected']
+      end
+    end
+
     def remove_branch(branch_name)
       @git_repo.branch('master').checkout
       @git_repo.branch(branch_name).delete
