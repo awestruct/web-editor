@@ -75,9 +75,10 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     }
 
-    $scope.syncFiles = function() {
+    $scope.syncFiles = function(cb) {
       repo.get($scope.data.repo).then(function(res) {
        $scope.files = res.data;
+       cb();
       });      
     };
 
@@ -200,12 +201,14 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       }
       else {
         var method = "put"
+        $scope.data.repo = settings.repo.split('/').pop();
+        console.log($scope.data.repo);
       }
 
       // PUT on init, POST on settings update
       $http[method]('/settings',settings)
         .success(function(response){
-          /* Switch Branches, wait 5 seconds before we switch */
+          /* Switch Branches */
           console.log("Setting PUT is successfull");
             $scope.change_set(function() {
               $scope.data.waiting = false;
@@ -234,6 +237,30 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
           alert("Oops, there was an error, make sure you have saved changes to commit first.");
           $scope.data.waiting = false;
         });
+    }
+
+    $scope.pullLatest = function(overwrite) {
+      var data = {};
+      data.overwrite = !!overwrite;
+
+      $scope.data.popupmessage = 'Pulling latest from Github...';
+      $scope.toggleOverlay('popupmessage');
+
+      $http.post('/repo/' + $scope.data.repo + '/pull_latest', data)
+        .success(function(data, headers){
+          console.log("Success!", data, headers);
+          $scope.data.popupmessage += '<br>&#10003; Successfully pulled and merged latest';
+          $scope.data.popupmessage += '<br>Refreshing file list...';
+          $scope.toggleOverlay('popupmessage');
+          $scope.syncFiles(function() {
+            $scope.data.popupmessage += '<br>&#10003; File list refreshed. <br> Finished!';
+          });
+        })
+        .error(function() {
+          if(confirm("There are merge conflicts. Press Okay to overwrite any local changes. Press Cancel to return to editing.")) {
+            $scope.pullLatest(true);
+          }
+        })
     }
 
     $scope.push = function(pushdata) {

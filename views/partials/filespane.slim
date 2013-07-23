@@ -1,6 +1,6 @@
 ul.filesList
   li.repoActions.right
-    a.button(ng-click="alert('to be coded')")
+    a.button(ng-click="pullLatest()")
       i.icon-cloud-download 
       |   Pull Updates
     button.button(ng-disabled="currentSession.dirty" ng-click="toggleOverlay('push')")
