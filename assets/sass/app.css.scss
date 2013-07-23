@@ -539,6 +539,13 @@ div[dropzone] {
   }
 }
 
+.popupmessage {
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
 form {
   &.waiting {
     & > * {
