@@ -200,12 +200,14 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       }
       else {
         var method = "put"
+        $scope.data.repo = settings.repo.split('/').pop();
+        console.log($scope.data.repo);
       }
 
       // PUT on init, POST on settings update
       $http[method]('/settings',settings)
         .success(function(response){
-          /* Switch Branches, wait 5 seconds before we switch */
+          /* Switch Branches */
           console.log("Setting PUT is successfull");
             $scope.change_set(function() {
               $scope.data.waiting = false;
