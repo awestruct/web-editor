@@ -238,6 +238,21 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         });
     }
 
+    $scope.pullLatest = function(overwrite) {
+      var data = {};
+      data.overwrite = !!overwrite;
+      console.log(data);
+      $http.post('/repo/' + $scope.data.repo + '/pull_latest', data)
+        .success(function(data, headers){
+          console.log("Success!", data, headers);
+        })
+        .error(function() {
+          if(confirm("There are merge conflicts. Press Okay to overwrite any local changes. Press Cancel to return to editing.")) {
+            $scope.pullLatest(true);
+          }
+        })
+    }
+
     $scope.push = function(pushdata) {
       /* Perform commit, push and pull request */
       $scope.data.waiting = true;
