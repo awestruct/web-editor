@@ -1,6 +1,6 @@
 .DS_Store
-.sublime-workspace
-.sublime-project
+*.sublime-workspace
+*.sublime-project
 
 # Ignore bundler config
 /.bundle
