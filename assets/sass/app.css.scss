@@ -531,6 +531,9 @@ div[dropzone] {
     margin:0 auto;
     top:30%;
     position: relative;
+    &.overlay-cheat {
+      width:80%;
+    }
     .close {
       position: absolute;
       top:10px;

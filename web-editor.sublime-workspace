@@ -1,0 +1,479 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"over",
+				"overwrite"
+			],
+			[
+				"chan",
+				"change_set"
+			],
+			[
+				"time",
+				"timestamp"
+			],
+			[
+				"success",
+				"successfull"
+			],
+			[
+				"p",
+				"help"
+			],
+			[
+				"desc",
+				"description"
+			],
+			[
+				"a",
+				"afterSum"
+			],
+			[
+				"before",
+				"beforeSum"
+			],
+			[
+				"wid",
+				"widget-body"
+			],
+			[
+				"cha",
+				"change_set"
+			],
+			[
+				"pop",
+				"popupMessage"
+			],
+			[
+				"overl",
+				"toggleOverlay"
+			],
+			[
+				"ov",
+				"overlaytype"
+			],
+			[
+				"push",
+				"pushdata"
+			],
+			[
+				"commit",
+				"commitdata"
+			],
+			[
+				"repo",
+				"repoUrl"
+			],
+			[
+				"overlay",
+				"overlaytype"
+			],
+			[
+				"route",
+				"routeParams"
+			],
+			[
+				"folder",
+				"folderState"
+			],
+			[
+				"preview",
+				"previewWindow"
+			],
+			[
+				"rou",
+				"routeParams"
+			],
+			[
+				"Company",
+				"CompanyDb"
+			],
+			[
+				"feed",
+				"FeedDb"
+			],
+			[
+				"file",
+				"filename"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "List",
+	"command_palette":
+	{
+		"height": 375.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"update",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				" install",
+				"Package Control: Install Package"
+			],
+			[
+				"snippet bo",
+				"Snippet: border-box"
+			],
+			[
+				"java",
+				"Set Syntax: JavaScriptNext"
+			],
+			[
+				"javasc",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			]
+		],
+		"width": 579.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/.gitignore",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0185-book/book.sublime-project",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0185-book/ST2POWER.md",
+		"/Users/wesbos/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0185-book/book.sublime-workspace",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/filespane.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/sass/app.css.scss",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/controllers/awCtrl.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/asciidoc.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/controllers/toolsCtrl.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/services/repo.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/app.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/overlay.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0202-swiper/index.html",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/sass/app.scss",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/style.css",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/page-nosidebar.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/sidebar.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/page-home.php",
+		"/Users/wesbos/Library/Caches/Cleanup At Startup/Transmit/A43A91B4-4094-4783-B0E0-DD8D0760DEFB/.htaccess",
+		"/Volumes/Macintosh HD/wesbos/Downloads/brooks2011.sql",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/functions.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-config.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/footer.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/header.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/loop.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/wordpress/wp-content/themes/ladies-learning-code/single.php",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/test.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/routes.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/public/js/scripts.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/helpers.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/views/company.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/results.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/models/Option.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–HospitalConnection/CODE/app/config-development.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/helpers/repository.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/repos/awestruct.org/.git/config",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/repos/github-settings",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/public_app.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/stylesheets/.gitkeep",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/header.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/spec/public_app_spec.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/spec/secure_app_spec.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/README.adoc",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/tools.slim",
+		"/Users/wesbos/Desktop/bikes.md",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/repos/asciidoctor.github.com/commit",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/filetree.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/partials/layout.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/app.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/views/index.slim",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/package.json",
+		"/Users/wesbos/Library/Preferences/com.apple.LaunchServices.plist",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0157-madeinto/style.css",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/public/js/scripts.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/routes.coffee",
+		"/Users/wesbos/Desktop/;l/wat.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/helpers.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0164-hackeryou/fall 2012/material/courseLayout.md",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/exec_awestruct.rb",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/services/data.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/filters/filters.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/javascripts/vendor/underscore.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/partials/edit.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/public/css/style.styl",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/partials/edit-product.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/config-development.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/partials/edit-user.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/partials/edit-entrants.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/views/index.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/models/user.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/models/feed.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/app.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/public/javascripts/scripts.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/views/partials/layout.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/readme.md",
+		"/etc/hosts",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/app.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/company.jade",
+		"/Users/wesbos/.zshrc",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/partials/edit-pins.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/admin.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/layout.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/layout-admin.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/views/login.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/node_modules/angular-bridge/index.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/node_modules/angular-bridge/lib/index.js",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/views/layout.jade",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/config-development.coffee",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/package.json",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0201-kijiji/npm-debug.log",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/.-",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/0306–hospitalconnection/CODE/app/n",
+		"/Users/wesbos/Library/Application Support/Sublime Text 2/Settings/License.sublime_license",
+		"/Volumes/Macintosh HD/wesbos/Dropbox/redhat/web-editor/assets/stylesheets/app.css",
+		"/Users/wesbos/Desktop/yay.html"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 104.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"# projects",
+			"#project",
+			"project",
+			"todo",
+			"/<",
+			"reload",
+			"toggleOverlay",
+			"change_set",
+			"scope.data.repo",
+			"window.location",
+			"scope.data.repo",
+			"repo",
+			"scope.repo",
+			"change_set",
+			"settings",
+			"$scope.data.repo",
+			"change_set",
+			"changeset",
+			"change_set",
+			"changeset",
+			"push",
+			"transition",
+			"push",
+			"currentFile",
+			"dirty",
+			".php",
+			"eval",
+			"product",
+			"Field439",
+			"438",
+			"396",
+			"Field439",
+			"Field540",
+			"338",
+			"company",
+			"request",
+			"/company",
+			"previous experience with each brand below",
+			"editItem",
+			"popupmessage",
+			"message",
+			"ghost",
+			"toggleOver",
+			"method",
+			"push",
+			"message",
+			"repo_name",
+			"change_set",
+			"close",
+			"change_set",
+			"create_branch",
+			"branch_name",
+			"error",
+			"settings",
+			"push",
+			"settings",
+			"Repo",
+			"header",
+			"handleRou",
+			"handleRoute",
+			"routePArams",
+			"#",
+			"window.location",
+			"$scope.edit",
+			"assets",
+			"form",
+			"change_set",
+			"param",
+			"secureApp",
+			"overlay",
+			"ssl",
+			"#",
+			"new ",
+			"button",
+			"company",
+			"/javascript",
+			"save",
+			"handleRoute",
+			"console.log",
+			"files",
+			"open",
+			"save",
+			"dave",
+			",\n",
+			"bold",
+			"companyCtrl",
+			"$scope",
+			"Feed",
+			"feed",
+			"user.coffee",
+			"startFrom",
+			"/admin\"",
+			"/admin",
+			"flash",
+			"/login",
+			"connect"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 48.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 192.0
+	},
+	"project": "web-editor.sublime-project",
+	"replace":
+	{
+		"height": 54.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 188.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
