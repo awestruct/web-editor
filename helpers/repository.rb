@@ -20,6 +20,7 @@ module AwestructWebEditor
 
       if ENV['OPENSHIFT_DATA_DIR']
         @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
+        FileUtils.mkdir(File.join @base_repo_dir) unless File.exists? @base_repo_dir
       elsif ENV['RACK_ENV'] =~ /test/
         @base_repo_dir = 'tmp/repos'
       elsif content['base_repo_dir'] || content[:base_repo_dir]
