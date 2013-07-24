@@ -43,6 +43,7 @@ a.settings {
   padding:10px;
   line-height: 1;
   margin-top: 4px;
+  margin-left: 0;
   &:hover {
     background:darken($green,20%);
     color:white;
@@ -523,14 +524,29 @@ div[dropzone] {
   z-index: 99;
   height:100%;
   margin-top: 45px;
-  // display: none;
+  opacity:0;
+  @include transition(opacity .3s); 
+  &.overlay-open {
+    opacity:1;
+  }
+  &.animation-show {
+    opacity:0;
+  }
+  &.animation-hide {
+    opacity:0;
+  }
+
   .overlayInner {
     width:600px;
     background:white;
     padding:20px;
     margin:0 auto;
-    top:30%;
+    top:-100%;
     position: relative;
+    @include transition(top .3s); 
+    &.overlay-cheat {
+      width:80%;
+    }
     .close {
       position: absolute;
       top:10px;
