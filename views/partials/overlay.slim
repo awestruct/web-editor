@@ -1,4 +1,4 @@
-.overlayInner
+.overlayInner(center ng-class="'overlay-'+data.overlaytype")
   a.close(ng-click="toggleOverlay()") &times;
   form.init(method="PUT" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'settings'")
     h4 Configuration
@@ -35,3 +35,6 @@
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")
     p(ng-bind-html-unsafe="data.popupmessage")
+
+  .cheat(ng-show="data.overlaytype == 'cheat'")
+    ng-include(src="'partials/asciidoc.html'")
