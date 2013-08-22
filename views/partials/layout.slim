@@ -24,4 +24,4 @@ ng-include[src="'partials/header.html'"]
       
       div[ng-show="currentFile" scope-instance="editor" ui-ace] {{currentFile}}
   
-.overlay[ng-include="'partials/overlay.html'" ng-show="data.overlay"]
+.overlay[ng-include="'partials/overlay.html'" ng-show="data.overlay" ng-animate="'animation'" ng-class="{'overlay-open' : data.overlay }"]

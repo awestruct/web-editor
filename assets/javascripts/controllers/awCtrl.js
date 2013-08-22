@@ -13,6 +13,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     $scope.data = Data;
     $scope.data.folderState = {}; // record folder open/closed state
+    $scope.data.progress = 10;
     $scope.currentFile = false;
     $scope.ace = {};
     $scope.openEditors = {};
@@ -43,7 +44,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
               window.location = "/#/" + data.repo.split('/').pop();
             }
           }
-          else {
+          else { 
             $scope.toggleOverlay('settings');
           }
         })
@@ -67,14 +68,17 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         $scope.data.overlay = true;
       }
       else {
+       $scope.data.progress = 0;
+       $scope.data.waiting = false;
        $scope.data.overlay = false; 
       }
 
     }
 
-    $scope.syncFiles = function() {
+    $scope.syncFiles = function(cb) {
       repo.get($scope.data.repo).then(function(res) {
        $scope.files = res.data;
+       cb();
       });      
     };
 
@@ -114,8 +118,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       if(!!$scope.openEditors[path]) {
         session = $scope.openEditors[path];
         $scope.currentFile = file;
+        $scope.currentSession = session;
         openSession(session,file);
-        console.log("Opening existing session");
       }
       else {
         // goahead and grab the file
@@ -136,9 +140,15 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
             
             //  bind to change events
             session.on("change",function() {
+              var before = session.dirty;
               session.dirty = true;
+              if(!before) {
+                $scope.$apply();
+              }
+
             });
 
+            $scope.currentSession = session;
             openSession(session,file);
           });
       }
@@ -155,6 +165,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
             .success(function(response){            
               $scope.data.saving = false;
               session.dirty = false;
+              $scope.$apply();
               if($scope.previewWindow) {
                 $scope.previewWindow.document.write(response);
               }
@@ -190,17 +201,20 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       }
       else {
         var method = "put"
+        $scope.data.repo = settings.repo.split('/').pop();
+        console.log($scope.data.repo);
       }
 
       // PUT on init, POST on settings update
       $http[method]('/settings',settings)
         .success(function(response){
           /* Switch Branches */
-          $scope.change_set(settings.branch, function() {
-            $scope.data.waiting = false;
-            $scope.overlay = false;
-            window.location.reload();
-          });
+          console.log("Setting PUT is successfull");
+            $scope.change_set(function() {
+              $scope.data.waiting = false;
+              $scope.overlay = false;
+              window.location.reload();
+            });
         })
         .error(function(data, status, headers, config) {
           // Find the error code
@@ -225,31 +239,81 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         });
     }
 
-    $scope.push = function(pushdata) {
-      /* Perform push and pull request */
-      $scope.data.waiting = true;
-      $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
-        .success(function(data){
-          // console.log(data);
-          $scope.data.waiting = false;
-          $scope.popupMessage("Success! Your pull request is accessible at <a href='"+data+"'>"+data+"</a>");
+    $scope.pullLatest = function(overwrite) {
+      var data = {};
+      data.overwrite = !!overwrite;
+
+      $scope.data.popupmessage = 'Pulling latest from Github...';
+      $scope.toggleOverlay('popupmessage');
+
+      $http.post('/repo/' + $scope.data.repo + '/pull_latest', data)
+        .success(function(data, headers){
+          console.log("Success!", data, headers);
+          $scope.data.popupmessage += '<br>&#10003; Successfully pulled and merged latest';
+          $scope.data.popupmessage += '<br>Refreshing file list...';
+          $scope.toggleOverlay('popupmessage');
+          $scope.syncFiles(function() {
+            $scope.data.popupmessage += '<br>&#10003; File list refreshed. <br> Finished!';
+          });
         })
-        .error(function(data){
-          // console.log(data);
-          $scope.data.waiting = false;
-          alert("Error");
+        .error(function() {
+          if(confirm("There are merge conflicts. Press Okay to overwrite any local changes. Press Cancel to return to editing.")) {
+            $scope.pullLatest(true);
+          }
         })
     }
 
-    $scope.change_set = function(name, callback){
+    $scope.push = function(pushdata) {
+      /* Perform commit, push and pull request */
+      $scope.data.waiting = true;
+      $scope.data.progress = 50;
+      /* Start with the commit */
+      $http.post('/repo/' + $scope.data.repo + '/commit', { message : pushdata.message })
+        .success(function(data) {
+          console.log("Commit was successfull")
+
+          /* Move onto the push and pull req */
+          $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
+            .success(function(data){
+              // console.log(data);
+
+              /* Start a fresh branch */
+              $scope.change_set(function() {
+                $scope.data.progress = 100;
+                $scope.data.waiting = false;
+                $scope.popupMessage("Success! Your pull request is accessible at <a target='_blank' href='"+data+"'>"+data+"</a>");
+              });
+            })
+            .error(function(data){
+              console.log(data);
+              $scope.data.waiting = false;
+              alert("Error");
+            });
+        })
+        .error(function(data){
+          // console.log(data);
+          alert("Oops, there was an error commiting your data, make sure you have saved changes to commit first.");
+          $scope.data.waiting = false;
+        });
+  
+    }
+
+    $scope.change_set = function(callback){
+      var dateObj = new Date()
+          , month = dateObj.getUTCMonth()
+          , day = dateObj.getUTCDate()
+          , year = dateObj.getUTCFullYear()
+          , timestamp = dateObj.getTime();
+
+      var name = "changeset-"+ year + "-" + month + "-" + day + "-" + timestamp;
+
       $http.post('/repo/' + $scope.data.repo + '/change_set', { name : name })
         .success(function(data){
-          console.log(data);
+          console.log("Changed Branch!");
           callback();
         })
         .error(function(data){
-          console.log(data);
-          alert("error, check the console for the message. This will not be an alert box for long");
+          alert("Error, unable to change to changeset branch "+ name);
         })      
     }
 
