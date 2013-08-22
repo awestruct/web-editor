@@ -4,6 +4,8 @@ require 'rack'
 require 'rack/ssl'
 require 'octokit'
 require 'uri'
+require 'digest/sha2'
+require 'sinatra/cookies'
 
 require_relative 'helpers/link'
 require_relative 'public_app'
@@ -11,8 +13,8 @@ require_relative 'public_app'
 module AwestructWebEditor
   class SecureApp < Sinatra::Base
     set :ssl, lambda { |_| development? }
+    enable :sessions
 
-    use AwestructWebEditor::PublicApp
     use Rack::SSL, :exclude => lambda { |_| development? }
 
     configure :development do
@@ -25,8 +27,24 @@ module AwestructWebEditor
       enable :logging, :dump_errors, :raise_errors
     end
 
+    before do
+      session['token'] = (Digest::SHA512.new << (Digest::SHA512.new << read_settings['oauth_token']).to_s << read_settings['client_id']).to_s
+      time = DateTime.now.iso8601
+      response.headers['time'] = time
+      cookies['token'] = Digest::SHA512.new << "#{session['token']}"
+      response.headers['token'] = Digest::SHA512.new << "#{session['token']}#{time}"
+
+      # check the token they have sent
+      request_token = env['token']
+      request_time = env['time']
+      unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+        halt 401
+      end
+    end
+
+    use AwestructWebEditor::PublicApp
     get '/settings' do
-      [200, JSON.dump(read_settings)]
+      [200, JSON.dump(read_settings.reject { |k,v| /oauth|client/ =~ k})]
     end
 
     post '/settings' do
@@ -50,9 +68,18 @@ module AwestructWebEditor
     end
 
     helpers do
+      include Sinatra::Cookies
+
       def settings_storage_file
-        base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
-        File.join(base, 'github-settings')
+        if ENV['OPENSHIFT_DATA_DIR']
+          @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
+          FileUtils.mkdir(File.join @base_repo_dir) unless File.exists? @base_repo_dir
+        elsif ENV['RACK_ENV'] =~ /test/
+          @base_repo_dir = 'tmp/repos'
+        else
+          @base_repo_dir = 'repos'
+        end
+        File.join(@base_repo_dir, 'github-settings')
       end
 
       def read_settings

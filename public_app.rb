@@ -7,12 +7,15 @@ require 'sprockets-sass'
 require 'sprockets-helpers'
 require 'bundler'
 require 'open3'
+require 'date'
+require 'digest/sha2'
 
 require_relative 'helpers/repository'
 
 module AwestructWebEditor
   class PublicApp < Sinatra::Base
     set :sprockets, Sprockets::Environment.new(root)
+    enable :sessions
 
     configure do
       # Setup Sprockets
@@ -40,6 +43,22 @@ module AwestructWebEditor
     configure :production do
       #sprockets.js_compressor = :uglifier
       sprockets.css_compressor = :scss
+    end
+
+    before %r{^\/(repo|preview)(\/[\w]+)*} do
+      # check the token they have sent
+      request_token = env['token']
+      request_time = env['time']
+      unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+        halt 401
+      end
+    end
+
+    after do
+      time = DateTime.now.iso8601
+      response.headers['time'] = time
+      #cookies['token'] = Digest::SHA512.new << "#{session['token']}"
+      response.headers['token'] = (Digest::SHA512.new << "#{cookies['token']}#{time}").to_s
     end
 
     # Views
@@ -152,6 +171,7 @@ module AwestructWebEditor
 
     helpers do
       include Sprockets::Helpers
+      include Sinatra::Cookies
 
       def create_repo(repo_name)
         AwestructWebEditor::Repository.new({ :name => repo_name })
