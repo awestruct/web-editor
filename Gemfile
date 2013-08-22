@@ -14,6 +14,10 @@ gem 'git', '~> 1.2'
 gem 'rack-ssl', '~> 1.3'
 gem 'sprockets-sass', '~> 1.0'
 gem 'execjs', '~> 1.4.0'
+gem 'therubyracer', '~> 0.12', :platforms => :ruby
+gem 'therubyrhino', '~> 2.0.2', :platforms => :jruby
+
+# Sorry windows, there just isn't any good javascript platforms for you, you need JScript
 
 # Gems related to the use of awestruct
 group :awestruct do
