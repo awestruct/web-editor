@@ -6,6 +6,7 @@ require 'octokit'
 require 'uri'
 require 'digest/sha2'
 require 'sinatra/cookies'
+require 'securerandom'
 
 require_relative 'helpers/link'
 require_relative 'public_app'
@@ -28,18 +29,26 @@ module AwestructWebEditor
     end
 
     before do
-      session['token'] = (Digest::SHA512.new << (Digest::SHA512.new << read_settings['oauth_token']).to_s << read_settings['client_id']).to_s
-      time = DateTime.now.iso8601
-      response.headers['time'] = time
-      cookies['token'] = Digest::SHA512.new << "#{session['token']}"
-      response.headers['token'] = Digest::SHA512.new << "#{session['token']}#{time}"
+      unless session['token']
+        session['token'] = Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes
+      end
 
       # check the token they have sent
-      request_token = env['token']
-      request_time = env['time']
-      unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
-        halt 401
+      if cookies['token']
+        request_token = env['token']
+        request_time = env['time']
+        unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+          halt 401
+        end
+      else
+        cookies['token'] = Digest::SHA512.new << "#{session['token']}"
       end
+    end
+
+    after do
+      time = DateTime.now.iso8601
+      response.headers['time'] = time
+      response.headers['token'] = Digest::SHA512.new << "#{session['token']}#{time}"
     end
 
     use AwestructWebEditor::PublicApp

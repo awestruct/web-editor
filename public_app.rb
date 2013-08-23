@@ -9,6 +9,7 @@ require 'bundler'
 require 'open3'
 require 'date'
 require 'digest/sha2'
+require 'securerandom'
 
 require_relative 'helpers/repository'
 
@@ -46,18 +47,24 @@ module AwestructWebEditor
     end
 
     before %r{^\/(repo|preview)(\/[\w]+)*} do
+      unless session['token']
+        session['token'] = Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes
+      end
       # check the token they have sent
-      request_token = env['token']
-      request_time = env['time']
-      unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
-        halt 401
+      if cookies['token']
+        request_token = env['token']
+        request_time = env['time']
+        unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+          halt 401
+        end
+      else
+        cookies['token'] = Digest::SHA512.new << "#{session['token']}"
       end
     end
 
     after do
       time = DateTime.now.iso8601
       response.headers['time'] = time
-      #cookies['token'] = Digest::SHA512.new << "#{session['token']}"
       response.headers['token'] = (Digest::SHA512.new << "#{cookies['token']}#{time}").to_s
     end
 
