@@ -21,7 +21,6 @@ aw.directive('center',function($window){
       })
 
       angular.element($window).bind('resize',function(e){
-        console.log(scope.$parent.data.overlaytype)
         resize();
       });
     }

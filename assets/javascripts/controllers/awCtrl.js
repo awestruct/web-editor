@@ -39,7 +39,6 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         .success(function(data, status, headers, config){
           if(data.repo) {
             $scope.settings = data;
-
             if(!$routeParams.repo) { // if we dont have any route params, route them!
               window.location = "/#/" + data.repo.split('/').pop();
             }
@@ -50,7 +49,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen
-          $scope.data.overlay = true;
+          // $scope.data.overlay = true;
+          $scope.toggleOverlay('settings');
         });
 
        repo = new Repo();
