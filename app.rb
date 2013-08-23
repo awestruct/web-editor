@@ -7,6 +7,7 @@ require 'uri'
 require 'digest/sha2'
 require 'sinatra/cookies'
 require 'securerandom'
+require 'sass'
 
 require_relative 'helpers/link'
 require_relative 'public_app'
@@ -30,30 +31,36 @@ module AwestructWebEditor
 
     before do
       unless session['token']
-        session['token'] = Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes
+        session['token'] = (Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes).to_s
       end
 
       # check the token they have sent
       if cookies['token']
         request_token = env['token']
         request_time = env['time']
-        unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+        unless request_token == (Digest::SHA512.new << "#{session['token']}#{request_time}").to_s
           halt 401
         end
       else
-        cookies['token'] = Digest::SHA512.new << "#{session['token']}"
+        cookies['token'] = (Digest::SHA512.new << "#{session['token']}").to_s
       end
     end
 
     after do
       time = DateTime.now.iso8601
       response.headers['time'] = time
-      response.headers['token'] = Digest::SHA512.new << "#{session['token']}#{time}"
+      response.headers['token'] = (Digest::SHA512.new << "#{session['token']}#{time}").to_s
     end
 
     use AwestructWebEditor::PublicApp
     get '/settings' do
-      [200, JSON.dump(read_settings.reject { |k,v| /oauth|client/ =~ k})]
+      settings = read_settings
+
+      if settings.is_a? Hash
+        settings = settings.reject { |k,v| /oauth|client/ =~ k}
+      end
+
+      [200, JSON.dump(settings)]
     end
 
     post '/settings' do
