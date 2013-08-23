@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sass'
 require 'json'
 require 'slim'
 require 'sprockets'
@@ -48,17 +49,17 @@ module AwestructWebEditor
 
     before %r{^\/(repo|preview)(\/[\w]+)*} do
       unless session['token']
-        session['token'] = Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes
+        session['token'] = (Digest::SHA512.new << SecureRandom.uuid << SecureRandom.random_bytes).to_s
       end
       # check the token they have sent
       if cookies['token']
         request_token = env['token']
         request_time = env['time']
-        unless request_token == Digest::SHA512.new << "#{session['token']}#{request_time}"
+        unless request_token == (Digest::SHA512.new << "#{session['token']}#{request_time}").to_s
           halt 401
         end
       else
-        cookies['token'] = Digest::SHA512.new << "#{session['token']}"
+        cookies['token'] = (Digest::SHA512.new << "#{session['token']}").to_s
       end
     end
 

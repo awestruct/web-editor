@@ -38,10 +38,9 @@ module AwestructWebEditor
       begin
         fork_response = github.fork(URI(@settings['repo']).path[1..-1])
       rescue Exception => e
-        return [500, e.message.join("\n")]
+        return [500, e.message]
       end
 
-      #FileUtils.mkdir_p(File.join @base_repo_dir, @name)
       Dir.chdir(File.join @base_repo_dir) do
         git = Git.clone(fork_response.ssh_url, @name)
         git.add_remote('upstream', fork_response.parent.git_url)
@@ -66,14 +65,16 @@ module AwestructWebEditor
       default_ignores = [%r!(.gitignore$)|(.git$)|(_site$)|(.awestruct$)|(.awestruct_ignore$)|(_config$)|(_ext$)|(.git$)|(.travis.yml$)|(_tmp$)|(.sass-cache$)!]
       files = []
 
-      Find.find(base_repository_path) do |path|
-        if Regexp.union(default_ignores).match(path.to_s)
-          Find.prune
-        end
+      if File.exists? base_repository_path
+        Find.find(base_repository_path) do |path|
+          if Regexp.union(default_ignores).match(path.to_s)
+            Find.prune
+          end
 
-        if regexp_ignores.match(path.to_s) || File.directory?(path)
-          if File.basename(path.to_s) != @name
-            files << file_info(path)
+          if regexp_ignores.match(path.to_s) || File.directory?(path)
+            if File.basename(path.to_s) != @name
+              files << file_info(path)
+            end
           end
         end
       end
