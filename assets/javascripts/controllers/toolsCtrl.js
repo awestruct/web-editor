@@ -17,11 +17,6 @@ function ToolsCtrl($scope, Data){
       // Put the image placeholder up
       $scope.format('upload-image', name);
       
-      // upload the image (To come with APIS)
-      // formdata.append('content',files[i]);
-      // formdata.append('binary', true);
-      // formdata.content = files[i];
-      // formdata.binary = true;
 
       var path = $scope.data.repoUrl + "/images/"+name;
 
@@ -31,7 +26,6 @@ function ToolsCtrl($scope, Data){
 
       $scope.$apply();
 
-      // TODO: replace the paths once uploaded 
       $scope.editor.replace('!['+name+']('+encodeURI(path)+')', {
         needle : "![uploading "+name+". . .]()"
       });

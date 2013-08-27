@@ -5,13 +5,11 @@ var aw = angular.module('aw',['ui.ace', 'ngRoute','angular-underscore', 'ngResou
     var token = window.token,
         time = new Date().getTime().toString().substring(0,8)
         shaObj = new jsSHA(token + "" + time, "TEXT");
-        console.log("This is the time sent: ", time);
     return shaObj.getHash("SHA-512", "HEX");
   };
 
   $httpProvider.defaults.headers.common['time'] = function() {
     var time = new Date().getTime().toString().substring(0,8);
-    console.log("This is the time sent: ", time);
     return new Date().getTime().toString().substring(0,8)
   };
   

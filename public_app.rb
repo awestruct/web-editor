@@ -17,6 +17,7 @@ require 'uri'
 require 'sinatra/cookies'
 
 require_relative 'helpers/repository'
+require_relative 'helpers/link'
 
 module AwestructWebEditor
   class PublicApp < Sinatra::Base
