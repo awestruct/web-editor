@@ -1,22 +1,20 @@
-var aw = angular.module('aw',['ui.ace', 'angular-underscore', 'ngResource'],function($httpProvider) {
+var aw = angular.module('aw',['ui.ace', 'ngRoute','angular-underscore', 'ngResource'],function($httpProvider) {
   
   // Custom headers for authentication 
-  function getCookie(name) {
-    var parts = document.cookie.split(name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-  }
-
   $httpProvider.defaults.headers.common['token'] = function() {
-    var token = getCookie('token'),
-        time = new Date().toISOString(),
+    var token = window.token,
+        time = new Date().getTime().toString().substring(0,8)
         shaObj = new jsSHA(token + "" + time, "TEXT");
+        console.log("This is the time sent: ", time);
     return shaObj.getHash("SHA-512", "HEX");
-  }
-
-  $httpProvider.defaults.headers.common['time'] = function() {
-    return new Date().toISOString();
   };
 
+  $httpProvider.defaults.headers.common['time'] = function() {
+    var time = new Date().getTime().toString().substring(0,8);
+    console.log("This is the time sent: ", time);
+    return new Date().getTime().toString().substring(0,8)
+  };
+  
   // Use x-www-form-urlencoded Content-Type
  $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
@@ -91,3 +89,20 @@ aw.config(function($routeProvider, $locationProvider){
       template : "Error"
     });
 });
+
+// Factory to hold the token
+aw.factory('Token',function() {
+  return { token : '' };
+});
+
+aw.run(function($http, Token) {
+  // // Get a token first
+  $http.get('/token')
+    .success(function(data, status, headers, config){
+      window.token = Token.token = headers().base_token;
+      console.log(headers().base_token);
+    })
+    .error(function() {
+      alert("Error getting token");
+    });
+})

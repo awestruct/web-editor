@@ -34,6 +34,8 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       Note: This is only called once per full page load
     */
     $scope.init = function() {
+
+
       // check and get the settings
       $http.get('/settings')
         .success(function(data, status, headers, config){
