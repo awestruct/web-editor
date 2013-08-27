@@ -1,7 +1,7 @@
 require 'rspec/core/rake_task'
 require 'guard'
 
-require './app'
+require './public_app'
 
 task :default => 'test:spec'
 

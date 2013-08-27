@@ -31,6 +31,7 @@ module AwestructWebEditor
 
       @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings')
+      @settings['oauth_token'] = content['token'] || content[:token] || nil
     end
 
     def clone
@@ -184,8 +185,7 @@ module AwestructWebEditor
     private
 
     def create_github_client
-      Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'],
-                          :client_id => @settings['client_id'])
+      Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'])
     end
   end
 end
