@@ -32,8 +32,18 @@ aw.factory('Repo', function($http) {
     fd.append("content", file);
     fd.append("binary", true);
 
-    xhr.addEventListener("load", callback, false);
+
+    // Set auth headers, we usually do this on $http, but since we are
+    // stepping outside $http, we need to do it here
+    var token = window.token,
+        time = new Date().getTime().toString().substring(0,8)
+        shaObj = new jsSHA(token + "" + time, "TEXT"),
+        hash = shaObj.getHash("SHA-512", "HEX");
+
     xhr.open("POST", path);
+    xhr.setRequestHeader("token", hash);
+    xhr.setRequestHeader("time",time);
+    xhr.addEventListener("load", callback, false);
     xhr.send(fd);
   };
 
