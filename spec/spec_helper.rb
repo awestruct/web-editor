@@ -9,7 +9,7 @@ require 'fileutils'
 require 'shellwords'
 require 'uri'
 
-require_relative '../app.rb'
+require_relative '../public_app.rb'
 require_relative '../helpers/repository'
 require_relative '../helpers/link'
 

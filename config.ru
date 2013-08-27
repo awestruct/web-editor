@@ -6,7 +6,7 @@ require 'sass'
 require 'compass'
 require 'uglifier'
 
-require File.join(File.dirname(__FILE__), 'app.rb')
+require File.join(File.dirname(__FILE__), 'public_app.rb')
 
 set :run, false
 set :raise_errors, true
@@ -15,4 +15,4 @@ map '/assets' do
   run AwestructWebEditor::PublicApp.sprockets
 end
 
-run AwestructWebEditor::SecureApp
+run AwestructWebEditor::PublicApp
