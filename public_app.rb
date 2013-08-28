@@ -63,17 +63,19 @@ module AwestructWebEditor
     end
 
     before '/token' do
-      @auth ||= Rack::Auth::Basic::Request.new request.env
-      if @auth.provided? && @auth.basic? && @auth.credentials
-        session['gh-pass'] = @auth.credentials[1]
-        begin
-          get_octokit_client(@auth.credentials[0]).user
-          write_settings(read_settings().merge({'username' => @auth.credentials[0]}))
-        rescue Octokit::Unauthorized => e
-          halt 401, e.to_s
+      unless session['gh-pass'] and read_settings()['username']
+        @auth ||= Rack::Auth::Basic::Request.new request.env
+        if @auth.provided? && @auth.basic? && @auth.credentials
+          session['gh-pass'] = @auth.credentials[1]
+          begin
+            get_octokit_client(@auth.credentials[0]).user
+            write_settings(read_settings().merge({'username' => @auth.credentials[0]}))
+          rescue Octokit::Unauthorized => e
+            halt 401, e.to_s
+          end
+        else
+          halt 401, 'Unauthorized'
         end
-      else
-        halt 401, 'Unauthorized'
       end
     end
 
