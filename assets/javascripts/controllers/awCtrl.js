@@ -1,4 +1,4 @@
-function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
+function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
     
     window.scope = $scope;
 
@@ -34,47 +34,62 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     */
     $scope.init = function() {
 
+      console.log("Token - ",window.token)
 
       // check and get the settings
       $http.get('/settings')
         .success(function(data, status, headers, config){
+          console.log("get /settings Successful!");
           if(data.repo) {
             $scope.settings = data;
             if(!$routeParams.repo) { // if we dont have any route params, route them!
               window.location = "/#/" + data.repo.split('/').pop();
             }
+            // Setup the repo
+             repo = new Repo();
+             repo.get($scope.data.repo).then(function(res) {
+             $scope.files = res.data;
+             // trigger a route change to load file if they have come via a permalink
+             $scope.handleRouteChange();
+            });
           }
           else {
             // $scope.toggleOverlay('settings');
-            $scope.login();
+            console.log("There are no settings returned, clone the repo?");
+            $scope.toggleOverlay('login');
           }
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen
           // $scope.data.overlay = true;
-          $scope.login();
+          console.log("There was an error getting /settings")
+          $scope.toggleOverlay('login');
         });
 
-       repo = new Repo();
-       repo.get($scope.data.repo).then(function(res) {
-        $scope.files = res.data;
-        // trigger a route change to load file if they have come via a permalink
-        $scope.handleRouteChange();
-       });
+
 
     };
 
-    $scope.login = function() {
-      $scope.toggleOverlay('login');
-    }
+    
+    $scope.getToken = function(settings) {
+      if(settings) {
+        var config = {headers:  {
+                'Authorization': 'Basic '+btoa(settings.username + ":" + settings.password)  // Base64
+            }
+        };        
+      }
+      else {
+        settings = {};
+      }
 
-    $scope.getToken = function() {
-      $http.post('/token',settings)
+      $http.get('/token',config)
         .success(function(data, status, headers, config){
           $scope.data.waiting = false;
-          $scope.overlay = false;
+          $scope.data.overlay = false;
           window.token = headers().base_token;
-          alert("Token returned"+window.token);
+          console.log("Token returned "+window.token);
+          // Try it again, now with the token in place
+          $scope.init();
         })
         .error(function(data, status, headers, config) {
           // Find the error code
@@ -233,7 +248,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
           console.log("Setting PUT is successfull");
             $scope.change_set(function() {
               $scope.data.waiting = false;
-              $scope.overlay = false;
+              $scope.data.overlay = false;
               window.location.reload();
             });
         })

@@ -99,12 +99,12 @@ aw.run(function($http, Token) {
   // 3. Then POST to /token with the username and password
   // 4. We will return with a token
   // Get a token first
-  $http.get('/token')
-    .success(function(data, status, headers, config){
-      // This should be offloaded to a service
-      window.token = Token.token = headers().base_token;
-    })
-    .error(function() {
-      alert("Error getting token");
-    });
+  // $http.get('/token')
+  //   .success(function(data, status, headers, config){
+  //     // This should be offloaded to a service
+  //     window.token = Token.token = headers().base_token;
+  //   })
+  //   .error(function() {
+  //     alert("Error getting token");
+  //   });
 })
