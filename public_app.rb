@@ -1,20 +1,26 @@
-require 'sinatra/base'
-require 'sass'
-require 'json'
+# Core
+require 'open3'
+require 'date'
+require 'digest/sha2'
+require 'securerandom'
+require 'uri'
+
+# External
+require 'bundler'
 require 'rack/ssl'
+require 'rack/auth/basic'
+require 'sinatra/base'
+require 'sinatra/cookies'
+require 'octokit'
+require 'json'
+
+# Front end
+require 'sass'
 require 'slim'
 require 'sprockets'
 require 'compass'
 require 'sprockets-sass'
 require 'sprockets-helpers'
-require 'bundler'
-require 'open3'
-require 'date'
-require 'digest/sha2'
-require 'securerandom'
-require 'octokit'
-require 'uri'
-require 'sinatra/cookies'
 
 require_relative 'helpers/repository'
 require_relative 'helpers/link'
@@ -56,6 +62,23 @@ module AwestructWebEditor
       check_token env['token']
     end
 
+    before '/token' do
+      unless session['gh-pass'] and read_settings()['username']
+        @auth ||= Rack::Auth::Basic::Request.new request.env
+        if @auth.provided? && @auth.basic? && @auth.credentials
+          session['gh-pass'] = @auth.credentials[1]
+          begin
+            get_octokit_client(@auth.credentials[0]).user
+            write_settings(read_settings().merge({'username' => @auth.credentials[0]}))
+          rescue Octokit::Unauthorized => e
+            halt 401, e.to_s
+          end
+        else
+          halt 401, 'Unauthorized'
+        end
+      end
+    end
+
     get '/token' do
       get_token
     end
@@ -65,19 +88,19 @@ module AwestructWebEditor
       settings = read_settings
 
       if settings.is_a? Hash
-        settings = settings.reject { |k,v| /oauth|client/ =~ k}
+        settings = settings.reject { |k,_| /oauth|client/ =~ k}
       end
 
       [200, JSON.dump(settings)]
     end
 
     post '/settings' do
-      settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
+      settings = read_settings().merge({ 'repo' => params['repo'] })
       write_settings settings
     end
 
     put '/settings' do
-      settings = { 'repo' => params['repo'], 'username' => params['username'], 'password' => params['password'] }
+      settings = read_settings().merge({ 'repo' => params['repo'] })
       get_github_token settings
       clone_result = AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
                                                         :token => session[:github_auth]).clone
@@ -98,7 +121,7 @@ module AwestructWebEditor
       slim :index
     end
 
-    get '/partials/*.*' do |basename, ext|
+    get '/partials/*.*' do |basename, _|
       slim "partials/#{basename}".to_sym
     end
 
@@ -110,10 +133,10 @@ module AwestructWebEditor
     end
 
     post '/repo/:repo_name/commit' do |repo_name|
-      unless create_repo(repo_name).commit(params[:message]).nil?
-        [200, 'Success']
-      else
+      if create_repo(repo_name).commit(params[:message]).nil?
         [500, 'Error committing']
+      else
+        [200, 'Success']
       end
     end
 
@@ -237,7 +260,7 @@ module AwestructWebEditor
             get_github_token JSON.load(f)
           end
         else
-          ''
+          {}
         end
       end
 
@@ -249,7 +272,7 @@ module AwestructWebEditor
 
       def get_github_token(settings)
         unless session[:github_auth]
-          client = Octokit::Client.new(:login => settings['username'], :password => settings['password'])
+          client = get_octokit_client(settings['username'])
           # if token_id (get token, save in session)
           result = {}
           if settings['token_id']
@@ -309,6 +332,11 @@ module AwestructWebEditor
           end
         end
       end
+
+      def get_octokit_client(username)
+        Octokit::Client.new(:login => username, :password => session['gh-pass'])
+      end
     end
+
   end
 end
