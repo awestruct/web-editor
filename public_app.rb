@@ -1,20 +1,26 @@
-require 'sinatra/base'
-require 'sass'
-require 'json'
+# Core
+require 'open3'
+require 'date'
+require 'digest/sha2'
+require 'securerandom'
+require 'uri'
+
+# External
+require 'bundler'
 require 'rack/ssl'
+require 'rack/auth/basic'
+require 'sinatra/base'
+require 'sinatra/cookies'
+require 'octokit'
+require 'json'
+
+# Front end
+require 'sass'
 require 'slim'
 require 'sprockets'
 require 'compass'
 require 'sprockets-sass'
 require 'sprockets-helpers'
-require 'bundler'
-require 'open3'
-require 'date'
-require 'digest/sha2'
-require 'securerandom'
-require 'octokit'
-require 'uri'
-require 'sinatra/cookies'
 
 require_relative 'helpers/repository'
 require_relative 'helpers/link'
@@ -54,6 +60,20 @@ module AwestructWebEditor
     # Security
     before %r{^\/(repo|preview|settings)(\/[\w]+)*} do
       check_token env['token']
+    end
+
+    before '/token' do
+      @auth ||= Rack::Auth::Basic::Request.new request.env
+      if @auth.provided? && @auth.basic? && @auth.credentials
+        session['gh-pass'] = @auth.credentials[1]
+        begin
+          get_octokit_client(@auth.credentials[0]).user
+        rescue Octokit::Unauthorized => e
+          halt 401, e.to_s
+        end
+      else
+        halt 401, 'Unauthorized'
+      end
     end
 
     get '/token' do
@@ -249,7 +269,7 @@ module AwestructWebEditor
 
       def get_github_token(settings)
         unless session[:github_auth]
-          client = Octokit::Client.new(:login => settings['username'], :password => settings['password'])
+          client = get_octokit_client(settings['username'])
           # if token_id (get token, save in session)
           result = {}
           if settings['token_id']
@@ -310,6 +330,11 @@ module AwestructWebEditor
           end
         end
       end
+
+      def get_octokit_client(username)
+        Octokit::Client.new(:login => username, :password => session['gh-pass'])
+      end
     end
+
   end
 end
