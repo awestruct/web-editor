@@ -205,9 +205,6 @@ module AwestructWebEditor
       include Sinatra::Cookies
 
       def check_token(token)
-        puts "===================Server side token:========================================"
-        puts session[:csrf]
-        puts "==========================================================="
         unless env['HTTP_TOKEN'] == (Digest::SHA512.new << "#{session[:csrf]}#{env['HTTP_TIME']}").to_s
           error 401, 'You are not allowed to do this.'
         end
