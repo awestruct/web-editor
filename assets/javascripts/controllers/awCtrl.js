@@ -34,12 +34,38 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     */
     $scope.init = function() {
 
-      console.log("Token - ",window.token)
+      // console.log("Token - ",window.token)
+      // 1. Check for token
+      // 2. Do we have a token? Yes— get settings. No — Get a token from /token
+      // 
 
-      // check and get the settings
+      // First check if we have a token already, if we do, skip it all and setup
+      if(window.token) {
+        console.log("Token already acquired, no need for a new one.");
+        $scope.getSettings();
+        return;
+      }
+
+      // Then, try and get a token without auth
+      $http.get('/token', {})
+        .success(function(data, status, headers, config){
+          console.log("Got token without auth - ", data);
+          window.token = headers().base_token;
+          // check and get the settings
+          $scope.getSettings();
+        })
+        .error(function() {
+            // We don't have a token yet, so lets login and get one
+            console.log("Error getting token");
+            $scope.toggleOverlay('login');
+        });
+    };
+
+    $scope.getSettings = function(){
       $http.get('/settings')
         .success(function(data, status, headers, config){
           console.log("get /settings Successful!");
+          // Check if we have a repo
           if(data.repo) {
             $scope.settings = data;
             if(!$routeParams.repo) { // if we dont have any route params, route them!
@@ -56,27 +82,22 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
           else {
             // $scope.toggleOverlay('settings');
             console.log("There are no settings returned, clone the repo?");
-            $scope.toggleOverlay('login');
+            $scope.toggleOverlay('settings');
           }
         })
         .error(function(data, status, headers, config) {
-          // There was an error, lets show the init screen
-          // $scope.data.overlay = true;
+          // There was an error getting /settings, we must not have a token.. 
           console.log("There was an error getting /settings")
           $scope.toggleOverlay('login');
         });
+    }
 
-
-
-    };
-
-    
     $scope.getToken = function(settings) {
       if(settings) {
         var config = {headers:  {
                 'Authorization': 'Basic '+btoa(settings.username + ":" + settings.password)  // Base64
             }
-        };        
+        };
       }
       else {
         settings = {};

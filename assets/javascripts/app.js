@@ -2,6 +2,8 @@ var aw = angular.module('aw',['ui.ace', 'ngRoute','angular-underscore', 'ngResou
   
   // Custom headers for authentication 
   $httpProvider.defaults.headers.common['token'] = function() {
+    // console.log("Going to auth with");
+    // console.log(window.token);
     var token = window.token,
         time = new Date().getTime().toString().substring(0,8)
         shaObj = new jsSHA(token + "" + time, "TEXT");
