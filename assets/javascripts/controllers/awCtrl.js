@@ -1,6 +1,5 @@
 function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window) {
     
-    // window.Repo = Repo;
     window.scope = $scope;
 
     window.onbeforeunload = function(e){
@@ -45,14 +44,15 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
               window.location = "/#/" + data.repo.split('/').pop();
             }
           }
-          else { 
-            $scope.toggleOverlay('settings');
+          else {
+            // $scope.toggleOverlay('settings');
+            $scope.login();
           }
         })
         .error(function(data, status, headers, config) {
           // There was an error, lets show the init screen
           // $scope.data.overlay = true;
-          $scope.toggleOverlay('settings');
+          $scope.login();
         });
 
        repo = new Repo();
@@ -63,6 +63,25 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
        });
 
     };
+
+    $scope.login = function() {
+      $scope.toggleOverlay('login');
+    }
+
+    $scope.getToken = function() {
+      $http.post('/token',settings)
+        .success(function(data, status, headers, config){
+          $scope.data.waiting = false;
+          $scope.overlay = false;
+          window.token = headers().base_token;
+          alert("Token returned"+window.token);
+        })
+        .error(function(data, status, headers, config) {
+          // Find the error code
+          alert('Oops, there has been an error. Please check your credentials and try again');
+          $scope.data.waiting = false;
+        });
+    }
 
     $scope.toggleOverlay = function(overlaytype) {
       $scope.data.overlaytype = overlaytype;
@@ -320,7 +339,6 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     }
 
     $scope.handleRouteChange = function() {
-    
       if(!$routeParams.path) {
         return; // no routes
       }
@@ -331,6 +349,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         file = _.findDeep($scope.files,{path:"./"+$routeParams.path});
       }
       if(file){
+        console.log("Editing File...");
         $scope.edit(file);
       }
     }

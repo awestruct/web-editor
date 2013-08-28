@@ -592,3 +592,9 @@ button, .button {
   background:center center url('/assets/octocat-spinner-128.gif') no-repeat;
   padding-top:50px;
 }
+
+// Angular
+
+[ng-hide="true"] {
+  display: none;
+}
