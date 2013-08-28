@@ -1,5 +1,7 @@
 .overlayInner(center ng-class="'overlay-'+data.overlaytype")
   a.close(ng-click="toggleOverlay()") &times;
+
+  / Init form
   form.init(method="PUT" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'settings'")
     h4 Configuration
     hr
@@ -16,7 +18,21 @@
 
     button.button(ng-click="saveSettings(settings)" ng-hide="settings.oauth_token") Initialize
     button.button(ng-click="saveSettings(settings)" ng-show="settings.oauth_token") Update
+
+  / Login From
+  form.init(method="POST" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'login'")
+    h4 Please login to continue 
+    hr
+    label(for="username" ng-disabled="settings.oauth_token") Github Username
+    small Please do <strong>not</strong> use an email address
+    input(name="username" type="text" ng-model="settings.username" ng-disabled="settings.oauth_token" required)
+    
+    label(for="password" ng-disabled="settings.oauth_token") Github Password
+    input(name="password" type="password" ng-model="settings.password" ng-disabled="settings.oauth_token" required)
+
+    button.button(ng-click="getToken(settings)") Log in 
   
+  / commit form
   form.commit(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'commit'")
     h4 Commit
     hr
