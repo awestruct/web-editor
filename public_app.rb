@@ -258,8 +258,7 @@ module AwestructWebEditor
           if settings['token_id']
             result = client.authorization settings['token_id']
           else
-            result = client.create_authorization :note => 'Awestruct Web Editor', :scopes => ['repo'],
-                                                 :note_url => request.url[0..(request.url.index('settings') - 1)]
+            result = client.create_authorization :note => 'Awestruct Web Editor', :scopes => ['repo']
             settings['token_id'] = result['id']
           end
 
