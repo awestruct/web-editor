@@ -1,6 +1,6 @@
 function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
     
-    window.scope = $scope;
+    window.$scope = $scope;
 
     window.onbeforeunload = function(e){
       var currPath = $scope.currentFile.links[0].url,
