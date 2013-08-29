@@ -525,7 +525,7 @@ div[dropzone] {
   z-index: 99;
   height:100%;
   margin-top: 45px;
-  opacity:0;
+  opacity:100;
   @include transition(opacity .3s); 
   &.overlay-open {
     opacity:1;
