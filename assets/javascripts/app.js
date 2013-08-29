@@ -94,17 +94,5 @@ aw.factory('Token',function() {
 });
 
 aw.run(function($http, Token) {
-  // 1. Ping a URL like /settings and see if it works
-  // 2. if it fails, we have to ask for the github username / password 
-  // 3. Then POST to /token with the username and password
-  // 4. We will return with a token
-  // Get a token first
-  $http.get('/token')
-    .success(function(data, status, headers, config){
-      // This should be offloaded to a service
-      window.token = Token.token = headers().base_token;
-    })
-    .error(function() {
-      alert("Error getting token");
-    });
+  // Run Hook
 })

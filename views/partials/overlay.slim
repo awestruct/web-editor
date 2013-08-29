@@ -3,15 +3,8 @@
 
   / Init form
   form.init(method="PUT" ng-class="{'waiting' : data.waiting}" ng-show="data.overlaytype == 'settings'")
-    h4 Configuration
+    h4 Repo Configuration
     hr
-    label(for="username" ng-disabled="settings.oauth_token") Github Username
-    small Please do <strong>not</strong> use an email address
-    input(name="username" type="text" ng-model="settings.username" ng-disabled="settings.oauth_token" required)
-    
-    label(for="password" ng-disabled="settings.oauth_token") Github Password
-    input(name="password" type="password" ng-model="settings.password" ng-disabled="settings.oauth_token" required)
-
     label(for="repo") Github Repo URL
     small eg: https://github.com/awestruct/awestruct.org
     input(name="repo" type="text" ng-model="settings.repo" required)
