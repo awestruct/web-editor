@@ -33,12 +33,6 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
       Note: This is only called once per full page load
     */
     $scope.init = function() {
-
-      // console.log("Token - ",window.token)
-      // 1. Check for token
-      // 2. Do we have a token? Yes— get settings. No — Get a token from /token
-      // 
-
       // First check if we have a token already, if we do, skip it all and setup
       if(window.token) {
         console.log("Token already acquired, no need for a new one.");
@@ -209,8 +203,6 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
             openSession(session,file);
           });
       }
-
-
     };
 
     $scope.save = function(currentFile) {
@@ -275,7 +267,12 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         })
         .error(function(data, status, headers, config) {
           // Find the error code
-          alert('Oops, there has been an error. Please check your credentials and try again');
+          if(data.length < 140) {
+            alert('Oops, there was an error: ' + data);
+          }
+          else {
+            alert('Oops, there has been an error. Please check your credentials and try again');
+          }
           $scope.data.waiting = false;
         });
     }
@@ -434,11 +431,4 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
         });
       return mode;
     };
-
-
-
-
-    /* Resources */
-
-
 }
