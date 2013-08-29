@@ -288,8 +288,8 @@ module AwestructWebEditor
 
           session[:github_auth] = result['token']
           settings.delete('password')
-          write_settings settings
         end
+        write_settings settings
         settings
       end
 
