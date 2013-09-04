@@ -1,3 +1,4 @@
+source 'http://mirror1.prod.rhcloud.com/mirror/ruby/'
 source 'https://rubygems.org'
 
 # Gems for the main application
@@ -42,5 +43,5 @@ group :developement do
   gem 'guard-rspec', '~> 3.0'
   gem 'rack-test', '~> 0.6'
   # gem 'puma', '~> 2.3', :require => false # I like puma and it runs everywhere
-  gem 'puma', '~> 1.6.3', :require => false # I like puma and it runs everywhere
+  # gem 'puma', '~> 1.6.3', :require => false # I like puma and it runs everywhere
 end

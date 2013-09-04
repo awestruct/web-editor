@@ -29,9 +29,13 @@ module AwestructWebEditor
   class PublicApp < Sinatra::Base
     set :sprockets, Sprockets::Environment.new(root)
     set :ssl, lambda { |_| development? }
-    enable :sessions
 
-    use Rack::SSL, :exclude => lambda { |_| development? }
+    use Rack::Session::Cookie, :key => 'awestruct-editor-session',
+                               :path => '/',
+                               :secret => (ENV['OPENSHIFT_APP_UUID'] || 'localhost'),
+                               :old_secret => '6b0385be07bcc169a1ee49ddb4b33c9d31cc668504dd2b5b59185253dcf55b42d7f6c766f546f638cd3fe829b9d32a59db61a5938d75ab2f2c15336a2368c9e6'
+
+    #use Rack::SSL, :exclude => lambda { |_| development? }
 
     configure do
       # Setup Sprockets
