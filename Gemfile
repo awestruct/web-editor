@@ -41,5 +41,6 @@ group :developement do
   gem 'guard', '~> 1.8'
   gem 'guard-rspec', '~> 3.0'
   gem 'rack-test', '~> 0.6'
-  gem 'puma', '~> 2.3', :require => false # I like puma and it runs everywhere
+  # gem 'puma', '~> 2.3', :require => false # I like puma and it runs everywhere
+  gem 'puma', '~> 1.6.3', :require => false # I like puma and it runs everywhere
 end
