@@ -42,7 +42,7 @@ module AwestructWebEditor
       enable :logging
       log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ), 'a+')
       log_file.sync = true
-      @logger = Logger.new(log_file, 'daily')
+      set :logger, Logger.new(log_file, 'daily')
       use Rack::CommonLogger, log_file
 
       # Setup Sprockets
@@ -326,7 +326,7 @@ module AwestructWebEditor
       end
 
       def retrieve_rendered_file(repo, path)
-        @logger.info 'executing external script to render file'
+        logger.info 'executing external script to render file'
         Bundler.with_clean_env do
           Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
             mapping = nil
@@ -336,7 +336,7 @@ module AwestructWebEditor
               end
             end
             errors = stderr.readlines.join
-            @logger.error "Error during rendering: #{errors}" unless errors.empty?
+            logger.error "Error during rendering: #{errors}" unless errors.empty?
 
             if !mapping.nil? && mapping.include?('/' + path)
               [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
