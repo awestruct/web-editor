@@ -21,7 +21,7 @@ module AwestructWebEditor
 
       log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ), 'a+')
       log_file.sync = true
-      @logger = Logger.new(log_file)
+      @logger = Logger.new(log_file, 'daily')
 
       if ENV['OPENSHIFT_DATA_DIR']
         @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')

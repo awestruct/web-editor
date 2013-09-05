@@ -58,7 +58,8 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   #  $stderr.puts "DEBUG:: ENV[#{key}] = #{ENV[key]}"
   #end
   #Bundler.require
-  $LOG = Logger.new(StringIO.new)
+  error_log = StringIO.new 'a+'
+  $LOG = Logger.new(error_log)
   $LOG.level = Logger::ERROR
   engine = Awestruct::Engine.new(Awestruct::Config.new)
   engine.adjust_load_path
@@ -79,6 +80,8 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
     source_to_output[p.relative_source_path] = p.output_path unless source_to_output.include? p.relative_source_path 
   end
 
+  error_log.rewind
+  $stderr.puts error_log.readlines.join
   $stdout.puts JSON.dump source_to_output
 end
 
