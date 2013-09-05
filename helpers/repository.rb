@@ -197,8 +197,9 @@ module AwestructWebEditor
     end
 
     def file_info(path)
-      @logger.debug("path - #{path} base_repository_path - #{base_repository_path}")
-      { :location => File.basename(path), :directory => File.directory?(path),
+      path = Pathname.new(path)
+      path = Pathname.new(File.join(base_repo_name, path)) if Pathname.new(path).relative?
+      { :location => path.basename.to_s, :directory => path.directory?,
         :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s }
     end
 
