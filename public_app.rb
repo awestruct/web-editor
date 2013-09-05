@@ -40,7 +40,7 @@ module AwestructWebEditor
     configure do
       # Setup logging
       enable :logging
-      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ))
+      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ), 'a+')
       log_file.sync = true
       use Rack::CommonLogger, log_file
 

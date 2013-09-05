@@ -19,7 +19,7 @@ module AwestructWebEditor
       @uri = content['uri'] || content[:uri] || ''
       @relative_path = content['relative_path'] || content[:relative_path] || nil
 
-      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ))
+      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ), 'a+')
       log_file.sync = true
       @logger = Logger.new(log_file)
 
