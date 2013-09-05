@@ -17,13 +17,17 @@ require 'json'
 # Front end
 require 'sass'
 require 'slim'
+require 'sprockets'
 require 'compass'
+require 'sprockets-sass'
+require 'sprockets-helpers'
 
 require_relative 'helpers/repository'
 require_relative 'helpers/link'
 
 module AwestructWebEditor
   class PublicApp < Sinatra::Base
+    set :sprockets, Sprockets::Environment.new(root)
     set :ssl, lambda { |_| development? }
 
     use Rack::Session::Cookie, :key => 'awestruct-editor-session',
@@ -31,7 +35,18 @@ module AwestructWebEditor
                                :secret => (ENV['OPENSHIFT_APP_UUID'] || 'localhost'),
                                :old_secret => '6b0385be07bcc169a1ee49ddb4b33c9d31cc668504dd2b5b59185253dcf55b42d7f6c766f546f638cd3fe829b9d32a59db61a5938d75ab2f2c15336a2368c9e6'
 
-    use Rack::SSL, :exclude => lambda { |_| development? }
+    #use Rack::SSL, :exclude => lambda { |_| development? }
+
+    configure do
+      # Setup Sprockets
+      Sprockets::Helpers.configure do |config|
+        config.environment = sprockets
+
+        %w(sass javascripts images fonts).each do |dir|
+          sprockets.append_path File.join(root, 'assets', dir)
+        end
+      end
+    end
 
     configure :development do
       require 'sinatra/reloader'
@@ -39,6 +54,11 @@ module AwestructWebEditor
       also_reload 'models/**/*.rb'
       set :raise_errors, true
       enable :logging, :dump_errors, :raise_errors
+    end
+
+    configure :production do
+      #sprockets.js_compressor = :uglifier
+      sprockets.css_compressor = :scss
     end
 
     # Security
@@ -96,7 +116,7 @@ module AwestructWebEditor
     end
 
     error do
-      "An error occurred while processing: #{env['sinatra.error'].to_s}"
+      "An error occurred while processing: #{env['sinatra.error'].name}. Message: #{env['sinatra.error'].message}"
     end
 
     # Views
@@ -208,6 +228,7 @@ module AwestructWebEditor
     end
 
     helpers do
+      include Sprockets::Helpers
       include Sinatra::Cookies
 
       def check_token(token)
