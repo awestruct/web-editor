@@ -6,6 +6,7 @@ require 'git'
 require 'octokit'
 require 'bundler'
 require 'fileutils'
+require 'logger'
 
 module AwestructWebEditor
   class Repository
@@ -17,6 +18,10 @@ module AwestructWebEditor
       @name = content['name'] || content[:name] || ''
       @uri = content['uri'] || content[:uri] || ''
       @relative_path = content['relative_path'] || content[:relative_path] || nil
+
+      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ))
+      log_file.sync = true
+      @logger = Logger.new(log_file)
 
       if ENV['OPENSHIFT_DATA_DIR']
         @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
@@ -37,19 +42,23 @@ module AwestructWebEditor
     def clone
       github = create_github_client
       begin
+        @logger.info 'creating github fork'
         fork_response = github.fork(URI(@settings['repo']).path[1..-1])
       rescue Exception => e
         return [500, e.message]
       end
 
       Dir.chdir(File.join @base_repo_dir) do
-        git = Git.clone(fork_response.ssh_url, @name)
+        @logger.debug "Cloning fork - #{fork_response.clone_url}"
+        git = Git.clone(fork_response.clone_url, @name)
+        @logger.debug "Adding upstream fork - #{fork_response.parent.git_url}"
         git.add_remote('upstream', fork_response.parent.git_url)
         git.fetch 'upstream'
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
 
+      @logger.debug 'Starting bundle install'
       Bundler.with_clean_env do
         Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, stdout, stderr, wait_thr|
           exit_status = wait_thr.value.exitstatus
@@ -59,6 +68,7 @@ module AwestructWebEditor
     end
 
     def all_files(allows = [])
+      @logger.info "Finding all files, additional allows #{allows}"
       default_allows = [%r!(.ad)|(.adoc)|(.adoc)!]
       default_allows << allows.join unless allows.empty?
       regexp_ignores = Regexp.union default_allows
@@ -89,7 +99,9 @@ module AwestructWebEditor
 
 
     def save_file(name, content)
+      @logger.info "Saving file #{name}"
       if content.is_a? Hash
+        @logger.debug 'Saving new file'
         IO.copy_stream(content[:tempfile], File.join(base_repository_path, name))
         content[:tempfile].unlink
         content[:tempfile].close
@@ -98,10 +110,12 @@ module AwestructWebEditor
           f.write content
         end
       end
+      @logger.debug 'Adding file to git'
       @git_repo.add(Shellwords.escape name)
     end
 
     def remove_file(name)
+      @logger.info "Removing file #{name}"
       @git_repo.remove(Shellwords.escape name)
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
@@ -109,11 +123,13 @@ module AwestructWebEditor
     end
 
     def commit(message)
+      @logger.info "Commiting with message #{message}"
       @git_repo.commit_all(message)
       @git_repo.log(1).first # Give us back a commit object so we can actually query it
     end
 
     def fetch_remote(remote = 'upstream')
+      @logger.info "Fetching remote #{remote}"
       @git_repo.fetch remote
     end
 
@@ -121,6 +137,7 @@ module AwestructWebEditor
       github = create_github_client
       upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
       fetch_remote
+      @logger.info "creating branch #{branch_name} based on 'upstream/#{upstream_repo.master_branch}'"
       system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
     end
 
@@ -129,8 +146,10 @@ module AwestructWebEditor
       github = create_github_client
       upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
       if overwrite
+        @log.debug 'over writting our files during the rebase'
         successful_return = system("git rebase upstream/#{upstream_repo.master_branch} -X ours")
       else
+        @log.debug 'rebasing'
         successful_return = system("git rebase upstream/#{upstream_repo.master_branch}")
       end
 
@@ -142,6 +161,7 @@ module AwestructWebEditor
     end
 
     def remove_branch(branch_name)
+      @logger.info "removing branch #{branch_name}"
       @git_repo.branch('master').checkout
       @git_repo.branch(branch_name).delete
     end
@@ -151,6 +171,7 @@ module AwestructWebEditor
     end
 
     def push(remote = 'origin')
+      @logger.info "pushing to #{remote}"
       @git_repo.push(remote, 'HEAD')
     end
 
@@ -158,6 +179,7 @@ module AwestructWebEditor
       github = create_github_client
       upstream_repo = Octokit::Repository.from_url @settings['repo']
       upstream_response = github.repository(upstream_repo)
+      @logger.info "Issuing a pull request with title - #{title} and body #{body}"
       pull_request_result = github.create_pull_request(upstream_repo,
                                                        "#{upstream_response.owner.login}:#{upstream_response.master_branch}",
                                                        "#{@settings['username']}:#{@git_repo.lib.branch_current}", title, body)
@@ -166,6 +188,7 @@ module AwestructWebEditor
     end
 
     def file_content(file, binary = false)
+      @logger.info "reading contents of file #{file.to_s}"
       if binary
         File.open(File.join(base_repository_path, file), 'rb').read
       else
@@ -174,11 +197,13 @@ module AwestructWebEditor
     end
 
     def file_info(path)
+      @logger.debug("path - #{path} base_repository_path - #{base_repository_path}")
       { :location => File.basename(path), :directory => File.directory?(path),
         :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s }
     end
 
     def log(count = 30)
+      @logger.info "retreiving the last #{count} log entries"
       @git_repo.log count
     end
 

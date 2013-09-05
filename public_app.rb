@@ -38,6 +38,12 @@ module AwestructWebEditor
     #use Rack::SSL, :exclude => lambda { |_| development? }
 
     configure do
+      # Setup logging
+      enable :logging
+      log_file = File.new(File.join((ENV['OPENSHIFT_RUBY_LOG_DIR'] || 'log'), 'application.log' ))
+      log_file.sync = true
+      use Rack::CommonLogger, log_file
+
       # Setup Sprockets
       Sprockets::Helpers.configure do |config|
         config.environment = sprockets
@@ -53,7 +59,7 @@ module AwestructWebEditor
       register Sinatra::Reloader
       also_reload 'models/**/*.rb'
       set :raise_errors, true
-      enable :logging, :dump_errors, :raise_errors
+      enable :dump_errors, :raise_errors
     end
 
     configure :production do
