@@ -1,4 +1,4 @@
-#source 'http://mirror1.prod.rhcloud.com/mirror/ruby/'
+source 'http://mirror1.prod.rhcloud.com/mirror/ruby/'
 source 'https://rubygems.org'
 
 # Gems for the main application
@@ -8,6 +8,7 @@ gem 'slim', '~> 2.0', :require => false
 gem 'zurb-foundation', '~> 4.2'
 gem 'compass', '~> 0.12'
 gem 'rake', '~> 10'
+gem 'sprockets', '~> 2.10'
 gem 'sprockets-helpers', '~> 1.0'
 gem 'uglifier', '~> 2.1'
 gem 'octokit', '~> 1.24'

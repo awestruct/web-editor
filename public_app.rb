@@ -52,6 +52,12 @@ module AwestructWebEditor
         %w(sass javascripts images fonts).each do |dir|
           sprockets.append_path File.join(root, 'assets', dir)
         end
+        #if production?
+          %w(font stylesheets javascripts images).each do |dir|
+            sprockets.prepend_path File.join('public', dir)
+          end
+          sprockets.index
+        #end
       end
     end
 
@@ -61,11 +67,6 @@ module AwestructWebEditor
       also_reload 'models/**/*.rb'
       set :raise_errors, true
       enable :dump_errors, :raise_errors
-    end
-
-    configure :production do
-      #sprockets.js_compressor = :uglifier
-      sprockets.css_compressor = :scss
     end
 
     # Security

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd $OPENSHIFT_REPO_DIR
+rake assets:compile

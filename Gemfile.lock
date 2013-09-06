@@ -158,6 +158,7 @@ DEPENDENCIES
   sinatra (~> 1.4.3)
   sinatra-contrib (~> 1.4)
   slim (~> 2.0)
+  sprockets (~> 2.10)
   sprockets-helpers (~> 1.0)
   sprockets-sass (~> 1.0)
   therubyracer (~> 0.12)
