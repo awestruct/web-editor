@@ -17,6 +17,7 @@ namespace :assets do
       require "compass/#{lib}"
     end
     require 'zurb-foundation'
+    require 'zurb-foundation'
 
     Compass::Commands::UpdateProject.new(File.dirname(__FILE__), {
                                                                     :framework => 'zurb-foundation',

@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd $OPENSHIFT_REPO_DIR
-rake assets:compile
+bundle exec rake assets:compile
