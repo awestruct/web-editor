@@ -113,6 +113,7 @@ module AwestructWebEditor
 
     put '/settings' do
       settings = read_settings().merge({ 'repo' => params['repo'] })
+      logger.debug "Settings: #{settings}"
       get_github_token settings
       clone_result = AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
                                                         :token => session[:github_auth]).clone
@@ -285,12 +286,15 @@ module AwestructWebEditor
       def get_github_token(settings)
         unless session[:github_auth]
           client = get_octokit_client(settings['username'])
+          logger.debug "github_client: #{client}"
           # if token_id (get token, save in session)
           result = {}
           if settings['token_id']
             result = client.authorization settings['token_id']
+            logger.debug "result from authorization: #{result}"
           else
             result = client.create_authorization :note => 'Awestruct Web Editor', :scopes => ['repo']
+            logger.debug "result from create_authorization: #{result}"
             settings['token_id'] = result['id']
           end
 
