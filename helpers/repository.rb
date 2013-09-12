@@ -39,6 +39,12 @@ module AwestructWebEditor
       @settings['oauth_token'] = content['token'] || content[:token] || nil
     end
 
+    def init_empty
+      Dir.chdir(File.join @base_repo_dir) do
+        Git.init(@name)
+      end
+    end
+
     def clone
       github = create_github_client
       begin
@@ -49,11 +55,12 @@ module AwestructWebEditor
       end
 
       Dir.chdir(File.join @base_repo_dir) do
+        git = Git.open(@name)
         @logger.debug "Cloning fork - #{fork_response.clone_url}"
-        git = Git.clone(fork_response.clone_url, @name)
+        git.add_remote('origin', fork_response.clone_url)
         @logger.debug "Adding upstream fork - #{fork_response.parent.git_url}"
         git.add_remote('upstream', fork_response.parent.clone_url)
-        git.fetch 'upstream'
+        git.pull 'upstream', 'master'
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
@@ -208,10 +215,43 @@ module AwestructWebEditor
       @git_repo.log count
     end
 
-    private
+    def add_creds(username, password)
+      desc = "protocol=https\nhost=github.com\nusername=#{username}\npassword=#{password}\n\n"
 
-    def create_github_client
-      Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'])
+      Open3.popen3('git config credential.helper store') do |stdin, stdout, stderr, wait_thr|
+        stdin << desc
+        exit_status = wait_thr.value.exitstatus
+        errors = stderr.readlines().join("\n")
+        output = stdout.readlines().join("\n")
+        @logger.error errors unless errors.empty?
+        @logger.debug output
+      end
+
+      Open3.popen3('git credential fill') do |stdin, stdout, stderr, wait_thr|
+        stdin << desc
+        exit_status = wait_thr.value.exitstatus
+        errors = stderr.readlines().join("\n")
+        output = stdout.readlines().join("\n")
+        @logger.error errors unless errors.empty?
+        @logger.debug output
+      end
+
+      Open3.popen3('git credential approve') do |stdin, stdout, stderr, wait_thr|
+        stdin << desc
+        exit_status = wait_thr.value.exitstatus
+        errors = stderr.readlines().join("\n")
+        output = stdout.readlines().join("\n")
+        @logger.error errors unless errors.empty?
+        @logger.debug output
+      end
     end
+
+  private
+
+  def create_github_client
+    Octokit::Client.new(:login => @settings['username'], :oauth_token => @settings['oauth_token'])
+  end
+
   end
 end
+
