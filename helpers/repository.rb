@@ -52,7 +52,7 @@ module AwestructWebEditor
         @logger.debug "Cloning fork - #{fork_response.clone_url}"
         git = Git.clone(fork_response.clone_url, @name)
         @logger.debug "Adding upstream fork - #{fork_response.parent.git_url}"
-        git.add_remote('upstream', fork_response.parent.git_url)
+        git.add_remote('upstream', fork_response.parent.clone_url)
         git.fetch 'upstream'
       end
 
@@ -198,9 +198,9 @@ module AwestructWebEditor
 
     def file_info(path)
       path = Pathname.new(path)
-      path = Pathname.new(File.join(base_repository_path, path)) if Pathname.new(path).relative?
+      path = Pathname.new(File.join(base_repository_path, path)) unless File.exists? path
       { :location => path.basename.to_s, :directory => path.directory?,
-        :path_to_root => Pathname.new(path).relative_path_from(Pathname.new base_repository_path).dirname.to_s }
+        :path_to_root => path.relative_path_from(Pathname.new base_repository_path).dirname.to_s }
     end
 
     def log(count = 30)

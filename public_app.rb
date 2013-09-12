@@ -125,7 +125,7 @@ module AwestructWebEditor
     end
 
     error do
-      "An error occurred while processing: #{env['sinatra.error'].name}. Message: #{env['sinatra.error'].message}"
+      "An error occurred while processing: #{env['sinatra.error']}. Message: #{env['sinatra.error'].message}"
     end
 
     # Views
@@ -284,7 +284,7 @@ module AwestructWebEditor
       end
 
       def get_github_token(settings)
-        unless session[:github_auth]
+        unless session[:github_auth] && settings['token_id']
           client = get_octokit_client(settings['username'])
           logger.debug "github_client: #{client}"
           # if token_id (get token, save in session)
@@ -296,6 +296,7 @@ module AwestructWebEditor
             result = client.create_authorization :note => 'Awestruct Web Editor', :scopes => ['repo']
             logger.debug "result from create_authorization: #{result}"
             settings['token_id'] = result['id']
+            add_git_creds(settings['username'])
           end
 
           if result.empty?
@@ -346,7 +347,7 @@ module AwestructWebEditor
             if !mapping.nil? && mapping.include?('/' + path)
               [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
             else
-              [500, JSON.dump("Error: #{path} not rendered")]
+              [500, JSON.dump("Error: #{path.to_s} not rendered")]
             end
           end
         end
@@ -355,7 +356,37 @@ module AwestructWebEditor
       def get_octokit_client(username)
         Octokit::Client.new(:login => username, :password => session['gh-pass'])
       end
-    end
 
+      def add_git_creds(username)
+        desc = "protocol=https\nhost=github.com\nusername=#{username}\npassword=#{session['gh-pass']}\n\n"
+
+        Open3.popen3('git config --global credential.helper store') do |stdin, stdout, stderr, wait_thr|
+          stdin << desc
+          exit_status = wait_thr.value.exitstatus
+          errors = stderr.readlines().join("\n")
+          output = stdout.readlines().join("\n")
+          logger.error errors unless errors.empty?
+          logger.debug output
+        end
+
+        Open3.popen3('git credential fill') do |stdin, stdout, stderr, wait_thr|
+          stdin << desc
+          exit_status = wait_thr.value.exitstatus
+          errors = stderr.readlines().join("\n")
+          output = stdout.readlines().join("\n")
+          logger.error errors unless errors.empty?
+          logger.debug output
+        end
+
+        Open3.popen3('git credential approve') do |stdin, stdout, stderr, wait_thr|
+          stdin << desc
+          exit_status = wait_thr.value.exitstatus
+          errors = stderr.readlines().join("\n")
+          output = stdout.readlines().join("\n")
+          logger.error errors unless errors.empty?
+          logger.debug output
+        end
+      end
+    end
   end
 end
