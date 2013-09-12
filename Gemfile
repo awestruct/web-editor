@@ -1,4 +1,4 @@
-source 'http://mirror1.prod.rhcloud.com/mirror/ruby/'
+source 'http://mirror1.prod.rhcloud.com/mirror/ruby/' unless ENV['OPENSHIFT_DATA_DIR'].nil?
 source 'https://rubygems.org'
 
 # Gems for the main application
