@@ -41,7 +41,7 @@ module AwestructWebEditor
 
     def init_empty
       Dir.chdir(File.join @base_repo_dir) do
-        Git.init(@name)
+        @git_repo = Git.init(@name)
       end
     end
 
@@ -218,31 +218,26 @@ module AwestructWebEditor
     def add_creds(username, password)
       desc = "protocol=https\nhost=github.com\nusername=#{username}\npassword=#{password}\n\n"
 
-      Open3.popen3('git config credential.helper store') do |stdin, stdout, stderr, wait_thr|
-        stdin << desc
-        exit_status = wait_thr.value.exitstatus
-        errors = stderr.readlines().join("\n")
-        output = stdout.readlines().join("\n")
-        @logger.error errors unless errors.empty?
-        @logger.debug output
-      end
+      @git_repo.config 'credential.helper', 'store'
+      Dir.chdir(File.absolute_path base_repository_path) do
 
-      Open3.popen3('git credential fill') do |stdin, stdout, stderr, wait_thr|
-        stdin << desc
-        exit_status = wait_thr.value.exitstatus
-        errors = stderr.readlines().join("\n")
-        output = stdout.readlines().join("\n")
-        @logger.error errors unless errors.empty?
-        @logger.debug output
-      end
+        Open3.popen3('git credential fill') do |stdin, stdout, stderr, wait_thr|
+          stdin << desc
+          exit_status = wait_thr.value.exitstatus
+          errors = stderr.readlines().join("\n")
+          output = stdout.readlines().join("\n")
+          @logger.error errors unless errors.empty?
+          @logger.debug output
+        end
 
-      Open3.popen3('git credential approve') do |stdin, stdout, stderr, wait_thr|
-        stdin << desc
-        exit_status = wait_thr.value.exitstatus
-        errors = stderr.readlines().join("\n")
-        output = stdout.readlines().join("\n")
-        @logger.error errors unless errors.empty?
-        @logger.debug output
+        Open3.popen3('git credential approve') do |stdin, stdout, stderr, wait_thr|
+          stdin << desc
+          exit_status = wait_thr.value.exitstatus
+          errors = stderr.readlines().join("\n")
+          output = stdout.readlines().join("\n")
+          @logger.error errors unless errors.empty?
+          @logger.debug output
+        end
       end
     end
 
