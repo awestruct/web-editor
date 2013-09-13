@@ -37,7 +37,7 @@ module AwestructWebEditor
       @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings') || {}
       @settings['oauth_token'] = content['token'] || content[:token] || nil
-      @settings['cred_config'] = "-c credential.https://github.com.username=#{@settings['oauth_token']} -c credential.https://github.com.helper=\"!f() { echo 'password=x-oauth-basic; }; f"
+      @settings['cred_config'] = "-c credential.https://github.com.username=#{@settings['oauth_token']} -c credential.https://github.com.helper=\"!f() { echo 'password=x-oauth-basic'; }; f\""
     end
 
     def init_empty
@@ -63,7 +63,7 @@ module AwestructWebEditor
         git.add_remote('upstream', fork_response.parent.clone_url)
 
         @logger.debug 'pulling from git'
-        Open3.popen3({ 'GIT_ASKPASS' => '' }, "git #{@settings['cred_config']} pull upstream") do |_, _, stderr, wait_thr|
+        Open3.popen3("git #{@settings['cred_config']} pull upstream") do |_, _, stderr, wait_thr|
           exit_value = wait_thr.value
           @logger.debug "pull exit status: #{exit_value}"
           error = stderr.readlines.join "\n"
