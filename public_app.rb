@@ -235,7 +235,7 @@ module AwestructWebEditor
       retrieve_rendered_file(create_repo(repo_name), 'index.html')
     end
 
-    get '/preview/:repo_name/*.*' do |repo_name, path, _|
+    get '/preview/:repo_name/*' do |repo_name, path, _|
       retrieve_rendered_file(create_repo(repo_name), path)
     end
 
