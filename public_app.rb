@@ -70,7 +70,7 @@ module AwestructWebEditor
     end
 
     # Security
-    before %r{^\/(repo|preview|settings)(\/[\w]+)*} do
+    before %r{^\/(repo|settings)(\/[\w]+)*} do
       check_token env['token']
     end
 
