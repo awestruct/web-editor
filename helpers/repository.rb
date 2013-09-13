@@ -63,7 +63,7 @@ module AwestructWebEditor
         git.add_remote('upstream', fork_response.parent.clone_url)
 
         @logger.debug 'pulling from git'
-        Open3.popen3("git #{@settings['cred_config']} pull upstream") do |_, _, stderr, wait_thr|
+        Open3.popen3("git #{@settings['cred_config']} pull upstream master") do |_, _, stderr, wait_thr|
           exit_value = wait_thr.value
           @logger.debug "pull exit status: #{exit_value}"
           error = stderr.readlines.join "\n"
