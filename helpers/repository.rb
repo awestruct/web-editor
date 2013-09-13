@@ -37,6 +37,7 @@ module AwestructWebEditor
       @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings') || {}
       @settings['oauth_token'] = content['token'] || content[:token] || nil
+      @settings['cred_config'] = "-c credential.https://github.com.username=#{@settings['oauth_token']} -c credential.https://github.com.helper=\"!f() { echo 'password=x-oauth-basic; }; f"
     end
 
     def init_empty
@@ -45,7 +46,7 @@ module AwestructWebEditor
       end
     end
 
-    def clone
+    def clone_repo
       github = create_github_client
       begin
         @logger.info 'creating github fork'
@@ -60,7 +61,14 @@ module AwestructWebEditor
         git.add_remote('origin', fork_response.clone_url)
         @logger.debug "Adding upstream fork - #{fork_response.parent.git_url}"
         git.add_remote('upstream', fork_response.parent.clone_url)
-        git.pull 'upstream', 'master'
+
+        @logger.debug 'pulling from git'
+        Open3.popen3({ 'GIT_ASKPASS' => '' }, "git #{@settings['cred_config']} pull upstream") do |_, _, stderr, wait_thr|
+          exit_value = wait_thr.value
+          @logger.debug "pull exit status: #{exit_value}"
+          error = stderr.readlines.join "\n"
+          @logger.debug "pulling error: #{error}" unless error.empty?
+        end
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name
@@ -137,7 +145,12 @@ module AwestructWebEditor
 
     def fetch_remote(remote = 'upstream')
       @logger.info "Fetching remote #{remote}"
-      @git_repo.fetch remote
+      Open3.popen3("git #{@settings['cred_config']} fetch #{remote}") do |_, _, stderr, wait_thr|
+        exit_value = wait_thr.value
+        @logger.debug "fetch exit status: #{exit_value}"
+        error = stderr.readlines.join "\n"
+        @logger.debug "fetch error: #{error}" unless error.empty?
+      end
     end
 
     def create_branch(branch_name)
@@ -154,10 +167,10 @@ module AwestructWebEditor
       upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
       if overwrite
         @log.debug 'over writting our files during the rebase'
-        successful_return = system("git rebase upstream/#{upstream_repo.master_branch} -X ours")
+        successful_return = system("git #{@settings['cred_config']} rebase upstream/#{upstream_repo.master_branch} -X ours")
       else
         @log.debug 'rebasing'
-        successful_return = system("git rebase upstream/#{upstream_repo.master_branch}")
+        successful_return = system("git #{@settings['cred_config']} rebase upstream/#{upstream_repo.master_branch}")
       end
 
       if successful_return
@@ -179,7 +192,7 @@ module AwestructWebEditor
 
     def push(remote = 'origin')
       @logger.info "pushing to #{remote}"
-      @git_repo.push(remote, 'HEAD')
+      system("git #{@settings['cred_config']} push #{remote} HEAD")
     end
 
     def pull_request(title, body)
@@ -213,32 +226,6 @@ module AwestructWebEditor
     def log(count = 30)
       @logger.info "retreiving the last #{count} log entries"
       @git_repo.log count
-    end
-
-    def add_creds(username, password)
-      desc = "protocol=https\nhost=github.com\nusername=#{username}\npassword=#{password}\n\n"
-
-      @git_repo.config 'credential.helper', 'store'
-      Dir.chdir(File.absolute_path base_repository_path) do
-
-        Open3.popen3('git credential fill') do |stdin, stdout, stderr, wait_thr|
-          stdin << desc
-          exit_status = wait_thr.value.exitstatus
-          errors = stderr.readlines().join("\n")
-          output = stdout.readlines().join("\n")
-          @logger.error errors unless errors.empty?
-          @logger.debug output
-        end
-
-        Open3.popen3('git credential approve') do |stdin, stdout, stderr, wait_thr|
-          stdin << desc
-          exit_status = wait_thr.value.exitstatus
-          errors = stderr.readlines().join("\n")
-          output = stdout.readlines().join("\n")
-          @logger.error errors unless errors.empty?
-          @logger.debug output
-        end
-      end
     end
 
   private

@@ -118,9 +118,8 @@ module AwestructWebEditor
       repo =  AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
                                                  :token => session[:github_auth])
       repo.init_empty
-      repo.add_creds(settings['username'], session['gh-pass'])
 
-      clone_result = repo.clone
+      clone_result = repo.clone_repo
       if clone_result.first != 0
         [500, clone_result[1]]
       else
