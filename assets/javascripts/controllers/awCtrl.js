@@ -1,4 +1,4 @@
-function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
+function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
     
     window.$scope = $scope;
 
@@ -147,7 +147,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
     };
 
     $scope.popupMessage = function(message){
-      $scope.data.popupmessage = message;
+      $scope.data.popupmessage = $sce.trustAsHtml(message);
       $scope.toggleOverlay('popupmessage');
     }
 
@@ -347,7 +347,7 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
           /* Move onto the push and pull req */
           $http.post('/repo/' + $scope.data.repo + '/push', pushdata)
             .success(function(data){
-              // console.log(data);
+              console.log(data);
 
               /* Start a fresh branch */
               $scope.change_set(function() {
