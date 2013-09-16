@@ -1,5 +1,6 @@
 nav.top-bar
   a href="/" \#{:awestruct} — {{data.repo}}
+  i(class="icon-spinner icon-spin icon-large waiting" ng-show="data.waiting")
   a.settings(ng-click="toggleOverlay('settings')")
     i.icon-cog
   a.settings(ng-click="toggleOverlay('cheat')" title="Asciidoc Cheat Sheet")
