@@ -233,12 +233,30 @@ function AwCtrl($scope, $routeParams, $route,Data, Repo, $resource, $http, $wind
 
     $scope.addFile = function(child) {
       var fileName = prompt("Please enter the file name, including the extension"),
-          path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName;
+          path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName,
+          filePath = child.path.replace("./","") + "/" + fileName;
 
+      // Turn on the waiting icon
       if(fileName) {
-        repo.saveFile(path, "").always(function(response) {
-            $scope.syncFiles();
-        });
+        $scope.data.waiting = true;
+        repo.saveFile(path, "")
+          .success(function(response) {
+              console.log("Success saving File");
+              $scope.syncFiles(function() {
+                window.location.hash = $scope.data.repo + "?path=" + filePath;
+                $scope.data.waiting = false;
+              });
+          })
+          .error(function(response) {
+              console.log("Error saving File", path);
+              $scope.syncFiles(function() {
+                $scope.data.waiting = false;
+                window.location.hash = $scope.data.repo + "?path=" + filePath;
+              });
+          });
+        // repo.saveFile(path, "").always(function(response) {
+        //     $scope.syncFiles();
+        // });
       }
     };
 
