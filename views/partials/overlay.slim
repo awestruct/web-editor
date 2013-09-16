@@ -43,7 +43,7 @@
     button(ng-click="push(data.pushdata)") Push
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")
-    p(ng-bind-html-unsafe="data.popupmessage")
+    p(ng-bind-html="data.popupmessage")
 
   .cheat(ng-show="data.overlaytype == 'cheat'")
     ng-include(src="'partials/asciidoc.html'")
