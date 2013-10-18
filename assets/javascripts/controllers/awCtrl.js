@@ -1,6 +1,7 @@
 function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
     
     window.$scope = $scope;
+    window.$sce = $sce;
 
     window.onbeforeunload = function(e){
       var currPath = $scope.currentFile.links[0].url,
@@ -315,17 +316,18 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
       var data = {};
       data.overwrite = !!overwrite;
 
-      $scope.data.popupmessage = 'Pulling latest from Github...';
+      // we can also use $scope.popupmessage() function
+      $scope.data.popupmessage = $sce.trustAsHtml('Pulling latest from Github...');
       $scope.toggleOverlay('popupmessage');
 
       $http.post('/repo/' + $scope.data.repo + '/pull_latest', data)
         .success(function(data, headers){
           console.log("Success!", data, headers);
-          $scope.data.popupmessage += '<br>&#10003; Successfully pulled and merged latest';
-          $scope.data.popupmessage += '<br>Refreshing file list...';
+          $scope.data.popupmessage += $sce.trustAsHtml('<br>&#10003; Successfully pulled and merged latest');
+          $scope.data.popupmessage += $sce.trustAsHtml('<br>Refreshing file list...');
           $scope.toggleOverlay('popupmessage');
           $scope.syncFiles(function() {
-            $scope.data.popupmessage += '<br>&#10003; File list refreshed. <br> Finished!';
+            $scope.data.popupmessage += $sce.trustAsHtml('<br>&#10003; File list refreshed. <br> Finished!');
           });
         })
         .error(function() {
