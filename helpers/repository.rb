@@ -156,7 +156,8 @@ CONFIG
 
     def commit(message)
       @logger.info "Commiting with message #{message}"
-      @git_repo.commit_all(message)
+      current_user = create_github_client.user
+      @git_repo.commit_all(message, :author => "current_user['name'] <#{current_user['email']}>")
       @git_repo.log(1).first # Give us back a commit object so we can actually query it
     end
 
