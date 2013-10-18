@@ -118,6 +118,7 @@ module AwestructWebEditor
       repo =  AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
                                                  :token => session[:github_auth])
       repo.init_empty
+      repo.add_creds
 
       clone_result = repo.clone_repo
       if clone_result.first != 0
@@ -349,7 +350,7 @@ module AwestructWebEditor
             if !mapping.nil? && mapping.include?('/' + path)
               [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
             else
-              [500, JSON.dump("Error: #{path.to_s} not rendered")]
+              [500, "Error: #{path.to_s} not rendered"]
             end
           end
         end

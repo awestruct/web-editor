@@ -37,12 +37,29 @@ module AwestructWebEditor
       @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
       @settings = File.open(File.join(@base_repo_dir, 'github-settings'), 'r') { |f| JSON.load(f) } if File.exists? File.join(@base_repo_dir, 'github-settings') || {}
       @settings['oauth_token'] = content['token'] || content[:token] || nil
-      @settings['cred_config'] = "-c credential.https://github.com.username=#{@settings['oauth_token']} -c credential.https://github.com.helper=\"!f() { echo 'password=x-oauth-basic'; }; f\""
+      create_github_client.user
     end
 
     def init_empty
-      Dir.chdir(File.join @base_repo_dir) do
+      Dir.chdir(File.join @base_repo_dir) do |_|
         @git_repo = Git.init(@name)
+      end
+    end
+
+    def add_creds
+      doc = <<CONFIG
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[credential "https://github.com"]
+	username = #{@settings['oauth_token']}
+	helper = "!f() { echo 'password=x-oauth-basic'; }; f"
+CONFIG
+
+      Dir.chdir(File.join @base_repo_dir, @name, '.git') do
+        File.open('config', 'w') { |f| f.write(doc) }
       end
     end
 
@@ -63,7 +80,7 @@ module AwestructWebEditor
         git.add_remote('upstream', fork_response.parent.clone_url)
 
         @logger.debug 'pulling from git'
-        Open3.popen3("git #{@settings['cred_config']} pull upstream master") do |_, _, stderr, wait_thr|
+        Open3.popen3("git pull upstream master") do |_, _, stderr, wait_thr|
           exit_value = wait_thr.value
           @logger.debug "pull exit status: #{exit_value}"
           error = stderr.readlines.join "\n"
@@ -75,7 +92,7 @@ module AwestructWebEditor
 
       @logger.debug 'Starting bundle install'
       Bundler.with_clean_env do
-        Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, stdout, stderr, wait_thr|
+        Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, _, stderr, wait_thr|
           exit_status = wait_thr.value.exitstatus
           [exit_status, stderr.readlines().join("\n")]
         end
@@ -145,7 +162,8 @@ module AwestructWebEditor
 
     def fetch_remote(remote = 'upstream')
       @logger.info "Fetching remote #{remote}"
-      Open3.popen3("git #{@settings['cred_config']} fetch #{remote}") do |_, _, stderr, wait_thr|
+      Open3.popen3("git fetch #{remote}",
+                   :chdir => File.absolute_path(base_repository_path)) do |_, _, stderr, wait_thr|
         exit_value = wait_thr.value
         @logger.debug "fetch exit status: #{exit_value}"
         error = stderr.readlines.join "\n"
@@ -154,8 +172,7 @@ module AwestructWebEditor
     end
 
     def create_branch(branch_name)
-      github = create_github_client
-      upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
+      upstream_repo = create_github_client.repository(Octokit::Repository.from_url @settings['repo'])
       fetch_remote
       @logger.info "creating branch #{branch_name} based on 'upstream/#{upstream_repo.master_branch}'"
       system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
@@ -163,20 +180,21 @@ module AwestructWebEditor
 
     def rebase(overwrite, remote = 'upstream')
       fetch_remote remote
-      github = create_github_client
-      upstream_repo = github.repository(Octokit::Repository.from_url @settings['repo'])
-      if overwrite
-        @log.debug 'over writting our files during the rebase'
-        successful_return = system("git #{@settings['cred_config']} rebase upstream/#{upstream_repo.master_branch} -X ours")
-      else
-        @log.debug 'rebasing'
-        successful_return = system("git #{@settings['cred_config']} rebase upstream/#{upstream_repo.master_branch}")
-      end
+      upstream_repo = create_github_client.repository(Octokit::Repository.from_url @settings['repo'])
+      Dir.chdir(File.join @base_repo_dir) do
+        if overwrite
+          @logger.debug 'overwriting our files during the rebase'
+          successful_return = system("git rebase upstream/#{upstream_repo.master_branch} -X ours")
+        else
+          @logger.debug 'rebasing'
+          successful_return = system("git rebase upstream/#{upstream_repo.master_branch}")
+        end
 
-      if successful_return
-        [200, 'Successful merge']
-      else
-        [500, 'Merge conflict detected']
+        if successful_return
+          [200, 'Successful merge']
+        else
+          [500, 'Merge conflict detected']
+        end
       end
     end
 
@@ -192,7 +210,7 @@ module AwestructWebEditor
 
     def push(remote = 'origin')
       @logger.info "pushing to #{remote}"
-      system("git #{@settings['cred_config']} push #{remote} HEAD")
+      system("git push #{remote} HEAD")
     end
 
     def pull_request(title, body)
