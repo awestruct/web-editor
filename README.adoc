@@ -2,7 +2,7 @@
 
 == Getting Started
 
-1. Clone this repo into a directory: `git@github.com:awestruct/web-editor.git`
+1. Clone this repo into a directory: `https://github.com/awestruct/web-editor.git`
 2. Move into the directory: `cd web-editor`
 3. Install dependencies: `bundle install`
 4. Start the server: `rackup`
