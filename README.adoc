@@ -7,6 +7,24 @@
 3. Install dependencies: `bundle install`
 4. Start the server: `rackup`
 
+=== Using a different web server
+
+If you would like to use something besides Webrick simply install the different ruby server by adding one of the following lines to the bottom of Gemfile:
+
+[source, ruby]
+----
+gem 'puma'
+gem 'thin'
+----
+
+TIP: We recommend puma as it works with the widest matrix of ruby versions and architectures.
+
+After one of those servers has been added to the Gemfile run
+
+   bundle install
+
+then proceed with `rackup`.
+
 == Browser Support
 
 The application takes advantage of the latest in CSS3 flexbox so the following browsers are currently supported:
