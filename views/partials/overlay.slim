@@ -34,7 +34,7 @@
     button(ng-click="commit(data.commitdata)") Commit
 
   form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
-    h2 Push Updates
+    h2 Send Changes
     hr
     label Updates Title
     input(type="text" ng-model="data.pushdata.title" max-length="80" placeholder="Example:  Short description, no more than 80 chars" required)

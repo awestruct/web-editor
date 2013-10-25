@@ -1,11 +1,11 @@
 ul.filesList
   li.repoActions.right
-    a.button(ng-click="pullLatest()")
+    a.button(ng-click="pullLatest()" title="Pull the latest updates from the main github repo.")
       i.icon-cloud-download 
-      |   Pull Updates
-    button.button(ng-disabled="currentSession.dirty" ng-click="toggleOverlay('push')")
+      |   Fetch Latest
+    button.button(ng-disabled="currentSession.dirty" ng-click="toggleOverlay('push')" title="Propose your file changes")
       i.icon-cloud-upload
-      |   Push
+      |   Send Changes
 
   li.bar
     | Git Repo
