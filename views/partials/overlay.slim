@@ -34,12 +34,12 @@
     button(ng-click="commit(data.commitdata)") Commit
 
   form.push(method="POST" ng-class="{'waiting' : data.waiting}"  ng-show="data.overlaytype == 'push'")
-    h2 Push & Pull Request 
+    h2 Push Updates
     hr
-    label Title
-    input(type="text" ng-model="data.pushdata.title" required)
-    label Message
-    textarea(ng-model="data.pushdata.message" required)
+    label Updates Title
+    input(type="text" ng-model="data.pushdata.title" max-length="80" placeholder="Example:  Short description, no more than 80 chars" required)
+    label Summary of changes
+    textarea(ng-model="data.pushdata.message" placeholder="Example:  Complete summary of changes. Will be used by the reviewer to understand why you made the change.                                                                                                                                                                            For example: Updated EAP product page to correctly describe relationship between JMS and Java EE" required)
     button(ng-click="push(data.pushdata)") Push
 
   .popupmessage(ng-show="data.overlaytype == 'popupmessage'")
