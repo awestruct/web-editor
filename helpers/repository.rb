@@ -24,14 +24,14 @@ module AwestructWebEditor
       @logger = Logger.new(log_file, 'daily')
 
       if ENV['OPENSHIFT_DATA_DIR']
-        @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
+        @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos', content[:username])
         FileUtils.mkdir(File.join @base_repo_dir) unless File.exists? @base_repo_dir
       elsif ENV['RACK_ENV'] =~ /test/
-        @base_repo_dir = 'tmp/repos'
+        @base_repo_dir = "tmp/repos/#{content[:username]}"
       elsif content['base_repo_dir'] || content[:base_repo_dir]
         @base_repo_dir = content['base_repo_dir'] || content[:base_repo_dir]
       else
-        @base_repo_dir = 'repos'
+        @base_repo_dir = "repos/#{content[:username]}"
       end
 
       @git_repo = Git.open File.join @base_repo_dir, @name if (File.exists?(File.join @base_repo_dir, @name))
