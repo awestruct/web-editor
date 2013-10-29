@@ -24,8 +24,14 @@ aw.factory('Repo', function($http) {
     return $http.post(path,{content:content});
   };
 
+  Repo.prototype.getImages = function(repo) {
+    return $http.get('/repo/' + repo + '?allow=jpg').then(function(response) {
+      return new Repo(response);
+    });
+  };
+
   Repo.prototype.saveImage = function(path,file, callback) {
-    // Using XHR request as angular's databinding isn't great for image uplods
+    // Using XHR request as angular's databinding isn't great for image uploads
     var fd = new FormData(),
         xhr = new XMLHttpRequest();
     

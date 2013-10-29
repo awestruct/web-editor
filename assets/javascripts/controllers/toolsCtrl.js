@@ -18,7 +18,8 @@ function ToolsCtrl($scope, Data){
       $scope.format('upload-image', name);
       
 
-      var path = $scope.data.repoUrl + "/images/"+name;
+      var path = $scope.data.repoUrl + "/images/"+name,
+          releativePath = "/images/"+name;
 
       repo.saveImage(path,files[i],function(response){
         console.log(response);
@@ -26,17 +27,22 @@ function ToolsCtrl($scope, Data){
 
       $scope.$apply();
 
-      $scope.editor.replace('!['+name+']('+encodeURI(path)+')', {
+      $scope.editor.replace('!['+name+']('+encodeURI(releativePath)+')', {
         needle : "![uploading "+name+". . .]()"
       });
       
       $scope.editor.clearSelection();
       
 
-      
     }
   };
 
+  // Pick an existing Image
+  $scope.pickImage = function() {
+    repo.getImages($scope.data.repo).then(function(data){
+      console.log(data.data.images);
+    });
+  };
   /* Markdown Editing tools */
   $scope.format = function(method, name, opts) {
     var editor = $scope.editor,
