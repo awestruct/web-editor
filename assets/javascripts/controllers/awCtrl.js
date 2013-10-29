@@ -217,7 +217,8 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
               session.dirty = false;
               $scope.$apply();
               if($scope.previewWindow) {
-                $scope.previewWindow.document.write(response);
+                // $scope.previewWindow.document.write(response);
+                $scope.previewWindow.document.querySelector('html').innerHTML = response;
               }
           })
           .error(function(){
