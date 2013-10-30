@@ -19,7 +19,7 @@ function ToolsCtrl($scope, Data){
       
 
       var path = $scope.data.repoUrl + "/images/"+name,
-          releativePath = "/images/"+name;
+          releativePath = "#{site.context_url}/images/"+name;
 
       repo.saveImage(path,files[i],function(response){
         console.log(response);
@@ -40,7 +40,9 @@ function ToolsCtrl($scope, Data){
   // Pick an existing Image
   $scope.pickImage = function() {
     repo.getImages($scope.data.repo).then(function(data){
-      console.log(data.data.images);
+      console.log(data.data.images.children);
+      $scope.data.images = data.data.images.children;
+      $scope.toggleOverlay('images');
     });
   };
   /* Markdown Editing tools */
