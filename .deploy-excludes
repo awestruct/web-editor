@@ -1,0 +1,16 @@
+# A list of excludes for rsync, when deploying the editor
+.git
+design
+README.adoc
+log
+repos
+tmp
+Gemfile
+Gemfile.lock
+deploy-excludes
+Guardfile
+Rakefile
+config.*
+specification.adoc
+doc
+

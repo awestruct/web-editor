@@ -1,3 +1,4 @@
+$deploy_dir="/opt/web-editor"
 task :default => 'test:spec'
 
 namespace :assets do 
@@ -50,6 +51,12 @@ namespace :assets do
     asset.write_to(outfile)
     puts "successfully compiled js assets"
   end
+
+  desc 'Deploy web-editor to #{$deploy_dir} for usage by provided init script'
+  task :deploy do
+    `rsync -a --exclude-from=\.deploy-excludes ./** #{$deploy_dir}`
+  end
+
 end
 
 namespace :test do
