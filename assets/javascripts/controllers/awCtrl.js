@@ -413,6 +413,7 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
       }
     }
 
+
     openSession = function(session,file) {
       var mode = findMode(file.links[0].url);
       $scope.currentFile = file;
@@ -451,4 +452,9 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
         });
       return mode;
     };
+
+    $scope.insertImage = function(path) {
+      // pass down to child scope
+      angular.element(document.querySelector('.tools')).scope().insertImage(path);
+    }
 }

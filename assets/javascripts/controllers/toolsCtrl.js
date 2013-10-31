@@ -45,6 +45,12 @@ function ToolsCtrl($scope, Data){
       $scope.toggleOverlay('images');
     });
   };
+
+  $scope.insertImage = function(path) {
+    $scope.format('image', path);
+    $scope.toggleOverlay();
+  };
+
   /* Markdown Editing tools */
   $scope.format = function(method, name, opts) {
     var editor = $scope.editor,
@@ -164,6 +170,14 @@ function ToolsCtrl($scope, Data){
       exec: function(text, blank, name) {
         var text = text || "";
         return text+"\n![uploading "+name+". . .]()\n";
+      },
+      blockLevel : true
+    },
+
+    'image' : {
+      exec: function(text, blank, name) {
+        var text = text || "";
+        return text+"\n![](#{site.context_url}"+name+")\n";
       },
       blockLevel : true
     },

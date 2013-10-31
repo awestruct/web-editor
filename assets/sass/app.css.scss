@@ -602,6 +602,12 @@ button, .button {
   padding-top:50px;
 }
 
+// Images Preview
+.view-images {
+  height:500px;
+  overflow: scroll;
+}
+
 // Angular
 
 [ng-hide="true"] {
