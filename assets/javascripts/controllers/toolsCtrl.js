@@ -19,7 +19,8 @@ function ToolsCtrl($scope, Data){
       
 
       var path = $scope.data.repoUrl + "/images/"+name,
-          releativePath = "#{site.context_url}/images/"+name;
+          releativePath = "/images/"+name,
+          textDefault = "Image Description";
 
       repo.saveImage(path,files[i],function(response){
         console.log(response);
@@ -27,11 +28,13 @@ function ToolsCtrl($scope, Data){
 
       $scope.$apply();
 
-      $scope.editor.replace('!['+name+']('+encodeURI(releativePath)+')', {
-        needle : "![uploading "+name+". . .]()"
+      $scope.editor.replace('#{site.context_url}'+encodeURI(releativePath)+'['+textDefault+']', {
+        needle : "[uploading "+name+". . .]"
       });
       
       $scope.editor.clearSelection();
+
+      $scope.editor.findPrevious(textDefault);
       
 
     }
@@ -169,7 +172,8 @@ function ToolsCtrl($scope, Data){
     'upload-image' : {
       exec: function(text, blank, name) {
         var text = text || "";
-        return text+"\n![uploading "+name+". . .]()\n";
+        // return text+"\n![uploading "+name+". . .]()\n";
+        return text+"\nimage::[uploading "+name+". . .]\n";
       },
       blockLevel : true
     },
@@ -177,16 +181,19 @@ function ToolsCtrl($scope, Data){
     'image' : {
       exec: function(text, blank, name) {
         var text = text || "";
-        return text+"\n![](#{site.context_url}"+name+")\n";
+        // return text+"\n![](#{site.context_url}"+name+")\n";
+        return text+"\nimage::#{site.context_url}"+name+"\n";
       },
       blockLevel : true
     },
 
     'blockquote' : {
-      search: /(.+)([\n]?)/g,
-      replace: "> $1$2",
-      blockLevel : true,
-      textDefault : "quote"
+      exec: function(text, blank) {
+        var repText = '____\n'+text+'\n____';
+        return repText;
+      },
+      textDefault : "quote",
+      blockLevel : true
     },
 
     'h1' : {
@@ -238,7 +245,8 @@ function ToolsCtrl($scope, Data){
           text = "link title";
           url = "http://";
         }
-        return "["+text +"]("+url+")";
+        // return "["+text +"]("+url+")";
+        return url+"["+text+"]";
       },
       textDefault : "http://"
     },
