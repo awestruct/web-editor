@@ -76,12 +76,13 @@ module AwestructWebEditor
 
     before '/token' do
       unless session['gh-pass'] and read_settings()['username']
-        @auth ||= Rack::Auth::Basic::Request.new request.env
-        if @auth.provided? && @auth.basic? && @auth.credentials
-          session['gh-pass'] = @auth.credentials[1]
+        auth ||= Rack::Auth::Basic::Request.new request.env
+        if auth.provided? && auth.basic? && auth.credentials
+          session['username'] = auth.credentials[0]
+          session['gh-pass'] = auth.credentials[1]
           begin
-            get_octokit_client(@auth.credentials[0]).user
-            write_settings(read_settings().merge({'username' => @auth.credentials[0]}))
+            get_octokit_client(auth.credentials[0]).user
+            write_settings(read_settings().merge({'username' => session['username']}))
           rescue Octokit::Unauthorized => e
             halt 401, e.to_s
           end
@@ -116,8 +117,9 @@ module AwestructWebEditor
       logger.debug "Settings: #{settings}"
       get_github_token settings
       repo =  AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
-                                                 :token => session[:github_auth])
+                                                 :token => session[:github_auth], :username => session['username'])
       repo.init_empty
+      repo.add_creds
 
       clone_result = repo.clone_repo
       if clone_result.first != 0
@@ -169,7 +171,7 @@ module AwestructWebEditor
     end
 
     get '/repo' do
-      repo_base = ENV['RACK_ENV'] =~ /test/ ? 'tmp/repos' : 'repos'
+      repo_base = ENV['RACK_ENV'] =~ /test/ ? "tmp/repos/#{session('username')}" : "repos/#{session('username')}"
       return_structure = {}
       Dir[repo_base + '/*'].each do |f|
         if File.directory? f
@@ -260,14 +262,15 @@ module AwestructWebEditor
 
       def settings_storage_file
         if ENV['OPENSHIFT_DATA_DIR']
-          @base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos')
-          FileUtils.mkdir(File.join @base_repo_dir) unless File.exists? @base_repo_dir
+          base_repo_dir = File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos', session['username'])
         elsif ENV['RACK_ENV'] =~ /test/
-          @base_repo_dir = 'tmp/repos'
+          base_repo_dir = "tmp/repos/#{session['username']}"
         else
-          @base_repo_dir = 'repos'
+          base_repo_dir = "repos/#{session['username']}"
         end
-        File.join(@base_repo_dir, 'github-settings')
+
+        FileUtils.mkdir_p(File.join base_repo_dir) unless File.exists? base_repo_dir
+        File.join(base_repo_dir, 'github-settings')
       end
 
       def read_settings
@@ -288,7 +291,7 @@ module AwestructWebEditor
 
       def get_github_token(settings)
         unless session[:github_auth] && settings['token_id']
-          client = get_octokit_client(settings['username'])
+          client = get_octokit_client(session['username'])
           logger.debug "github_client: #{client}"
           # if token_id (get token, save in session)
           result = {}
@@ -313,7 +316,7 @@ module AwestructWebEditor
       end
 
       def create_repo(repo_name)
-        AwestructWebEditor::Repository.new({ :name => repo_name, :token => session[:github_auth] })
+        AwestructWebEditor::Repository.new({ :name => repo_name, :token => session[:github_auth], :username => session['username'] })
       end
 
       def links_for_file(f, repo_name)
@@ -336,8 +339,8 @@ module AwestructWebEditor
       def retrieve_rendered_file(repo, path)
         logger.info 'executing external script to render file'
         Bundler.with_clean_env do
-          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}' --profile development") do |stdin, stdout, stderr, thr|
-            mapping = nil
+          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |stdin, stdout, stderr, thr|
+            mapping = {}
             stdout.each_line do |line|
               if line.match(/^\{.*/)
                 mapping = JSON.load line
@@ -349,7 +352,7 @@ module AwestructWebEditor
             if !mapping.nil? && mapping.include?('/' + path)
               [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
             else
-              [500, JSON.dump("Error: #{path.to_s} not rendered")]
+              [500, "Error: #{path.to_s} not rendered"]
             end
           end
         end

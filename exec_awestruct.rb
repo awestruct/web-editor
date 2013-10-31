@@ -24,6 +24,10 @@ OptionParser.new do |opts|
     options[:url] = url
   end
 
+  opts.on('--username USERNAME', 'username containing the respository') do |username|
+    options[:username] = username
+  end
+
   opts.on_tail('-h', '--help', 'show this message') do
     $stdout.puts opts
     exit(0)
@@ -35,7 +39,7 @@ rescue OptionParser::MissingArgument => e
   exit
 end
 
-required_opts = [:repo, :profile, :url]
+required_opts = [:repo, :profile, :url, :username]
 required_missing = false
 
 required_opts.each do |opt|
@@ -51,7 +55,7 @@ if required_missing
   exit
 end
 
-base_repo_dir = (ENV['OPENSHIFT_DATA_DIR']) ?  File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos') : 'repos'
+base_repo_dir = (ENV['OPENSHIFT_DATA_DIR']) ?  File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos', options[:username]) : "repos/#{options[:username]}"
 
 Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   #ENV.keys.each do |key|
