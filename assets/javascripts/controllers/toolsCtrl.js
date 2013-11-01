@@ -182,7 +182,7 @@ function ToolsCtrl($scope, Data){
       exec: function(text, blank, name) {
         var text = text || "";
         // return text+"\n![](#{site.context_url}"+name+")\n";
-        return text+"\nimage::#{site.context_url}"+name+"\n";
+        return text+"\nimage::#{site.context_url}"+name+"[]\n";
       },
       blockLevel : true
     },

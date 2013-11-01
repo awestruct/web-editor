@@ -9,6 +9,7 @@
 //= require app
 //= require controllers/awCtrl
 //= require controllers/toolsCtrl
+//= require controllers/scratchpadCtrl
 //= require services/data
 //= require services/repo
 //= require filters/filters

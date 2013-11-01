@@ -1,65 +1,119 @@
-.adochelpers
-  .row
-    .large-4.columns
-      h3 Formatting Text
-      h5 Headers
-      pre= "Heading 3 is <h3>"
+| == Header Level 1
+br
+| === Header Level 2
+br
+| ==== Header Level 3
+br
+| ===== Header Level 4
+br
+br  
+| This is a paragraph of text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut nulla eget lacus gravida rutrum. Fusce sit amet tellus arcu. Nam in accumsan diam. Etiam quis augue risus, eget molestie sapien. Fusce vehicula aliquet neque, in cursus tellus venenatis eget. Pellentesque in magna nisl, vel dapibus dolor. Nullam a ante vel libero vehicula aliquet et sit amet mauris. Morbi dapibus pellentesque nisi sit amet sagittis. Aenean mollis porttitor neque. Aenean cursus convallis feugiat. Quisque et nisi sed lectus mattis auctor non at eros..
+br
+br
 
-      pre
-        # This is an &lt;h1&gt; tag
-        ## This is an &lt;h2&gt; tag
-        ###### This is an &lt;h6&gt; tag
+| ==== Images
+br
+| image::http://placedog.com/200/200[]
+br
 
-      h5 Text Styles
-      pre
-        | *This text will be italic*
-        | <br>
-        | _This will also be italic_
-        | <br>
-        | **This text will be bold**
-        | <br>
-        | __This will also be bold__
-        | <br>
-        | *You **can** combine them*
-        | <br>
+| image::http://placedog.com/200/200[width=100]
+br
 
-    .large-4.columns
-      h3 Lists
-      h5 Unordered
-      pre
-        |  * Item 1
-        | <br>
-        |  * Item 2
-        | <br>
-        |    * Item 2a
-        | <br>
-        |    * Item 2b
-        | <br>
-      h5 Ordered
-      pre 
-        |  1. Item 1
-        | <br>
-        |  2. Item 2
-        | <br>
-        |  3. Item 3
-        | <br>
-        |    * Item 3a
-        | <br>
-        |    * Item 3b
-        | <br>
+| ==== Links
+br
+| http://google.com
+br
 
-    .large-4.columns
-      h3 Miscellaneous
-      h5 Images
-      pre= "![Alt Text](/path/to/images/logo.png)"
+| http://google.com[This is a link to Google]
+br
 
-      h5 Links
-      pre= "[Link Title](http://redhat.com)"
-     
-      h5 Blockquotes
-      pre
-        | &gt; We're living the future so
-        | <br>
-        | &gt; the present is our past.
-        | <br>
+| image::http://placedog.com/200/200[link="http://google.com"]
+br
 
+
+| ==== Text Foratting
+br
+
+| You may *bold* or _italicize_ your text.
+br
+
+| To run the server, execute `rake preview` form your terminal or command line.
+br
+
+| The following code is a block of code:
+br
+
+| ----
+br
+| $(function() {
+br
+|   alert("Ready!");
+br  
+| });
+br
+| ----
+br
+br
+br
+
+| Or quote someone:
+br
+br
+| ____
+br
+| You miss 100% of the shots you don't take.
+br
+| ____
+br
+
+| ==== Unordered Lists
+br
+| * Bread
+br
+| * Milk
+br
+| * Eggs
+br
+br
+br
+
+| ==== Ordered Lists
+br
+| . One
+br
+| . Two
+br
+|   .. Sub Point 1
+br
+|   .. Sub Point 2
+br
+| . Three
+br
+br
+
+| ==== Tables
+br
+br
+
+| [options="header,footer"]
+br
+| |=======================
+br
+| |Col 1|Col 2      |Col 3
+br
+| |1    |Item 1     |a
+br
+| |2    |Item 2     |b
+br
+| |3    |Item 3     |c
+br
+| |6    |Three items|d
+br
+| |=======================
+br
+br
+br
+| ==== Special Characters
+br
+| (C) (R) (TM) -- ... -> <- => <= &#182;  
+br

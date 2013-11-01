@@ -106,7 +106,6 @@ a.settings {
   width:20%;
   padding: 0;
   overflow: scroll;
-}
   ul {
     max-height:0px;
     -webkit-transition:all 0.2s;
@@ -115,6 +114,8 @@ a.settings {
       -webkit-transition:all 2s;
     }
   }
+}
+
   li.directory {
     a.folder {
       font-weight: 600;
@@ -312,7 +313,7 @@ ul.tools {
   // border-bottom:1px solid #ddd;
   clear: both;
   li {
-    width: (100 / 18) * 1%;
+    width: (100 / 17) * 1%;
     display: inline-block;
     margin:0;
     position: relative;
@@ -552,7 +553,8 @@ div[dropzone] {
     position: relative;
     @include transition(top .3s); 
     &.overlay-cheat {
-      width:80%;
+      width:98%;
+      height:90%;
     }
     .close {
       position: absolute;
@@ -612,4 +614,42 @@ button, .button {
 
 [ng-hide="true"] {
   display: none;
+}
+
+// Scratchpad 
+
+.scratchpad {
+  overflow: hidden;
+  .scratchpad-input {
+    width:50%;
+    float:left;
+    .ace_editor_wrapper {
+      // height:500px;
+    }
+  }
+  .scratchpad-preview {
+    // height:500px;
+    height:100%;
+    float:left;
+    width:50%;
+    border-left:2px solid $green;
+    overflow:scroll;
+    padding-left:20px;
+    ol,ul {
+      margin-left: 20px;
+    }
+  }
+}
+
+.cheat, .scratchpad, .scratchpad-input, .ace_editor_wrapper {
+  height:100%;
+}
+
+// Taming Asciidoc list-style-position: 
+ul, ol {
+  li {
+    p {
+      margin:0;
+    }
+  }
 }

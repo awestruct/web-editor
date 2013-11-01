@@ -75,6 +75,11 @@ angular.module('ui.ace', [])
           session.setMode("ace/mode/" + opts.mode);
         }
 
+        // onLoad callback
+        if (angular.isFunction(opts.onLoad)) {
+          opts.onLoad(acee);
+        }
+
 
         // Value Blind
         if (angular.isDefined(ngModel)) {

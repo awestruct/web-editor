@@ -1,7 +1,9 @@
 function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http, $window, Token) {
     
+    // window object for ease of debugging
     window.$scope = $scope;
     window.$sce = $sce;
+    window.$http = $http;
 
     window.onbeforeunload = function(e){
       var currPath = $scope.currentFile.links[0].url,
@@ -155,6 +157,9 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
     $scope.edit = function(file) {
         var path = file.links[0].url,
         session;
+
+      // set ace path
+      ace.config.set('basePath', '/assets/vendor/ace');
       
       // Make sure we aren't abandoning the current changes
       if($scope.currentFile) {
@@ -456,5 +461,11 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
     $scope.insertImage = function(path) {
       // pass down to child scope
       angular.element(document.querySelector('.tools')).scope().insertImage(path);
+    }
+
+    $scope.cheatSheet = function() {
+      var scope = angular.element(document.querySelector('.scratchpad')).scope();
+      scope.loadScripts();
+      $scope.toggleOverlay('cheat');
     }
 }
