@@ -5,12 +5,9 @@ README.adoc
 log
 repos
 tmp
-Gemfile
-Gemfile.lock
 deploy-excludes
 Guardfile
 Rakefile
-config.*
 specification.adoc
 doc
 
