@@ -101,7 +101,7 @@ CONFIG
 
     def all_files(allows = [])
       @logger.info "Finding all files, additional allows #{allows}"
-      default_allows = [%r!(.ad)|(.adoc)|(.adoc)!]
+      default_allows = [%r!(.ad)|(.adoc)|(.adoc)|(.jpg)|(.jpeg)|(.png)|(.gif)!]
       default_allows << allows.join unless allows.empty?
       regexp_ignores = Regexp.union default_allows
 

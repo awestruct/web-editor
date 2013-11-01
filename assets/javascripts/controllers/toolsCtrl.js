@@ -18,7 +18,9 @@ function ToolsCtrl($scope, Data){
       $scope.format('upload-image', name);
       
 
-      var path = $scope.data.repoUrl + "/images/"+name;
+      var path = $scope.data.repoUrl + "/images/"+name,
+          releativePath = "/images/"+name,
+          textDefault = "Image Description";
 
       repo.saveImage(path,files[i],function(response){
         console.log(response);
@@ -26,15 +28,30 @@ function ToolsCtrl($scope, Data){
 
       $scope.$apply();
 
-      $scope.editor.replace('!['+name+']('+encodeURI(path)+')', {
-        needle : "![uploading "+name+". . .]()"
+      $scope.editor.replace('#{site.context_url}'+encodeURI(releativePath)+'['+textDefault+']', {
+        needle : "[uploading "+name+". . .]"
       });
       
       $scope.editor.clearSelection();
+
+      $scope.editor.findPrevious(textDefault);
       
 
-      
     }
+  };
+
+  // Pick an existing Image
+  $scope.pickImage = function() {
+    repo.getImages($scope.data.repo).then(function(data){
+      console.log(data.data.images.children);
+      $scope.data.images = data.data.images.children;
+      $scope.toggleOverlay('images');
+    });
+  };
+
+  $scope.insertImage = function(path) {
+    $scope.format('image', path);
+    $scope.toggleOverlay();
   };
 
   /* Markdown Editing tools */
@@ -155,16 +172,28 @@ function ToolsCtrl($scope, Data){
     'upload-image' : {
       exec: function(text, blank, name) {
         var text = text || "";
-        return text+"\n![uploading "+name+". . .]()\n";
+        // return text+"\n![uploading "+name+". . .]()\n";
+        return text+"\nimage::[uploading "+name+". . .]\n";
+      },
+      blockLevel : true
+    },
+
+    'image' : {
+      exec: function(text, blank, name) {
+        var text = text || "";
+        // return text+"\n![](#{site.context_url}"+name+")\n";
+        return text+"\nimage::#{site.context_url}"+name+"\n";
       },
       blockLevel : true
     },
 
     'blockquote' : {
-      search: /(.+)([\n]?)/g,
-      replace: "> $1$2",
-      blockLevel : true,
-      textDefault : "quote"
+      exec: function(text, blank) {
+        var repText = '____\n'+text+'\n____';
+        return repText;
+      },
+      textDefault : "quote",
+      blockLevel : true
     },
 
     'h1' : {
@@ -216,7 +245,8 @@ function ToolsCtrl($scope, Data){
           text = "link title";
           url = "http://";
         }
-        return "["+text +"]("+url+")";
+        // return "["+text +"]("+url+")";
+        return url+"["+text+"]";
       },
       textDefault : "http://"
     },

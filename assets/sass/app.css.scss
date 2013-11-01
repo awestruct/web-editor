@@ -312,7 +312,7 @@ ul.tools {
   // border-bottom:1px solid #ddd;
   clear: both;
   li {
-    width: (100 / 17) * 1%;
+    width: (100 / 18) * 1%;
     display: inline-block;
     margin:0;
     position: relative;
@@ -560,6 +560,9 @@ div[dropzone] {
       right:10px;
     }
   }
+  textarea {
+    height:150px;
+  }
 }
 
 .popupmessage {
@@ -597,6 +600,12 @@ button, .button {
   height:500px;
   background:center center url('/assets/octocat-spinner-128.gif') no-repeat;
   padding-top:50px;
+}
+
+// Images Preview
+.view-images {
+  height:500px;
+  overflow: scroll;
 }
 
 // Angular
