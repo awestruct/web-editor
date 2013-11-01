@@ -46,7 +46,8 @@
     p(ng-bind-html="data.popupmessage")
 
   .cheat(ng-show="data.overlaytype == 'cheat'")
-    ng-include(src="'partials/asciidoc.html'")
+    / ng-include(src="'partials/asciidoc.html'")
+    ng-include(src="'partials/scratchpad.html'")
 
   .view-images(ng-show="data.overlaytype == 'images'")
     ng-include(src="'partials/images.html'")
