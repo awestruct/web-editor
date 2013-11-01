@@ -99,7 +99,7 @@ CONFIG
       end
     end
 
-    def all_files(allows = [])
+    def all_files(dir = '', allows = [])
       @logger.info "Finding all files, additional allows #{allows}"
       default_allows = [%r!(.ad)|(.adoc)|(.adoc)|(.jpg)|(.jpeg)|(.png)|(.gif)!]
       default_allows << allows.join unless allows.empty?
@@ -108,15 +108,15 @@ CONFIG
       default_ignores = [%r!(.gitignore$)|(.git$)|(_site$)|(.awestruct$)|(.awestruct_ignore$)|(_config$)|(_ext$)|(.git$)|(.travis.yml$)|(_tmp$)|(.sass-cache$)!]
       files = []
 
-      if File.exists? base_repository_path
-        Find.find(base_repository_path) do |path|
+      if File.exists?(File.join(base_repository_path, dir))
+        Find.find(File.join(base_repository_path, dir)) do |path|
           if Regexp.union(default_ignores).match(path.to_s)
             Find.prune
           end
 
           if regexp_ignores.match(path.to_s) || File.directory?(path)
             if File.basename(path.to_s) != @name
-              files << file_info(path)
+              files << file_info(path, dir)
             end
           end
         end
@@ -226,24 +226,29 @@ CONFIG
       pull_request_result['html_url']
     end
 
-    def file_content(file, binary = false)
+    def file_content(file)
       @logger.info "reading contents of file #{file.to_s}"
-      if binary
-        File.open(File.join(base_repository_path, file), 'rb').read
+
+      file_path = File.join(base_repository_path, file)
+
+      return '' unless File.exists? file_path
+
+      if `file --mime-encoding -b #{file_path}` =~ /binary/
+        "data:#{`file --mime-type -b #{file_path}`.strip};base64,#{Base64.encode64(File.open(file_path, 'rb').read)}"
       else
-        File.open(File.join(base_repository_path, file), 'r').read
+        File.open(file_path, 'r').read
       end
     end
 
-    def file_info(path)
+    def file_info(path, dir = '')
       path = Pathname.new(path)
-      path = Pathname.new(File.join(base_repository_path, path)) unless File.exists? path
+      path = Pathname.new(File.join(base_repository_path, dir, path.basename)) unless File.exists? path
       { :location => path.basename.to_s, :directory => path.directory?,
         :path_to_root => path.relative_path_from(Pathname.new base_repository_path).dirname.to_s }
     end
 
     def log(count = 30)
-      @logger.info "retreiving the last #{count} log entries"
+      @logger.info "retrieving the last #{count} log entries"
       @git_repo.log count
     end
 

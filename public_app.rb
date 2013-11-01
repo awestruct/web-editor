@@ -212,6 +212,20 @@ module AwestructWebEditor
       [200, JSON.dump(return_links)]
     end
 
+    get '/repo/:repo_name/images' do |repo_name|
+      repo = create_repo(repo_name)
+      files = repo.all_files('images')
+
+      json_return = {}
+      files.each do |f|
+        unless f[:directory]
+          json_return[f[:location]] = { :content => repo.file_content(File.join('images', f[:location]))}
+        end
+      end
+
+      [200, JSON.dump(json_return)]
+    end
+
     get '/repo/:repo_name/*' do |repo_name, path|
       repo = create_repo(repo_name)
       json_return = { :content => repo.file_content(path), :links => links_for_file(repo.file_info(path), repo_name) }
