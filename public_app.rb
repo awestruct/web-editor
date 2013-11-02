@@ -3,7 +3,6 @@ require 'open3'
 require 'date'
 require 'digest/sha2'
 require 'securerandom'
-require 'uri'
 
 # External
 require 'bundler'
@@ -109,15 +108,15 @@ module AwestructWebEditor
     end
 
     post '/settings' do
-      settings = read_settings().merge({ 'repo' => params['repo'] })
+      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'').sub(/\.git$/,'') })
       write_settings settings
     end
 
     put '/settings' do
-      settings = read_settings().merge({ 'repo' => params['repo'] })
+      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'').sub(/\.git$/,'') })
       logger.debug "Settings: #{settings}"
       get_github_token settings
-      repo =  AwestructWebEditor::Repository.new(:name => URI(settings['repo']).path.split('/').last,
+      repo =  AwestructWebEditor::Repository.new(:name => settings['repo'].split('/').last,
                                                  :token => session[:github_auth], :username => session['username'])
       repo.init_empty
       repo.add_creds
