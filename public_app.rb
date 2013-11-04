@@ -226,6 +226,15 @@ module AwestructWebEditor
       [200, JSON.dump(json_return)]
     end
 
+	get '/repo/:repo_name/branches' do |repo_name|
+      repo = create_repo(repo_name)
+      [200, JSON.dump(repo.branches)]
+    end
+
+    post '/repo/:repo_name/branches/:branch_name' do |repo_name, branch_name|
+      repo = create_repo(repo_name).switch_branch branch_name
+    end
+
     get '/repo/:repo_name/*' do |repo_name, path|
       repo = create_repo(repo_name)
       json_return = { :content => repo.file_content(path), :links => links_for_file(repo.file_info(path), repo_name) }

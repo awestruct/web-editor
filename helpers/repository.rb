@@ -179,6 +179,11 @@ CONFIG
       system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
     end
 
+    def switch_branch(branch_name)
+      @git_repo.checkout branch_name, {:force => true}
+      [200, '']
+    end
+
     def rebase(overwrite, remote = 'upstream')
       fetch_remote remote
       upstream_repo = create_github_client.repository(Octokit::Repository.from_url @settings['repo'])
@@ -206,7 +211,23 @@ CONFIG
     end
 
     def branches
-      @git_repo.branches
+      @logger.debug "Fetching local branches and notes"
+      Open3.popen3('git show --format="||%d||%h||%N" --notes=pull $(git notes --ref=pull | awk "{ print $2 }") | awk "{ if ($1 ~ /\|\|/) { print $0 } }',
+                   :chdir => File.absolute_path(base_repository_path)) do |_, stdout, stderr, wait_thr|
+        exit_value = wait_thr.value
+        @logger.debug "fetch exit status: #{exit_value}"
+        error = stderr.readlines.join "\n"
+        @logger.debug "fetch error: #{error}" unless error.empty?
+
+        returns = []
+        stdout.readlines.each do |line|
+          _, branches, pull = line.split '||'
+          branches = branches.strip.gsub(/[()]/, '').split(',').last.strip
+          returns << {:pull => pull, :branch => branches}
+        end
+
+        returns
+      end
     end
 
     def push(remote = 'origin')
