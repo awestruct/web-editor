@@ -274,7 +274,7 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
       }
       else {
         var method = "put"
-        $scope.data.repo = settings.repo.split('/').pop();
+        $scope.data.repo = settings.repo.split('/').pop().replace('.git','');
         console.log($scope.data.repo);
       }
 

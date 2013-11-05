@@ -312,6 +312,7 @@ ul.tools {
   border-top:1px solid #ddd;
   // border-bottom:1px solid #ddd;
   clear: both;
+  margin-bottom: 11px;
   li {
     width: (100 / 17) * 1%;
     display: inline-block;
@@ -442,6 +443,43 @@ div[dropzone] {
 }
 
 /*
+  Image Picker
+*/
+
+ul.image-picker {
+  li {
+    text-align: center;
+    display: table;
+    position: relative;
+    margin-bottom: 20px;
+
+  }
+  span.image-wrap {
+    cursor:pointer;
+    display: block;
+    width:100%;
+    height:150px;
+    overflow: hidden;
+    display:table-cell;
+    vertical-align: middle;
+    &:hover {
+      background:#eee;
+    }
+  }
+  img {
+    max-width:100%;
+  }
+  span.image-name {
+    font-size: 11px;
+    display: block;
+    width:170px;
+    text-align: center;
+    position: absolute;
+    bottom:0;
+  }
+}
+
+/*
   Messages
 */
 
@@ -556,6 +594,11 @@ div[dropzone] {
       width:98%;
       height:90%;
     }
+    &.overlay-images {
+      width:80%;
+      height:70%;
+      overflow:scroll;
+    }
     .close {
       position: absolute;
       top:10px;
@@ -606,8 +649,8 @@ button, .button {
 
 // Images Preview
 .view-images {
-  height:500px;
-  overflow: scroll;
+  // height:500px;
+  // overflow: scroll;
 }
 
 // Angular
@@ -653,3 +696,4 @@ ul, ol {
     }
   }
 }
+

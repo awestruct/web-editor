@@ -1,4 +1,6 @@
-ul.large-block-grid-4
-  li[ng-repeat="image in data.images"] 
-      / img[src="/repo/{{data.repo}}/{{image.path}}"]
-      img[src="http://lorempixel.com/200/200" ng-click="insertImage('/repo/{{data.repo}}/{{image.path}}')"]
+ul.large-block-grid-8.image-picker
+  li[ng-repeat="(name,image) in data.images"] 
+      span.image-wrap[ng-click="insertImage('/repo/{{data.repo}}/{{name}}')"]
+        img[src="{{image.content}}"]
+        span.image-name
+          | {{name}}
