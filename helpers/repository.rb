@@ -99,7 +99,7 @@ CONFIG
       end
     end
 
-    def all_files(dir = '', allows = [])
+    def all_files(allows = [], dir = '')
       @logger.info "Finding all files, additional allows #{allows}"
       default_allows = [%r!(.ad)|(.adoc)|(.adoc)|(.jpg)|(.jpeg)|(.png)|(.gif)!]
       default_allows << allows.join unless allows.empty?

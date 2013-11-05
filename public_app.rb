@@ -214,7 +214,7 @@ module AwestructWebEditor
 
     get '/repo/:repo_name/images' do |repo_name|
       repo = create_repo(repo_name)
-      files = repo.all_files('images')
+      files = repo.all_files([], 'images')
 
       json_return = {}
       files.each do |f|
