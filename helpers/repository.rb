@@ -66,7 +66,7 @@ CONFIG
     def clone_repo
       github = create_github_client
       begin
-        @logger.info 'creating github fork'
+        @logger.debug 'creating github fork'
         fork_response = github.fork(URI(@settings['repo']).path[1..-1])
       rescue Exception => e
         return [500, e.message]
@@ -100,7 +100,7 @@ CONFIG
     end
 
     def all_files(allows = [], dir = '')
-      @logger.info "Finding all files, additional allows #{allows}"
+      @logger.debug "Finding all files, additional allows #{allows}"
       default_allows = [%r!(.ad)|(.adoc)|(.adoc)|(.jpg)|(.jpeg)|(.png)|(.gif)!]
       default_allows << allows.join unless allows.empty?
       regexp_ignores = Regexp.union default_allows
@@ -131,23 +131,35 @@ CONFIG
 
 
     def save_file(name, content)
-      @logger.info "Saving file #{name}"
+      @logger.debug "Saving file #{name}"
+      new_name = name
+      if File.exists? name
+        if File.basename(name) =~ /\d+/
+          new_name = File.basename(name).gsub(/\d+/) { |num| num.to_i.next }
+        else
+          new_name = File.basename(name).gsub(File.extname(name), '') + '_1' + File.extname(name)
+        end
+      end
+
+      final_name = File.join(File.dirname(name), new_name)
+      final_path = File.join(base_repository_path, final_name)
+
       if content.is_a? Hash
         @logger.debug 'Saving new file'
-        IO.copy_stream(content[:tempfile], File.join(base_repository_path, name))
+        IO.copy_stream(content[:tempfile], final_path)
         content[:tempfile].unlink
         content[:tempfile].close
       else
-        File.open(File.join(base_repository_path, name), 'w') do |f|
+        File.open(final_path, 'w') do |f|
           f.write content
         end
       end
       @logger.debug 'Adding file to git'
-      @git_repo.add(Shellwords.escape name)
+      @git_repo.add(Shellwords.escape final_name)
     end
 
     def remove_file(name)
-      @logger.info "Removing file #{name}"
+      @logger.debug "Removing file #{name}"
       @git_repo.remove(Shellwords.escape name)
       path_to_file = File.join(base_repository_path, Shellwords.escape(name))
       File.delete(path_to_file) if File.exists? path_to_file
@@ -155,14 +167,14 @@ CONFIG
     end
 
     def commit(message)
-      @logger.info "Commiting with message #{message}"
+      @logger.debug "Commiting with message #{message}"
       current_user = create_github_client.user
       @git_repo.commit_all(message, :author => "current_user['name'] <#{current_user['email']}>")
       @git_repo.log(1).first # Give us back a commit object so we can actually query it
     end
 
     def fetch_remote(remote = 'upstream')
-      @logger.info "Fetching remote #{remote}"
+      @logger.debug "Fetching remote #{remote}"
       Open3.popen3("git fetch #{remote}",
                    :chdir => File.absolute_path(base_repository_path)) do |_, _, stderr, wait_thr|
         exit_value = wait_thr.value
@@ -175,7 +187,7 @@ CONFIG
     def create_branch(branch_name)
       upstream_repo = create_github_client.repository(Octokit::Repository.from_url @settings['repo'])
       fetch_remote
-      @logger.info "creating branch #{branch_name} based on 'upstream/#{upstream_repo.master_branch}'"
+      @logger.debug "creating branch #{branch_name} based on 'upstream/#{upstream_repo.master_branch}'"
       system("git checkout -b #{branch_name} upstream/#{upstream_repo.master_branch}")
     end
 
@@ -200,7 +212,7 @@ CONFIG
     end
 
     def remove_branch(branch_name)
-      @logger.info "removing branch #{branch_name}"
+      @logger.debug "removing branch #{branch_name}"
       @git_repo.branch('master').checkout
       @git_repo.branch(branch_name).delete
     end
@@ -210,7 +222,7 @@ CONFIG
     end
 
     def push(remote = 'origin')
-      @logger.info "pushing to #{remote}"
+      @logger.debug "pushing to #{remote}"
       system("git push #{remote} HEAD")
     end
 
@@ -218,7 +230,7 @@ CONFIG
       github = create_github_client
       upstream_repo = Octokit::Repository.from_url @settings['repo']
       upstream_response = github.repository(upstream_repo)
-      @logger.info "Issuing a pull request with title - #{title} and body #{body}"
+      @logger.debug "Issuing a pull request with title - #{title} and body #{body}"
       pull_request_result = github.create_pull_request(upstream_repo,
                                                        "#{upstream_response.owner.login}:#{upstream_response.master_branch}",
                                                        "#{@settings['username']}:#{@git_repo.lib.branch_current}", title, body)
@@ -227,7 +239,7 @@ CONFIG
     end
 
     def file_content(file)
-      @logger.info "reading contents of file #{file.to_s}"
+      @logger.debug "reading contents of file #{file.to_s}"
 
       file_path = File.join(base_repository_path, file)
 
@@ -248,7 +260,7 @@ CONFIG
     end
 
     def log(count = 30)
-      @logger.info "retrieving the last #{count} log entries"
+      @logger.debug "retrieving the last #{count} log entries"
       @git_repo.log count
     end
 
