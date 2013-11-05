@@ -25,7 +25,7 @@ aw.factory('Repo', function($http) {
   };
 
   Repo.prototype.getImages = function(repo) {
-    return $http.get('/repo/' + repo + '?allow=jpg').then(function(response) {
+    return $http.get('/repo/' + repo + '/images').then(function(response) {
       return new Repo(response);
     });
   };
