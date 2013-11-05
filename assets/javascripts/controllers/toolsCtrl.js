@@ -43,11 +43,9 @@ function ToolsCtrl($scope, Data){
   // Pick an existing Image
   $scope.pickImage = function() {
     repo.getImages($scope.data.repo).then(function(data){
-      console.log(data);
-
-      // console.log(data.data.images.children);
-      // $scope.data.images = data.data.images.children;
-      // $scope.toggleOverlay('images');
+      console.log(data.data);
+      $scope.data.images = data.data;
+      $scope.toggleOverlay('images');
     });
   };
 
