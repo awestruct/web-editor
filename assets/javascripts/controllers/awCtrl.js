@@ -379,7 +379,7 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
 
     $scope.change_set = function(callback){
       var dateObj = new Date()
-          , month = dateObj.getUTCMonth()
+          , month = dateObj.getUTCMonth() + 1
           , day = dateObj.getUTCDate()
           , year = dateObj.getUTCFullYear()
           , timestamp = dateObj.getTime();
