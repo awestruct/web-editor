@@ -379,11 +379,12 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
 
     $scope.change_set = function(callback){
       var dateObj = new Date()
-          , month = dateObj.getUTCMonth()
+          , month = dateObj.getUTCMonth() + 1
           , day = dateObj.getUTCDate()
           , year = dateObj.getUTCFullYear()
           , timestamp = dateObj.getTime();
 
+      console.log("Going to create a branch with ",year,month,day,timestamp);
       var name = "changeset-"+ year + "-" + month + "-" + day + "-" + timestamp;
 
       $http.post('/repo/' + $scope.data.repo + '/change_set', { name : name })
