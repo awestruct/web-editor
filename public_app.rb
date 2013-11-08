@@ -108,12 +108,12 @@ module AwestructWebEditor
     end
 
     post '/settings' do
-      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'').sub(/\.git$/,'') })
+      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'/').sub(/\.git$/,'') })
       write_settings settings
     end
 
     put '/settings' do
-      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'').sub(/\.git$/,'') })
+      settings = read_settings().merge({ 'repo' => params['repo'].sub(%r{^(((git@github.com:)|(https(s)?://github.com/)?))},'/').sub(/\.git$/,'') })
       logger.debug "Settings: #{settings}"
       get_github_token settings
       repo =  AwestructWebEditor::Repository.new(:name => settings['repo'].split('/').last,

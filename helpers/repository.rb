@@ -151,7 +151,7 @@ CONFIG
         end
       end
 
-      final_name = File.join(File.dirname(name), new_name)
+      final_name = File.join(File.dirname(name), File.basename(new_name))
       final_path = File.join(base_repository_path, final_name)
 
       if content.is_a? Hash
