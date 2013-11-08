@@ -133,11 +133,21 @@ CONFIG
     def save_file(name, content)
       @logger.debug "Saving file #{name}"
       new_name = name
-      if File.exists? name
-        if File.basename(name) =~ /\d+/
-          new_name = File.basename(name).gsub(/\d+/) { |num| num.to_i.next }
+
+      # This is a little complicated. We need to rename the file if there is already an existing file with that
+      # name, or multiple files with that name ending in _(number).
+      #
+      # First we look to see if the file exists, if not, skip this and move on.
+      # If there is a file that matches that exact name (or one with the further _(number))
+      # we have to go through and find the current largest number, increment it, and save the file with that new
+      # name.
+      if File.exists?((name))
+        matching_files = Dir.glob(File.basename(name).partition('.').first.gsub(/_\(\d+\)/, '') + '*').sort
+
+        if matching_files.length == 1
+          new_name = File.basename(name).gsub(File.extname(name), '') + '_(1)' + File.extname(name)
         else
-          new_name = File.basename(name).gsub(File.extname(name), '') + '_1' + File.extname(name)
+          new_name = matching_files.last.gsub(/\((\d+)\)/) { "(#{Regexp.last_match[1].to_i.next})"}
         end
       end
 
@@ -156,6 +166,7 @@ CONFIG
       end
       @logger.debug 'Adding file to git'
       @git_repo.add(Shellwords.escape final_name)
+      { :old_file => name, :new_file => final_path }.to_json
     end
 
     def remove_file(name)

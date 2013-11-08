@@ -32,7 +32,7 @@ module AwestructWebEditor
 
     use Rack::Session::Cookie, :key => 'awestruct-editor-session',
                                :path => '/',
-                               :secret => (ENV['OPENSHIFT_APP_UUID'] || 'localhost'),
+                               :secret => (ENV['OPENSHIFT_APP_UUID'] || 'localhost'), # TODO: add something for Contegix
                                :old_secret => '6b0385be07bcc169a1ee49ddb4b33c9d31cc668504dd2b5b59185253dcf55b42d7f6c766f546f638cd3fe829b9d32a59db61a5938d75ab2f2c15336a2368c9e6'
 
     #use Rack::SSL, :exclude => lambda { |_| development? }
@@ -70,7 +70,8 @@ module AwestructWebEditor
     end
 
     # Security
-    before %r{^\/(repo|settings)(\/[\w]+)*} do
+    before %r{^/(repo|settings)(/[\w]+)*} do
+      pass if ((request.path_info =~ %r{^/repo}) && (request.path_info =~ /images/))
       check_token
     end
 
@@ -248,7 +249,7 @@ module AwestructWebEditor
     # Preview APIs
 
     get '/preview/:repo_name' do |repo_name|
-      retrieve_rendered_file(create_repo(repo_name), 'index.html')
+      retrieve_rendered_file(create_repo(repo_name), 'index.html.slim')
     end
 
     get '/preview/:repo_name/*' do |repo_name, path|
@@ -345,15 +346,34 @@ module AwestructWebEditor
       def save_or_create(repo_name, path)
         request.body.rewind # in case someone already read it
         repo = create_repo repo_name
-        repo.save_file path, params[:content]
+        json_return = repo.save_file path, params[:content]
+        [200, json_return]
 
-        retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
+        # TODO: kick off rendering
+        #retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
       end
 
       def retrieve_rendered_file(repo, path)
-        logger.info 'executing external script to render file'
+        mapping_file = File.join(repo.base_repository_path, 'tmp', 'mapping.json')
+        unless File.exists? mapping_file
+          logger.info 'executing external script to render file'
+          Bundler.with_clean_env do
+            Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
+              errors = stderr.readlines.join
+              logger.error "Error during rendering: #{errors}" unless errors.empty?
+              return [500, "Error: #{path.to_s} not rendered"] unless errors.empty?
+            end
+          end
+        end
+
+        # Open mapping file
+        #  find path
+        #  check mtime
+        #  (re)-generate if source file is newer than generated file
+        #  Grab the generated file, return it and the content/type
+
         Bundler.with_clean_env do
-          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |stdin, stdout, stderr, thr|
+          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
             mapping = {}
             stdout.each_line do |line|
               if line.match(/^\{.*/)
@@ -362,6 +382,8 @@ module AwestructWebEditor
             end
             errors = stderr.readlines.join
             logger.error "Error during rendering: #{errors}" unless errors.empty?
+
+            # TODO: I need the encoding and content type as well
 
             if !mapping.nil? && mapping.include?('/' + path)
               [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]

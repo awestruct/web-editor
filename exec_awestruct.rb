@@ -1,10 +1,10 @@
-#require 'bundler'
 require 'awestruct/version'
 require 'awestruct/cli/generate'
 require 'logger'
 require 'json'
 require 'optparse'
-#require 'rubygems'
+require 'shellwords'
+require 'tilt'
 
 options = {}
 
@@ -20,7 +20,7 @@ OptionParser.new do |opts|
     options[:profile] = profile
   end
 
-  opts.on('--url BASE_URL', 'BaseURL to use during generation') do |url|
+  opts.on('--url BASE_URL', 'Base URL to use during generation') do |url|
     options[:url] = url
   end
 
@@ -58,13 +58,10 @@ end
 base_repo_dir = (ENV['OPENSHIFT_DATA_DIR']) ?  File.join(ENV['OPENSHIFT_DATA_DIR'], 'repos', options[:username]) : "repos/#{options[:username]}"
 
 Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
-  #ENV.keys.each do |key|
-  #  $stderr.puts "DEBUG:: ENV[#{key}] = #{ENV[key]}"
-  #end
-  #Bundler.require
-  error_log = StringIO.new 'a+'
+  error_log = StringIO.new ''
   $LOG = Logger.new(error_log)
   $LOG.level = Logger::ERROR
+
   engine = Awestruct::Engine.new(Awestruct::Config.new)
   engine.adjust_load_path
   engine.load_default_site_yaml
@@ -80,12 +77,26 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   engine.generate_output
 
   source_to_output = {}
-  engine.site.pages.each do |p| 
-    source_to_output[p.relative_source_path] = p.output_path unless source_to_output.include? p.relative_source_path 
+  engine.site.pages.each do |p|
+    output_path = p.output_path unless source_to_output.include? p.relative_source_path
+    mtime = `stat -c %Y #{File.join('_site', Shellwords.escape(p.output_path))}`.strip
+    content_type = if Awestruct::Handlers::TiltMatcher.new().match(p.relative_source_path)
+                     Tilt[p.relative_source_path].default_mime_type
+                   elsif p.output_extension =~ /js/
+                     'application/javascript'
+                   elsif p.output_extension =~ /css/
+                     'text/css'
+                   else
+                     `file --mime-type -b #{'_site' + Shellwords.escape(p.output_path)}`.strip
+                   end
+
+    source_to_output[p.relative_source_path] = { :output_path => output_path, :mtime => mtime, :'content-type' => content_type }
   end
 
   error_log.rewind
   $stderr.puts error_log.readlines.join
-  $stdout.puts JSON.dump source_to_output
+  File.open(File.join('_tmp', 'mapping.json'), 'w') do |f|
+    f.puts JSON.dump source_to_output
+  end
 end
 
