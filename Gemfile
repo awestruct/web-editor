@@ -46,3 +46,8 @@ group :developement do
   # gem 'puma', '~> 2.3', :require => false # I like puma and it runs everywhere
   # gem 'puma', '~> 1.6.3', :require => false # I like puma and it runs everywhere
 end
+
+group :production_thin do
+  gem 'thin', '~> 1.6.1'
+end
+
