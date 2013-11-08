@@ -30,6 +30,7 @@ module AwestructWebEditor
   class PublicApp < Sinatra::Base
     set :sprockets, Sprockets::Environment.new(root)
     set :ssl, lambda { |_| development? }
+    set :protection, :origin_whitelist => ['https://webeditor.bleepbleep.org.uk']
 
     use Rack::Session::Cookie, :key => 'awestruct-editor-session',
                                :path => '/',
