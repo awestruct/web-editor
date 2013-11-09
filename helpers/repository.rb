@@ -166,7 +166,7 @@ CONFIG
       end
       @logger.debug 'Adding file to git'
       @git_repo.add(Shellwords.escape final_name)
-      { :old_file => name, :new_file => final_path }.to_json
+      { :old_file => name, :new_file => final_name }.to_json
     end
 
     def remove_file(name)
@@ -288,7 +288,9 @@ CONFIG
       path = Pathname.new(path)
       path = Pathname.new(File.join(base_repository_path, dir, path.basename)) unless File.exists? path
       { :location => path.basename.to_s, :directory => path.directory?,
-        :path_to_root => path.relative_path_from(Pathname.new base_repository_path).dirname.to_s }
+        :path_to_root => path.relative_path_from(Pathname.new base_repository_path).dirname.to_s,
+        :mtime => `stat -c %Y #{path}`.strip
+      }
     end
 
     def log(count = 30)

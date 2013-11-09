@@ -3,6 +3,7 @@ require 'open3'
 require 'date'
 require 'digest/sha2'
 require 'securerandom'
+require 'date'
 
 # External
 require 'bundler'
@@ -10,6 +11,7 @@ require 'rack/ssl'
 require 'rack/auth/basic'
 require 'sinatra/base'
 require 'sinatra/cookies'
+require 'sinatra/streaming'
 require 'octokit'
 require 'json'
 
@@ -267,6 +269,7 @@ module AwestructWebEditor
     helpers do
       include Sprockets::Helpers
       include Sinatra::Cookies
+      include Sinatra::Streaming
 
       def check_token
         unless env['HTTP_TOKEN'] == (Digest::SHA512.new << "#{session[:csrf]}#{env['HTTP_TIME']}").to_s
@@ -352,17 +355,19 @@ module AwestructWebEditor
       end
 
       def save_or_create(repo_name, path)
-        request.body.rewind # in case someone already read it
-        repo = create_repo repo_name
-        json_return = repo.save_file path, params[:content]
-        [200, json_return]
+        stream do |out|
+          request.body.rewind # in case someone already read it
+          repo = create_repo repo_name
+          out.write repo.save_file(path, params[:content]) + "\n"
+          out.flush
 
-        # TODO: kick off rendering
-        #retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
+          out.write retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
+          out.flush
+        end
       end
 
       def retrieve_rendered_file(repo, path)
-        mapping_file = File.join(repo.base_repository_path, 'tmp', 'mapping.json')
+        mapping_file = File.join(repo.base_repository_path, '_tmp', 'mapping.json')
         unless File.exists? mapping_file
           logger.info 'executing external script to render file'
           Bundler.with_clean_env do
@@ -379,27 +384,21 @@ module AwestructWebEditor
         #  check mtime
         #  (re)-generate if source file is newer than generated file
         #  Grab the generated file, return it and the content/type
+        mapping_json = JSON.parse(File.readlines(mapping_file)[0])
+        generated_mtime = DateTime.strptime(mapping_json['/' + path]['mtime'],'%s')
 
-        Bundler.with_clean_env do
-          Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
-            mapping = {}
-            stdout.each_line do |line|
-              if line.match(/^\{.*/)
-                mapping = JSON.load line
-              end
-            end
-            errors = stderr.readlines.join
-            logger.error "Error during rendering: #{errors}" unless errors.empty?
-
-            # TODO: I need the encoding and content type as well
-
-            if !mapping.nil? && mapping.include?('/' + path)
-              [200, File.open(File.join(repo.base_repository_path, '_site', mapping['/' + path]), 'r') { |f| f.readlines }]
-            else
-              [500, "Error: #{path.to_s} not rendered"]
+        if DateTime.strptime(repo.file_info(File.basename(path), File.dirname(path))[:mtime],'%s') > generated_mtime
+          Bundler.with_clean_env do
+            Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
+              errors = stderr.readlines.join
+              logger.error "Error during rendering: #{errors}" unless errors.empty?
+              return [500, "Error: #{path.to_s} not rendered"] unless errors.empty?
             end
           end
+          mapping_json = JSON.parse(File.readlines(mapping_file)[0]) # reload the file to include new info
         end
+
+        [200, {'Content-type' => mapping_json['/' + path]['content-type']}, File.open(File.join(repo.base_repository_path, '_site', mapping_json['/' + path]['output_path']), 'r') { |f| f.readlines }]
       end
 
       def get_octokit_client(username)
