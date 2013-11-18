@@ -96,6 +96,7 @@ CONFIG
           @logger.debug "pull exit status: #{wait_thr.value}"
           error = stderr.readlines.join "\n"
           @logger.debug "pulling error: #{error}" unless error.empty?
+          [wait_thr.value.exitstatus, error]
         end
       end
     end
