@@ -93,8 +93,9 @@ CONFIG
       @logger.debug 'Starting bundle install'
       Bundler.with_clean_env do
         Open3.popen3('bundle install', :chdir => File.absolute_path(base_repository_path)) do |_, _, stderr, wait_thr|
-          exit_status = wait_thr.value.exitstatus
-          [exit_status, stderr.readlines().join("\n")]
+          @logger.debug "pull exit status: #{wait_thr.value}"
+          error = stderr.readlines.join "\n"
+          @logger.debug "pulling error: #{error}" unless error.empty?
         end
       end
     end
