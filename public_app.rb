@@ -260,7 +260,7 @@ module AwestructWebEditor
     # Preview APIs
 
     get '/preview/:repo_name' do |repo_name|
-      retrieve_rendered_file(create_repo(repo_name), 'index.html.slim')
+      retrieve_rendered_file(create_repo(repo_name), '_site/index.html')
     end
 
     get '/preview/:repo_name/*' do |repo_name, path|
@@ -362,12 +362,12 @@ module AwestructWebEditor
           out.write repo.save_file(path, params[:content]) + "\n"
           out.flush
 
-          out.write retrieve_rendered_file(repo, path) unless ENV['RACK_ENV'] =~ /test/
+          out.write retrieve_rendered_file(repo, path, false) unless ENV['RACK_ENV'] =~ /test/
           out.flush
         end
       end
 
-      def retrieve_rendered_file(repo, path)
+      def retrieve_rendered_file(repo, path, return_content = true)
         mapping_file = File.join(repo.base_repository_path, '_tmp', 'mapping.json')
         unless File.exists? mapping_file
           logger.info 'executing external script to render file'
@@ -375,7 +375,7 @@ module AwestructWebEditor
             Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
               errors = stderr.readlines.join
               logger.error "Error during rendering: #{errors}" unless errors.empty?
-              return [500, "Error: #{path.to_s} not rendered"] unless errors.empty?
+              return [500, "Error: #{final_path.to_s} not rendered"] unless errors.empty?
             end
           end
         end
@@ -385,21 +385,38 @@ module AwestructWebEditor
         #  check mtime
         #  (re)-generate if source file is newer than generated file
         #  Grab the generated file, return it and the content/type
-        mapping_json = JSON.parse(File.readlines(mapping_file)[0])
-        generated_mtime = DateTime.strptime(mapping_json['/' + path]['mtime'],'%s')
+        mapping_json = JSON.parse(File.readlines(mapping_file).first)
 
-        if DateTime.strptime(repo.file_info(File.basename(path), File.dirname(path))[:mtime],'%s') > generated_mtime
-          Bundler.with_clean_env do
-            Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, stdout, stderr, _|
-              errors = stderr.readlines.join
-              logger.error "Error during rendering: #{errors}" unless errors.empty?
-              return [500, "Error: #{path.to_s} not rendered"] unless errors.empty?
-            end
-          end
-          mapping_json = JSON.parse(File.readlines(mapping_file)[0]) # reload the file to include new info
+        final_path = path
+
+        if File.extname(final_path).empty?
+          final_path = File.join final_path, 'index.html'
         end
 
-        [200, {'Content-type' => mapping_json['/' + path]['content-type']}, File.open(File.join(repo.base_repository_path, '_site', mapping_json['/' + path]['output_path']), 'r') { |f| f.readlines }]
+        if return_content
+          generated_mtime = DateTime.strptime(mapping_json[mapping_json['/' + final_path]['relative_source_path']]['output_mtime'],'%s')
+          source_mtime = DateTime.strptime(mapping_json['/' + final_path]['source_mtime'], '%s')
+        else
+          generated_mtime = DateTime.strptime(mapping_json['/' + final_path]['output_mtime'],'%s')
+          source_mtime = DateTime.strptime(repo.file_info(File.basename(final_path), File.dirname(final_path))[:mtime],'%s')
+        end
+
+        if source_mtime > generated_mtime
+          Bundler.with_clean_env do
+            Open3.popen3("ruby exec_awestruct.rb --repo #{repo.name} --url '#{request.scheme}://#{request.host}:#{request.port}' --profile development --username '#{session['username']}'") do |_, _, stderr, _|
+              errors = stderr.readlines.join
+              logger.error "Error during rendering: #{errors}" unless errors.empty?
+              return [500, "Error: #{final_path.to_s} not rendered"] unless errors.empty?
+            end
+          end
+          mapping_json = JSON.parse(File.readlines(mapping_file).first) # reload the file to include new info
+        end
+
+        if return_content
+          [200, {'Content-type' => mapping_json['/' + final_path]['content-type']}, File.open(File.join(repo.base_repository_path, final_path), 'r') { |f| f.readlines }]
+        else
+          url("preview/#{repo.name}/_site#{mapping_json['/' + final_path]['output_path']}")
+        end
       end
 
       def get_octokit_client(username)

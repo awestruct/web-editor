@@ -66,8 +66,9 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   engine.adjust_load_path
   engine.load_default_site_yaml
   engine.load_site_yaml options[:profile]
-  engine.set_base_url "#{options[:url]}/preview/repos/#{options[:repo]}", "#{options[:url]}/preview/repos/#{options[:repo]}"
+  engine.set_base_url "#{options[:url]}/preview/#{options[:repo]}", "#{options[:url]}/preview/#{options[:repo]}"
   engine.load_yamls
+  engine.site.context_url = '_site' # try to hack this so we get the right URLs
   engine.load_pipeline
   engine.load_pages
   engine.execute_pipeline
@@ -79,7 +80,8 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   source_to_output = {}
   engine.site.pages.each do |p|
     output_path = p.output_path unless source_to_output.include? p.relative_source_path
-    mtime = `stat -c %Y #{File.join('_site', Shellwords.escape(p.output_path))}`.strip
+    output_mtime = `stat -c %Y #{File.join('_site', Shellwords.escape(p.output_path))}`.strip
+    source_mtime = `stat -c %Y #{File.join(Shellwords.escape(p.relative_source_path[1..-1]))}`.strip
     content_type = if Awestruct::Handlers::TiltMatcher.new().match(p.relative_source_path)
                      Tilt[p.relative_source_path].default_mime_type
                    elsif p.output_extension =~ /js/
@@ -90,11 +92,12 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
                      `file --mime-type -b #{'_site' + Shellwords.escape(p.output_path)}`.strip
                    end
 
-    source_to_output[p.relative_source_path] = { :output_path => output_path, :mtime => mtime, :'content-type' => content_type }
+    source_to_output[p.relative_source_path] = { :output_path => output_path, :output_mtime => output_mtime, :'content-type' => content_type }
+    source_to_output['/_site' + p.output_path] = { :relative_source_path => p.relative_source_path, :source_mtime => source_mtime, :'content-type' => content_type }
   end
 
   error_log.rewind
-  $stderr.puts error_log.readlines.join
+  $stderr.puts error_log.readlines.join unless error_log.readlines.empty?
   File.open(File.join('_tmp', 'mapping.json'), 'w') do |f|
     f.puts JSON.dump source_to_output
   end
