@@ -80,8 +80,8 @@ Dir.chdir File.absolute_path(File.join(base_repo_dir, "#{options[:repo]}")) do
   source_to_output = {}
   engine.site.pages.each do |p|
     output_path = p.output_path unless source_to_output.include? p.relative_source_path
-    output_mtime = `stat -c %Y #{File.join('_site', Shellwords.escape(p.output_path))}`.strip
-    source_mtime = `stat -c %Y #{File.join(Shellwords.escape(p.relative_source_path[1..-1]))}`.strip
+    output_mtime = File.mtime(File.join('_site', Shellwords.escape(p.output_path))).to_i
+    source_mtime = File.mtime(File.join(Shellwords.escape(p.relative_source_path[1..-1]))).to_i
     content_type = if Awestruct::Handlers::TiltMatcher.new().match(p.relative_source_path)
                      Tilt[p.relative_source_path].default_mime_type
                    elsif p.output_extension =~ /js/

@@ -291,7 +291,7 @@ CONFIG
       path = Pathname.new(File.join(base_repository_path, dir, path.basename)) unless File.exists? path
       { :location => path.basename.to_s, :directory => path.directory?,
         :path_to_root => path.relative_path_from(Pathname.new base_repository_path).dirname.to_s,
-        :mtime => `stat -c %Y #{path}`.strip
+        :mtime => File.mtime(path).to_i
       }
     end
 
