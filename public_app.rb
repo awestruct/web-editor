@@ -394,11 +394,11 @@ module AwestructWebEditor
         end
 
         if return_content
-          generated_mtime = DateTime.strptime(mapping_json[mapping_json['/' + final_path]['relative_source_path']]['output_mtime'],'%s')
-          source_mtime = DateTime.strptime(mapping_json['/' + final_path]['source_mtime'], '%s')
+          generated_mtime = mapping_json[mapping_json['/' + final_path]['relative_source_path']]['output_mtime']
+          source_mtime = mapping_json['/' + final_path]['source_mtime']
         else
-          generated_mtime = DateTime.strptime(mapping_json['/' + final_path]['output_mtime'],'%s')
-          source_mtime = DateTime.strptime(repo.file_info(File.basename(final_path), File.dirname(final_path))[:mtime],'%s')
+          generated_mtime = mapping_json['/' + final_path]['output_mtime']
+          source_mtime = repo.file_info(File.basename(final_path), File.dirname(final_path))[:mtime]
         end
 
         if source_mtime > generated_mtime
