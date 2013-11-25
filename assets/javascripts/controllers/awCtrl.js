@@ -216,11 +216,15 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
           content = $scope.editor.getValue(),
           path = currentFile.links[0].url;
           $scope.data.saving = true;
+          // Save the file, then listen for packets coming back
+          // There is the possibility that when it saves, you get all the data in a single packet
+          // On slower HDD, it will be two different packets
           repo.saveFile(path, content)
-            .success(function(response){            
+            .success(function(response){          
+              console.log(response, "<- response from regular ajax");
               $scope.data.saving = false;
               session.dirty = false;
-              $scope.$apply();
+              // $scope.$apply();
               if($scope.previewWindow) {
                 $scope.previewWindow.document.querySelector('html').innerHTML = response;
               }

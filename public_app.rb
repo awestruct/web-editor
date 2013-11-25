@@ -361,7 +361,8 @@ module AwestructWebEditor
           repo = create_repo repo_name
           out.write repo.save_file(path, params[:content]) + "\n"
           out.flush
-
+          # Faking build time for fast SSD machines
+          # sleep(6)
           out.write retrieve_rendered_file(repo, path, false) unless ENV['RACK_ENV'] =~ /test/
           out.flush
         end

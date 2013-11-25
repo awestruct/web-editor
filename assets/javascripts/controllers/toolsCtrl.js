@@ -42,11 +42,7 @@ function ToolsCtrl($scope, Data){
 
   // Pick an existing Image
   $scope.pickImage = function() {
-    repo.getImages($scope.data.repo).then(function(data){
-      console.log(data.data);
-      $scope.data.images = data.data;
-      $scope.toggleOverlay('images');
-    });
+    $scope.toggleOverlay('images');
   };
 
   $scope.insertImage = function(path) {
