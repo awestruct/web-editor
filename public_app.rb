@@ -361,7 +361,6 @@ module AwestructWebEditor
           repo = create_repo repo_name
           out.write repo.save_file(path, params[:content]) + "\n"
           out.flush
-
           out.write retrieve_rendered_file(repo, path, false) unless ENV['RACK_ENV'] =~ /test/
           out.flush
         end

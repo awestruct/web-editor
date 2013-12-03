@@ -1,6 +1,7 @@
 ul.large-block-grid-8.image-picker
-  li[ng-repeat="(name,image) in data.images"] 
+  / li[ng-repeat="(name,image) in data.images"] 
+  li[ng-repeat="(name,image) in files.images.children"] 
       span.image-wrap[ng-click="insertImage('/repo/{{data.repo}}/{{name}}')"]
-        img[src="{{image.content}}"]
+        img[src="/preview/{{data.repo}}/_site/images/{{name}}"]
         span.image-name
           | {{name}}
