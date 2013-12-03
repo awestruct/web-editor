@@ -221,12 +221,14 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
           // On slower HDD, it will be two different packets
           repo.saveFile(path, content)
             .success(function(response){          
+              var url = response.split('}').pop();
               console.log(response, "<- response from regular ajax");
               $scope.data.saving = false;
               session.dirty = false;
               // $scope.$apply();
               if($scope.previewWindow) {
-                $scope.previewWindow.document.querySelector('html').innerHTML = response;
+                // $scope.previewWindow.document.querySelector('html').innerHTML = response;
+                $scope.previewWindow.location.reload();
               }
           })
           .error(function(){
@@ -242,6 +244,7 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
     };
 
     $scope.addFile = function(child) {
+      console.log(child);
       var fileName = prompt("Please enter the file name, including the extension"),
           path = $scope.data.repoUrl + "/" + child.path.replace("./","") + "/" + fileName,
           filePath = child.path.replace("./","") + "/" + fileName;
@@ -418,7 +421,7 @@ function AwCtrl($sce, $scope, $routeParams, $route,Data, Repo, $resource, $http,
 
     $scope.preview = function() {
       if(!$scope.previewWindow) {
-        $scope.previewWindow = window.open('/#/preview');
+        $scope.previewWindow = window.open('/preview/'+$scope.data.repo);
       }
     }
 

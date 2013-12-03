@@ -20,35 +20,38 @@ aw.factory('Repo', function($http) {
   };
 
   Repo.prototype.saveFile = function(path,content) {
+    
+    /* Original Save */
     path = path.replace('./',''); // fix root level files
     return $http.post(path,{content:content});
 
     // WIP for streaming save and regenerate
 
     // XHR for saving file with streams
-    var fd = new FormData(),
-        xhr = new XMLHttpRequest();
+    // var fd = new FormData(),
+    //     xhr = new XMLHttpRequest();
     
-    fd.append("content", content);
-    // fd.append("binary", true);
+    // fd.append("content", content);
+    // // fd.append("binary", true);
 
-    // Set auth headers, we usually do this on $http, but since we are
-    // stepping outside $http, we need to do it here
-    var token = window.token,
-        time = new Date().getTime().toString().substring(0,8)
-        shaObj = new jsSHA(token + "" + time, "TEXT"),
-        hash = shaObj.getHash("SHA-512", "HEX");
+    // // Set auth headers, we usually do this on $http, but since we are
+    // // stepping outside $http, we need to do it here
+    // var token = window.token,
+    //     time = new Date().getTime().toString().substring(0,8)
+    //     shaObj = new jsSHA(token + "" + time, "TEXT"),
+    //     hash = shaObj.getHash("SHA-512", "HEX");
 
-    // Bind to events
-    xhr.addEventListener("progress", function(event) {
-      var target = (event.currentTarget) ? event.currentTarget : event.srcElement;
-      var txt = JSON.stringify(target);
-    }, false);
+    // // Bind to events
+    // xhr.addEventListener("progress", function(event) {
+    //   var target = (event.currentTarget) ? event.currentTarget : event.srcElement;
+    //   console.log("Response: ", target);
+    //   var txt = JSON.stringify(target);
+    // }, false);
 
-    xhr.open("POST", path);
-    xhr.setRequestHeader("token", hash);
-    xhr.setRequestHeader("time",time);
-    xhr.send(fd);
+    // xhr.open("POST", path);
+    // xhr.setRequestHeader("token", hash);
+    // xhr.setRequestHeader("time",time);
+    // xhr.send(fd);
 
   };
 
